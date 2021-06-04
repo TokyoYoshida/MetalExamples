@@ -14,6 +14,7 @@
 		1E1DD86B2668E47200F98410 /* MetalExamplesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E1DD86A2668E47200F98410 /* MetalExamplesTests.swift */; };
 		1E1DD8762668E47200F98410 /* MetalExamplesUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E1DD8752668E47200F98410 /* MetalExamplesUITests.swift */; };
 		1E1DD8862668E53D00F98410 /* Simple.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E1DD8852668E53D00F98410 /* Simple.swift */; };
+		1E6047E42669DECB00AAF2DD /* MetalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E6047E32669DECB00AAF2DD /* MetalView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -47,6 +48,7 @@
 		1E1DD8752668E47200F98410 /* MetalExamplesUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetalExamplesUITests.swift; sourceTree = "<group>"; };
 		1E1DD8772668E47200F98410 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1E1DD8852668E53D00F98410 /* Simple.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Simple.swift; sourceTree = "<group>"; };
+		1E6047E32669DECB00AAF2DD /* MetalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetalView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -137,6 +139,7 @@
 			isa = PBXGroup;
 			children = (
 				1E1DD8842668E53400F98410 /* Simple */,
+				1E6047E22669DEAA00AAF2DD /* Common */,
 			);
 			path = Samples;
 			sourceTree = "<group>";
@@ -147,6 +150,14 @@
 				1E1DD8852668E53D00F98410 /* Simple.swift */,
 			);
 			path = Simple;
+			sourceTree = "<group>";
+		};
+		1E6047E22669DEAA00AAF2DD /* Common */ = {
+			isa = PBXGroup;
+			children = (
+				1E6047E32669DECB00AAF2DD /* MetalView.swift */,
+			);
+			path = Common;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -278,6 +289,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1E6047E42669DECB00AAF2DD /* MetalView.swift in Sources */,
 				1E1DD85B2668E47100F98410 /* ContentView.swift in Sources */,
 				1E1DD8592668E47100F98410 /* MetalExamplesApp.swift in Sources */,
 				1E1DD8862668E53D00F98410 /* Simple.swift in Sources */,

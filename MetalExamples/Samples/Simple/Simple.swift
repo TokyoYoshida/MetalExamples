@@ -9,7 +9,6 @@ import SwiftUI
 
 struct SimpleView: View {
     var body: some View {
-        Text("Hello, world!")
-            .padding()
+        MetalView()
     }
 }
