@@ -14,7 +14,9 @@
 		1E1DD86B2668E47200F98410 /* MetalExamplesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E1DD86A2668E47200F98410 /* MetalExamplesTests.swift */; };
 		1E1DD8762668E47200F98410 /* MetalExamplesUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E1DD8752668E47200F98410 /* MetalExamplesUITests.swift */; };
 		1E1DD8862668E53D00F98410 /* Simple.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E1DD8852668E53D00F98410 /* Simple.swift */; };
-		1E6047E42669DECB00AAF2DD /* MetalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E6047E32669DECB00AAF2DD /* MetalView.swift */; };
+		1E6047E42669DECB00AAF2DD /* SimpleMetalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E6047E32669DECB00AAF2DD /* SimpleMetalView.swift */; };
+		1E6047EA2669E3BF00AAF2DD /* DrawTexture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E6047E82669E2D500AAF2DD /* DrawTexture.swift */; };
+		1E6047EB2669E3C200AAF2DD /* DrawTextureMetalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E6047E92669E2D800AAF2DD /* DrawTextureMetalView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -48,7 +50,9 @@
 		1E1DD8752668E47200F98410 /* MetalExamplesUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetalExamplesUITests.swift; sourceTree = "<group>"; };
 		1E1DD8772668E47200F98410 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1E1DD8852668E53D00F98410 /* Simple.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Simple.swift; sourceTree = "<group>"; };
-		1E6047E32669DECB00AAF2DD /* MetalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetalView.swift; sourceTree = "<group>"; };
+		1E6047E32669DECB00AAF2DD /* SimpleMetalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleMetalView.swift; sourceTree = "<group>"; };
+		1E6047E82669E2D500AAF2DD /* DrawTexture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawTexture.swift; sourceTree = "<group>"; };
+		1E6047E92669E2D800AAF2DD /* DrawTextureMetalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawTextureMetalView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -139,7 +143,7 @@
 			isa = PBXGroup;
 			children = (
 				1E1DD8842668E53400F98410 /* Simple */,
-				1E6047E22669DEAA00AAF2DD /* Common */,
+				1E6047E72669E2BA00AAF2DD /* DrawTexture */,
 			);
 			path = Samples;
 			sourceTree = "<group>";
@@ -148,16 +152,18 @@
 			isa = PBXGroup;
 			children = (
 				1E1DD8852668E53D00F98410 /* Simple.swift */,
+				1E6047E32669DECB00AAF2DD /* SimpleMetalView.swift */,
 			);
 			path = Simple;
 			sourceTree = "<group>";
 		};
-		1E6047E22669DEAA00AAF2DD /* Common */ = {
+		1E6047E72669E2BA00AAF2DD /* DrawTexture */ = {
 			isa = PBXGroup;
 			children = (
-				1E6047E32669DECB00AAF2DD /* MetalView.swift */,
+				1E6047E82669E2D500AAF2DD /* DrawTexture.swift */,
+				1E6047E92669E2D800AAF2DD /* DrawTextureMetalView.swift */,
 			);
-			path = Common;
+			path = DrawTexture;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -289,9 +295,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1E6047E42669DECB00AAF2DD /* MetalView.swift in Sources */,
+				1E6047E42669DECB00AAF2DD /* SimpleMetalView.swift in Sources */,
+				1E6047EA2669E3BF00AAF2DD /* DrawTexture.swift in Sources */,
 				1E1DD85B2668E47100F98410 /* ContentView.swift in Sources */,
 				1E1DD8592668E47100F98410 /* MetalExamplesApp.swift in Sources */,
+				1E6047EB2669E3C200AAF2DD /* DrawTextureMetalView.swift in Sources */,
 				1E1DD8862668E53D00F98410 /* Simple.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
