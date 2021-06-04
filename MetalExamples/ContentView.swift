@@ -11,13 +11,21 @@ struct ContentView: View {
     var body: some View {
         NavigationView {
             List {
-                NavigationLink(destination: SimpleView()) {
-                    Text("Simple")
-                        .padding()
+                Section(header: Text("Samples")) {
+                    NavigationLink(destination: SimpleView()) {
+                        Text("Simple")
+                            .padding()
+                    }
+                    NavigationLink(destination: DrawTextureView()) {
+                        Text("Draw Texture")
+                            .padding()
+                    }
                 }
-                NavigationLink(destination: DrawTextureView()) {
-                    Text("Draw Texture")
-                        .padding()
+                Section(header: Text("Metal Best Practices Code Samples")) {
+                    NavigationLink(destination: PersistentObjectsView()) {
+                        Text("Persistent Objects")
+                            .padding()
+                    }
                 }
             }
          }

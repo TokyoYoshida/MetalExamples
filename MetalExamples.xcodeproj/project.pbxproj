@@ -13,10 +13,12 @@
 		1E1DD8602668E47200F98410 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1E1DD85F2668E47200F98410 /* Preview Assets.xcassets */; };
 		1E1DD86B2668E47200F98410 /* MetalExamplesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E1DD86A2668E47200F98410 /* MetalExamplesTests.swift */; };
 		1E1DD8762668E47200F98410 /* MetalExamplesUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E1DD8752668E47200F98410 /* MetalExamplesUITests.swift */; };
-		1E1DD8862668E53D00F98410 /* Simple.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E1DD8852668E53D00F98410 /* Simple.swift */; };
+		1E1DD8862668E53D00F98410 /* SimpleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E1DD8852668E53D00F98410 /* SimpleView.swift */; };
 		1E6047E42669DECB00AAF2DD /* SimpleMetalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E6047E32669DECB00AAF2DD /* SimpleMetalView.swift */; };
-		1E6047EA2669E3BF00AAF2DD /* DrawTexture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E6047E82669E2D500AAF2DD /* DrawTexture.swift */; };
+		1E6047EA2669E3BF00AAF2DD /* DrawTextureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E6047E82669E2D500AAF2DD /* DrawTextureView.swift */; };
 		1E6047EB2669E3C200AAF2DD /* DrawTextureMetalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E6047E92669E2D800AAF2DD /* DrawTextureMetalView.swift */; };
+		1E6047F12669E91B00AAF2DD /* PersistentObjects.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E6047EE2669E8EA00AAF2DD /* PersistentObjects.swift */; };
+		1E6047F22669E91D00AAF2DD /* PersistentObjectsMetalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E6047EF2669E8EA00AAF2DD /* PersistentObjectsMetalView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,10 +51,12 @@
 		1E1DD8712668E47200F98410 /* MetalExamplesUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MetalExamplesUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1E1DD8752668E47200F98410 /* MetalExamplesUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetalExamplesUITests.swift; sourceTree = "<group>"; };
 		1E1DD8772668E47200F98410 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		1E1DD8852668E53D00F98410 /* Simple.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Simple.swift; sourceTree = "<group>"; };
+		1E1DD8852668E53D00F98410 /* SimpleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleView.swift; sourceTree = "<group>"; };
 		1E6047E32669DECB00AAF2DD /* SimpleMetalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleMetalView.swift; sourceTree = "<group>"; };
-		1E6047E82669E2D500AAF2DD /* DrawTexture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawTexture.swift; sourceTree = "<group>"; };
+		1E6047E82669E2D500AAF2DD /* DrawTextureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawTextureView.swift; sourceTree = "<group>"; };
 		1E6047E92669E2D800AAF2DD /* DrawTextureMetalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawTextureMetalView.swift; sourceTree = "<group>"; };
+		1E6047EE2669E8EA00AAF2DD /* PersistentObjects.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistentObjects.swift; sourceTree = "<group>"; };
+		1E6047EF2669E8EA00AAF2DD /* PersistentObjectsMetalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistentObjectsMetalView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -144,6 +148,7 @@
 			children = (
 				1E1DD8842668E53400F98410 /* Simple */,
 				1E6047E72669E2BA00AAF2DD /* DrawTexture */,
+				1E6047EC2669E87100AAF2DD /* MetalBestPractices */,
 			);
 			path = Samples;
 			sourceTree = "<group>";
@@ -151,7 +156,7 @@
 		1E1DD8842668E53400F98410 /* Simple */ = {
 			isa = PBXGroup;
 			children = (
-				1E1DD8852668E53D00F98410 /* Simple.swift */,
+				1E1DD8852668E53D00F98410 /* SimpleView.swift */,
 				1E6047E32669DECB00AAF2DD /* SimpleMetalView.swift */,
 			);
 			path = Simple;
@@ -160,8 +165,25 @@
 		1E6047E72669E2BA00AAF2DD /* DrawTexture */ = {
 			isa = PBXGroup;
 			children = (
-				1E6047E82669E2D500AAF2DD /* DrawTexture.swift */,
+				1E6047E82669E2D500AAF2DD /* DrawTextureView.swift */,
 				1E6047E92669E2D800AAF2DD /* DrawTextureMetalView.swift */,
+			);
+			path = DrawTexture;
+			sourceTree = "<group>";
+		};
+		1E6047EC2669E87100AAF2DD /* MetalBestPractices */ = {
+			isa = PBXGroup;
+			children = (
+				1E6047ED2669E8EA00AAF2DD /* DrawTexture */,
+			);
+			path = MetalBestPractices;
+			sourceTree = "<group>";
+		};
+		1E6047ED2669E8EA00AAF2DD /* DrawTexture */ = {
+			isa = PBXGroup;
+			children = (
+				1E6047EE2669E8EA00AAF2DD /* PersistentObjects.swift */,
+				1E6047EF2669E8EA00AAF2DD /* PersistentObjectsMetalView.swift */,
 			);
 			path = DrawTexture;
 			sourceTree = "<group>";
@@ -295,12 +317,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1E6047F22669E91D00AAF2DD /* PersistentObjectsMetalView.swift in Sources */,
 				1E6047E42669DECB00AAF2DD /* SimpleMetalView.swift in Sources */,
-				1E6047EA2669E3BF00AAF2DD /* DrawTexture.swift in Sources */,
+				1E6047F12669E91B00AAF2DD /* PersistentObjects.swift in Sources */,
+				1E6047EA2669E3BF00AAF2DD /* DrawTextureView.swift in Sources */,
 				1E1DD85B2668E47100F98410 /* ContentView.swift in Sources */,
 				1E1DD8592668E47100F98410 /* MetalExamplesApp.swift in Sources */,
 				1E6047EB2669E3C200AAF2DD /* DrawTextureMetalView.swift in Sources */,
-				1E1DD8862668E53D00F98410 /* Simple.swift in Sources */,
+				1E1DD8862668E53D00F98410 /* SimpleView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
