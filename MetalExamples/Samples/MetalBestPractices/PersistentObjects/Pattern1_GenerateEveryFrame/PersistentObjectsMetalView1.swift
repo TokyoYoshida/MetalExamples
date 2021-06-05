@@ -33,30 +33,26 @@ struct PersistentObjectsMetalView1: UIViewRepresentable {
     }
     class Coordinator : NSObject, MTKViewDelegate {
         var parent: PersistentObjectsMetalView1
-        var metalDevice: MTLDevice!
-        var metalCommandQueue: MTLCommandQueue!
         var texture: MTLTexture!
 
         init(_ parent: PersistentObjectsMetalView1) {
-            func loadTexture(_ device: MTLDevice) {
-                let textureLoader = MTKTextureLoader(device: device)
-                texture = try! textureLoader.newTexture(name: "sample_picture", scaleFactor: 1, bundle: nil)
-            }
             self.parent = parent
-            if let metalDevice = MTLCreateSystemDefaultDevice() {
-                self.metalDevice = metalDevice
-            }
-            self.metalCommandQueue = metalDevice.makeCommandQueue()!
             super.init()
-            loadTexture(self.metalDevice)
         }
         func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
         }
         func draw(in view: MTKView) {
+            func loadTexture(_ device: MTLDevice) {
+                let textureLoader = MTKTextureLoader(device: device)
+                texture = try! textureLoader.newTexture(name: "sample_picture", scaleFactor: 1, bundle: nil)
+            }
             guard let drawable = view.currentDrawable else {return}
             
+            let metalDevice = MTLCreateSystemDefaultDevice()!
+            let metalCommandQueue = metalDevice.makeCommandQueue()!
             let commandBuffer = metalCommandQueue.makeCommandBuffer()!
-         
+            loadTexture(metalDevice)
+
             let w = min(texture.width, drawable.texture.width)
             let h = min(texture.height, drawable.texture.height)
             
