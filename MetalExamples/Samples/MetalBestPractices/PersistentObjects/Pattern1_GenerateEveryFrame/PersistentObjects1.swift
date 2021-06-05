@@ -7,8 +7,8 @@
 
 import SwiftUI
 
-struct PersistentObjectsView: View {
+struct PersistentObjectsView1: View {
     var body: some View {
-        DrawTextureMetalView()
+        PersistentObjectsMetalView1()
     }
 }

@@ -8,7 +8,7 @@
 import SwiftUI
 import MetalKit
 
-struct PersistentObjectsMetalView: UIViewRepresentable {
+struct PersistentObjectsMetalView1: UIViewRepresentable {
     typealias UIViewType = MTKView
     
     func makeCoordinator() -> Coordinator {
@@ -32,12 +32,12 @@ struct PersistentObjectsMetalView: UIViewRepresentable {
     func updateUIView(_ uiView: MTKView, context: Context) {
     }
     class Coordinator : NSObject, MTKViewDelegate {
-        var parent: PersistentObjectsMetalView
+        var parent: PersistentObjectsMetalView1
         var metalDevice: MTLDevice!
         var metalCommandQueue: MTLCommandQueue!
         var texture: MTLTexture!
 
-        init(_ parent: PersistentObjectsMetalView) {
+        init(_ parent: PersistentObjectsMetalView1) {
             func loadTexture(_ device: MTLDevice) {
                 let textureLoader = MTKTextureLoader(device: device)
                 texture = try! textureLoader.newTexture(name: "sample_picture", scaleFactor: 1, bundle: nil)
