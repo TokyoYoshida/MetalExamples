@@ -9,8 +9,10 @@
 #include "SimpleShaderType.h"
 using namespace metal;
 
-vertex ColorInOut vertexShader(device float4 *positions [[ buffer(0 )]],
-                               uint           vid       [[ vertex_id ]]) {
+vertex ColorInOut vertexShader(
+        const device float4 *positions [[ buffer(0 )]],
+        uint vid [[ vertex_id ]]
+    ) {
     ColorInOut out;
     out.position = positions[vid];
     return out;
