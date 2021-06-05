@@ -73,6 +73,8 @@ struct PersistentObjectsMetalView1: UIViewRepresentable {
             commandBuffer.present(drawable)
             
             commandBuffer.commit()
+            
+            commandBuffer.waitUntilCompleted()
         }
     }
 }

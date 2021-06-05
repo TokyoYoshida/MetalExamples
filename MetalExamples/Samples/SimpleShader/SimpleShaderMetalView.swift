@@ -35,9 +35,30 @@ struct SimpleShaderMetalView: UIViewRepresentable {
         var parent: SimpleShaderMetalView
         var metalDevice: MTLDevice!
         var metalCommandQueue: MTLCommandQueue!
+        var renderPipeline: MTLRenderPipelineState!
         var texture: MTLTexture!
-
+        var vertextBuffer: MTLBuffer!
+        let vertexData: [Float] = [
+            -1, -1, 0, 1,
+             1, -1, 0, 1,
+            -1,  1, 0, 1,
+             1,  1, 0, 1,
+        ]
+        var renderPassDescriptor: MTLRenderPassDescriptor = MTLRenderPassDescriptor()
+        
         init(_ parent: SimpleShaderMetalView) {
+            func buildPipeline() {
+                guard let library = self.metalDevice.makeDefaultLibrary() else {fatalError()}
+                let descriptor = MTLRenderPipelineDescriptor()
+                descriptor.vertexFunction = library.makeFunction(name: "vertexShader")
+                descriptor.fragmentFunction = library.makeFunction(name: "fragmentShader")
+                descriptor.colorAttachments[0].pixelFormat = .bgra8Unorm
+                renderPipeline = try! self.metalDevice.makeRenderPipelineState(descriptor: descriptor)
+            }
+            func buildBuffers() {
+                let size = vertexData.count * MemoryLayout<Float>.size
+                vertextBuffer = self.metalDevice.makeBuffer(bytes: vertexData, length: size)
+            }
             func loadTexture(_ device: MTLDevice) {
                 let textureLoader = MTKTextureLoader(device: device)
                 texture = try! textureLoader.newTexture(name: "sample_picture", scaleFactor: 1, bundle: nil)
@@ -48,6 +69,8 @@ struct SimpleShaderMetalView: UIViewRepresentable {
             }
             self.metalCommandQueue = metalDevice.makeCommandQueue()!
             super.init()
+            buildPipeline()
+            buildBuffers()
             loadTexture(self.metalDevice)
         }
         func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
@@ -56,27 +79,25 @@ struct SimpleShaderMetalView: UIViewRepresentable {
             guard let drawable = view.currentDrawable else {return}
             
             let commandBuffer = metalCommandQueue.makeCommandBuffer()!
-         
-            let w = min(texture.width, drawable.texture.width)
-            let h = min(texture.height, drawable.texture.height)
             
-            let blitEncoder = commandBuffer.makeBlitCommandEncoder()!
+            renderPassDescriptor.colorAttachments[0].texture = drawable.texture
+
+            let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)!
+
+            guard let renderPipeline = renderPipeline else {fatalError()}
+
             
-            blitEncoder.copy(from: texture,
-                              sourceSlice: 0,
-                              sourceLevel: 0,
-                              sourceOrigin: MTLOrigin(x:0, y:0 ,z:0),
-                              sourceSize: MTLSizeMake(w, h, texture.depth),
-                              to: drawable.texture,
-                              destinationSlice: 0,
-                              destinationLevel: 0,
-                              destinationOrigin: MTLOrigin(x:0, y:0 ,z:0))
-            
-            blitEncoder.endEncoding()
+            renderEncoder.setRenderPipelineState(renderPipeline)
+            renderEncoder.setVertexBuffer(vertextBuffer, offset: 0, index: 0)
+            renderEncoder.drawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: 4)
+
+            renderEncoder.endEncoding()
             
             commandBuffer.present(drawable)
             
             commandBuffer.commit()
+            
+            commandBuffer.waitUntilCompleted()
         }
     }
 }

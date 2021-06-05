@@ -23,6 +23,7 @@
 		1EAF6C5C266B67A100772496 /* GDPerformanceView.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1EAF6C5A266B67A100772496 /* GDPerformanceView.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		1EAF6C63266B6CD200772496 /* SimpleShaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EAF6C62266B6C7C00772496 /* SimpleShaderView.swift */; };
 		1EAF6C64266B6CD400772496 /* SimpleShaderMetalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EAF6C61266B6C7C00772496 /* SimpleShaderMetalView.swift */; };
+		1EAF6C66266B6D4400772496 /* SimpleShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 1EAF6C65266B6D4400772496 /* SimpleShader.metal */; };
 		1EFE5345266B611700290F86 /* PersistentObjectsMetalView2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EFE5344266B60F900290F86 /* PersistentObjectsMetalView2.swift */; };
 		1EFE5346266B611B00290F86 /* PersistentObjects2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EFE5343266B60F900290F86 /* PersistentObjects2.swift */; };
 /* End PBXBuildFile section */
@@ -80,6 +81,8 @@
 		1EAF6C5A266B67A100772496 /* GDPerformanceView.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = GDPerformanceView.xcframework; path = Carthage/Build/GDPerformanceView.xcframework; sourceTree = "<group>"; };
 		1EAF6C61266B6C7C00772496 /* SimpleShaderMetalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleShaderMetalView.swift; sourceTree = "<group>"; };
 		1EAF6C62266B6C7C00772496 /* SimpleShaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleShaderView.swift; sourceTree = "<group>"; };
+		1EAF6C65266B6D4400772496 /* SimpleShader.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = SimpleShader.metal; sourceTree = "<group>"; };
+		1EAF6C67266B6DE500772496 /* SimpleShaderType.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SimpleShaderType.h; sourceTree = "<group>"; };
 		1EFE5343266B60F900290F86 /* PersistentObjects2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistentObjects2.swift; sourceTree = "<group>"; };
 		1EFE5344266B60F900290F86 /* PersistentObjectsMetalView2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistentObjectsMetalView2.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -229,6 +232,8 @@
 			children = (
 				1EAF6C62266B6C7C00772496 /* SimpleShaderView.swift */,
 				1EAF6C61266B6C7C00772496 /* SimpleShaderMetalView.swift */,
+				1EAF6C65266B6D4400772496 /* SimpleShader.metal */,
+				1EAF6C67266B6DE500772496 /* SimpleShaderType.h */,
 			);
 			path = SimpleShader;
 			sourceTree = "<group>";
@@ -413,6 +418,7 @@
 				1E1DD8592668E47100F98410 /* MetalExamplesApp.swift in Sources */,
 				1E6047EB2669E3C200AAF2DD /* DrawTextureMetalView.swift in Sources */,
 				1EAF6C64266B6CD400772496 /* SimpleShaderMetalView.swift in Sources */,
+				1EAF6C66266B6D4400772496 /* SimpleShader.metal in Sources */,
 				1E1DD8862668E53D00F98410 /* SimpleView.swift in Sources */,
 				1EAF6C63266B6CD200772496 /* SimpleShaderView.swift in Sources */,
 			);
