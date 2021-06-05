@@ -20,6 +20,10 @@ struct ContentView: View {
                         Text("Draw Texture")
                             .padding()
                     }
+                    NavigationLink(destination: SimpleShaderViewv()) {
+                        Text("Simple Shader")
+                            .padding()
+                    }
                 }
                 Section(header: Text("Metal Best Practices Code Samples")) {
                     Section(header: Text("Persistent Objects")) {
