@@ -16,13 +16,14 @@ struct ColorInOut3
     float aspectRatio;
     float2 touch;
     float2 texCoords;
+    uint instanceId;
 };
 
 float heart2(float2 p){
  return pow(p.x*p.x+p.y*p.y-1.,3.)-p.x*p.x*p.y*p.y*p.y;
 }
 
-float4 roundPosition(float4 pos, float theta) {
+float4 rotatePosition(float4 pos, float theta) {
     float nx = pos.x * cos(theta) - pos.y * sin(theta);
     float ny = pos.x * sin(theta) + pos.y * cos(theta);
     return float4(nx, ny, pos.z, pos.w);
@@ -44,8 +45,16 @@ float rand(float3 init_sheed)
 float4 radialParticle(float4 pos, uint iid, float time) {
     float rand_num = rand(float3(iid, iid, iid));
     float4 moved = move(pos, float2(0,time/rand_num*0.1));
-    float4 ret = roundPosition(moved, iid*0.3);
+    float4 ret = rotatePosition(moved, iid*0.3);
     return ret;
+}
+
+float4 flowDownParticle(float4 pos, uint iid, float time) {
+    float rand_num = rand(float3(iid, iid+1, iid+2));
+    float rand_num2 = rand(float3(iid+3, iid+4, iid+5));
+    float4 rotated = rotatePosition(pos, time*rand_num);
+    float4 moved = move(rotated, float2(rand_num*2, rand_num2*10 + -1*abs(time+rand_num2)));
+    return moved + float4(-1, -1, 0, 0);
 }
 
 vertex ColorInOut3 vertexShader5(
@@ -59,18 +68,22 @@ vertex ColorInOut3 vertexShader5(
     
     float t = uniforms.time;
     float4 pos =  positions[vid];
-    float4 converted = radialParticle(pos, iid, t);
+    float4 converted = flowDownParticle(pos, iid, t);
     out.position = converted;
     out.time = uniforms.time;
     out.aspectRatio = uniforms.aspectRatio;
     out.touch = uniforms.touch;
     out.texCoords = texCoords[vid];
+    out.instanceId = iid;
     return out;
 }
 
-fragment float4 fragmentShader6(ColorInOut3 in [[ stage_in ]],
-                                texture2d<float> texture [[ texture(0) ]]){
+fragment float4 fragmentShader6(
+                    ColorInOut3 in [[ stage_in ]],
+                    texture2d<float> texture [[ texture(0) ]]
+    ){
     constexpr sampler colorSampler;
+    uint iid = in.instanceId;
     float2 p = ((in.texCoords.xy * 2) - 1)*float2(1,-1);
     float2 converted = p;
     float4 sample_color = texture.sample(colorSampler, in.texCoords);
@@ -78,6 +91,10 @@ fragment float4 fragmentShader6(ColorInOut3 in [[ stage_in ]],
     if(l == 0){
         discard_fragment();
     }
-    float4 color = sample_color + float4(float3(0.95, 0.4, 0.4)*l,1);
+    float r = rand(float3(iid, iid, iid));
+    float g = rand(float3(iid+1, iid+2, iid+3));
+    float b = rand(float3(iid+4, iid+5, iid+6));
+
+    float4 color = sample_color + float4(float3(r, g, b)*l,1);
     return color;
 }

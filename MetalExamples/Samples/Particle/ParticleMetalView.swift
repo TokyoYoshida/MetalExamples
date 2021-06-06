@@ -38,10 +38,10 @@ struct ParticleMetalView: UIViewRepresentable {
         var vertextBuffer: MTLBuffer!
         private let vertexDatas: [[Float]] = [
             [
-                -0.1, -0.1, 0, 1,
-                0.1, -0.1, 0, 1,
-                -0.1,  0.1, 0, 1,
-                0.1,  0.1, 0, 1,
+                -0.01, -0.01, 0, 1,
+                0.01, -0.01, 0, 1,
+                -0.01,  0.01, 0, 1,
+                0.01,  0.01, 0, 1,
             ]
         ]
         let textureCoordinateData: [Float] = [0, 1,
@@ -141,7 +141,7 @@ struct ParticleMetalView: UIViewRepresentable {
 
                 renderEncoder.setVertexBytes(&uniforms, length: MemoryLayout<Uniforms>.stride, index: 2)
                 
-                renderEncoder.drawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: 4, instanceCount: 10000)
+                renderEncoder.drawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: 4, instanceCount: 1000000)
             }
             
             renderEncoder.endEncoding()
