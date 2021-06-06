@@ -10,5 +10,6 @@ import SwiftUI
 struct SimpleView: View {
     var body: some View {
         MetalView()
+        .navigationBarTitle(Text("Simple"), displayMode: .inline)
     }
 }

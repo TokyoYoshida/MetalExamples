@@ -10,5 +10,6 @@ import SwiftUI
 struct SimpleShaderViewv: View {
     var body: some View {
         SimpleShaderMetalView()
+        .navigationBarTitle(Text("Simple Shader"), displayMode: .inline)
     }
 }

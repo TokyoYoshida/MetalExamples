@@ -10,5 +10,6 @@ import SwiftUI
 struct ParticleViewv: View {
     var body: some View {
         ParticleMetalView()
+        .navigationBarTitle(Text("Particle"), displayMode: .inline)
     }
 }

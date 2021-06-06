@@ -10,5 +10,6 @@ import SwiftUI
 struct DrawTextureView: View {
     var body: some View {
         DrawTextureMetalView()
+        .navigationBarTitle(Text("Draw Texture"), displayMode: .inline)
     }
 }
