@@ -611,6 +611,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = Examples.app.MetalExamples;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "$(SRCROOT)/MetalExamples/Samples/Particle/ParticleShaderType.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -633,6 +634,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = Examples.app.MetalExamples;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "$(SRCROOT)/MetalExamples/Samples/Particle/ParticleShaderType.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

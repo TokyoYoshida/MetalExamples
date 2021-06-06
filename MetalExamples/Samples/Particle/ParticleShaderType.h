@@ -11,7 +11,10 @@
 
 #endif /* SimpleShaderType_h */
 
-struct ColorInOut1
-{
-    float4 position [[ position ]];
+#include <simd/simd.h>
+
+struct Uniforms {
+    float time;
+    float aspectRatio;
+    vector_float2 touch;
 };
