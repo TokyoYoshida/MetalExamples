@@ -54,51 +54,53 @@ struct PersistentObjects1MetalView: UIViewRepresentable {
         var vertextBuffers: [MTLBuffer] = []
         var texCoordBuffer: MTLBuffer!
 
-        init(_ parent: PersistentObjects1MetalView) {
-            func buildPipeline() {
-                guard let library = self.metalDevice.makeDefaultLibrary() else {fatalError()}
-                let descriptor = MTLRenderPipelineDescriptor()
-                descriptor.vertexFunction = library.makeFunction(name: "persistentObjectsVertexShader")
-                descriptor.fragmentFunction = library.makeFunction(name: "persistentObjectsFragmentShader")
-                descriptor.colorAttachments[0].pixelFormat = .bgra8Unorm_srgb
-                renderPipeline = try! self.metalDevice.makeRenderPipelineState(descriptor: descriptor)
+        func buildPipeline() {
+            guard let library = self.metalDevice.makeDefaultLibrary() else {fatalError()}
+            let descriptor = MTLRenderPipelineDescriptor()
+            descriptor.vertexFunction = library.makeFunction(name: "persistentObjectsVertexShader")
+            descriptor.fragmentFunction = library.makeFunction(name: "persistentObjectsFragmentShader")
+            descriptor.colorAttachments[0].pixelFormat = .bgra8Unorm_srgb
+            renderPipeline = try! self.metalDevice.makeRenderPipelineState(descriptor: descriptor)
+        }
+        func initTexture() {
+            func makeRenderTexture() -> MTLTexture {
+                let texDesc = MTLTextureDescriptor()
+                texDesc.width =  100//(parent.mtkView.currentDrawable?.texture.width)!
+                texDesc.height =  100//(parent.mtkView.currentDrawable?.texture.height)!
+                texDesc.depth = 1
+                texDesc.textureType = MTLTextureType.type2D
+
+                texDesc.usage = [MTLTextureUsage.renderTarget, MTLTextureUsage.shaderRead]
+                texDesc.storageMode = .private
+                texDesc.pixelFormat = .bgra8Unorm
+
+                texDesc.usage = .unknown
+
+                return metalDevice.makeTexture(descriptor: texDesc)!
             }
-            func initTexture() {
-                func makeRenderTexture() -> MTLTexture {
-                    let texDesc = MTLTextureDescriptor()
-                    texDesc.width =  100//(parent.mtkView.currentDrawable?.texture.width)!
-                    texDesc.height =  100//(parent.mtkView.currentDrawable?.texture.height)!
-                    texDesc.depth = 1
-                    texDesc.textureType = MTLTextureType.type2D
+            texture = makeRenderTexture()
+        }
 
-                    texDesc.usage = [MTLTextureUsage.renderTarget, MTLTextureUsage.shaderRead]
-                    texDesc.storageMode = .private
-                    texDesc.pixelFormat = .bgra8Unorm
-
-                    texDesc.usage = .unknown
-
-                    return metalDevice.makeTexture(descriptor: texDesc)!
+        func makeBuffers() {
+            func makeVertexBuffer() {
+                vertextBuffers = vertexDatas.map {vertextData in
+                    let size = vertextData.count * MemoryLayout<Float>.size
+                    return metalDevice.makeBuffer(bytes: vertextData, length: size)!
                 }
-                texture = makeRenderTexture()
             }
+            func makeTextureDataBuffer(){
+                let size = textureCoordinateData.count * MemoryLayout<Float>.size
+                texCoordBuffer = metalDevice.makeBuffer(bytes: textureCoordinateData, length: size)
+            }
+            makeVertexBuffer()
+            makeTextureDataBuffer()
+        }
+
+        init(_ parent: PersistentObjects1MetalView) {
             func initUniform() {
                 uniforms = Uniforms(time: Float(0.0), aspectRatio: Float(0.0), touch: SIMD2<Float>())
                 uniforms.aspectRatio = Float(parent.mtkView.frame.size.width / parent.mtkView.frame.size.height)
                 preferredFramesTime = 1.0 / Float(parent.mtkView.preferredFramesPerSecond)
-            }
-            func makeBuffers() {
-                func makeVertexBuffer() {
-                    vertextBuffers = vertexDatas.map {vertextData in
-                        let size = vertextData.count * MemoryLayout<Float>.size
-                        return metalDevice.makeBuffer(bytes: vertextData, length: size)!
-                    }
-                }
-                func makeTextureDataBuffer(){
-                    let size = textureCoordinateData.count * MemoryLayout<Float>.size
-                    texCoordBuffer = metalDevice.makeBuffer(bytes: textureCoordinateData, length: size)
-                }
-                makeVertexBuffer()
-                makeTextureDataBuffer()
             }
             self.parent = parent
             if let metalDevice = MTLCreateSystemDefaultDevice() {
@@ -115,7 +117,15 @@ struct PersistentObjects1MetalView: UIViewRepresentable {
         }
         func draw(in view: MTKView) {
             guard let drawable = view.currentDrawable else {return}
-            
+
+            // wasteful processing start
+            let metalDevice = MTLCreateSystemDefaultDevice()!
+            let metalCommandQueue = metalDevice.makeCommandQueue()!
+            buildPipeline()
+            initTexture()
+            makeBuffers()
+            // wasteful processing end
+
             let commandBuffer = metalCommandQueue.makeCommandBuffer()!
             
             renderPassDescriptor.colorAttachments[0].texture = drawable.texture
@@ -141,7 +151,7 @@ struct PersistentObjects1MetalView: UIViewRepresentable {
 
                 renderEncoder.setVertexBytes(&uniforms, length: MemoryLayout<Uniforms>.stride, index: 2)
                 
-                renderEncoder.drawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: 4, instanceCount: 100000)
+                renderEncoder.drawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: 4, instanceCount: 1000000)
             }
             
             renderEncoder.endEncoding()
