@@ -54,7 +54,7 @@ float4 flowDownParticle(float4 pos, uint iid, float time) {
     return moved + float4(-1, -1, 0, 0);
 }
 
-vertex ColorInOut vertexShader5(
+vertex ColorInOut particleVertexShader(
                         const device float4 *positions [[ buffer(0)]],
                         const device float2 *texCoords [[ buffer(1) ]],
                         constant Uniforms &uniforms [[buffer(2)]],
@@ -72,7 +72,7 @@ vertex ColorInOut vertexShader5(
     return out;
 }
 
-fragment float4 fragmentShader6(
+fragment float4 particleFragmentShader(
                     ColorInOut in [[ stage_in ]],
                     texture2d<float> texture [[ texture(0) ]]
     ){
