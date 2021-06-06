@@ -24,6 +24,10 @@ struct ContentView: View {
                         Text("Simple Shader")
                             .padding()
                     }
+                    NavigationLink(destination: ParticleViewv()) {
+                        Text("Particle")
+                            .padding()
+                    }
                 }
                 Section(header: Text("Metal Best Practices Code Samples")) {
                     Section(header: Text("Persistent Objects")) {
