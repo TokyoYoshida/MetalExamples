@@ -5,11 +5,11 @@
 //  Created by TokyoYoshida on 2021/06/05.
 //
 
-#ifndef SimpleShaderType_h
-#define SimpleShaderType_h
+#ifndef ParticleShaderType
+#define ParticleShaderType
 
 
-#endif /* SimpleShaderType_h */
+#endif /* ParticleShaderType */
 
 #include <simd/simd.h>
 
