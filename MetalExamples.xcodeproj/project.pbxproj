@@ -77,7 +77,7 @@
 		1E6047E92669E2D800AAF2DD /* DrawTextureMetalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawTextureMetalView.swift; sourceTree = "<group>"; };
 		1E61342F266C9EC7009A4FBC /* ParticleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParticleView.swift; sourceTree = "<group>"; };
 		1E613430266C9EC7009A4FBC /* ParticleMetalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParticleMetalView.swift; sourceTree = "<group>"; };
-		1E613431266C9EC7009A4FBC /* ParticleShaderType.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ParticleShaderType.h; sourceTree = "<group>"; };
+		1E613431266C9EC7009A4FBC /* CommonShaderType.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CommonShaderType.h; sourceTree = "<group>"; };
 		1E613432266C9EC7009A4FBC /* ParticleShader.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = ParticleShader.metal; sourceTree = "<group>"; };
 		1EAF6C5A266B67A100772496 /* GDPerformanceView.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = GDPerformanceView.xcframework; path = Carthage/Build/GDPerformanceView.xcframework; sourceTree = "<group>"; };
 		1EAF6C61266B6C7C00772496 /* SimpleShaderMetalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleShaderMetalView.swift; sourceTree = "<group>"; };
@@ -175,6 +175,7 @@
 		1E1DD8832668E51300F98410 /* Samples */ = {
 			isa = PBXGroup;
 			children = (
+				1E613436266CBED5009A4FBC /* Common */,
 				1E1DD8842668E53400F98410 /* Simple */,
 				1E6047E72669E2BA00AAF2DD /* DrawTexture */,
 				1EAF6C60266B6C7200772496 /* SimpleShader */,
@@ -225,9 +226,16 @@
 				1E61342F266C9EC7009A4FBC /* ParticleView.swift */,
 				1E613430266C9EC7009A4FBC /* ParticleMetalView.swift */,
 				1E613432266C9EC7009A4FBC /* ParticleShader.metal */,
-				1E613431266C9EC7009A4FBC /* ParticleShaderType.h */,
 			);
 			path = Particle;
+			sourceTree = "<group>";
+		};
+		1E613436266CBED5009A4FBC /* Common */ = {
+			isa = PBXGroup;
+			children = (
+				1E613431266C9EC7009A4FBC /* CommonShaderType.h */,
+			);
+			path = Common;
 			sourceTree = "<group>";
 		};
 		1EAF6C59266B67A100772496 /* Frameworks */ = {
@@ -595,7 +603,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = Examples.app.MetalExamples;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "$(SRCROOT)/MetalExamples/Samples/Particle/ParticleShaderType.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "$(SRCROOT)/MetalExamples/Samples/Common/CommonShaderType.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -618,7 +626,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = Examples.app.MetalExamples;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "$(SRCROOT)/MetalExamples/Samples/Particle/ParticleShaderType.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "$(SRCROOT)/MetalExamples/Samples/Common/CommonShaderType.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

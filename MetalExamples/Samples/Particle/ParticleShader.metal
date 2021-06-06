@@ -6,15 +6,12 @@
 //
 
 #include <metal_stdlib>
-#include "ParticleShaderType.h"
+#include "../Common/CommonShaderType.h"
 using namespace metal;
 
-struct ColorInOut3
+struct ColorInOut
 {
     float4 position [[ position ]];
-    float time;
-    float aspectRatio;
-    float2 touch;
     float2 texCoords;
     uint instanceId;
 };
@@ -57,29 +54,26 @@ float4 flowDownParticle(float4 pos, uint iid, float time) {
     return moved + float4(-1, -1, 0, 0);
 }
 
-vertex ColorInOut3 vertexShader5(
+vertex ColorInOut vertexShader5(
                         const device float4 *positions [[ buffer(0)]],
                         const device float2 *texCoords [[ buffer(1) ]],
                         constant Uniforms &uniforms [[buffer(2)]],
                         uint vid [[ vertex_id ]],
                         uint iid [[ instance_id ]]
     ) {
-    ColorInOut3 out;
+    ColorInOut out;
     
     float t = uniforms.time;
     float4 pos =  positions[vid];
     float4 converted = flowDownParticle(pos, iid, t);
     out.position = converted;
-    out.time = uniforms.time;
-    out.aspectRatio = uniforms.aspectRatio;
-    out.touch = uniforms.touch;
     out.texCoords = texCoords[vid];
     out.instanceId = iid;
     return out;
 }
 
 fragment float4 fragmentShader6(
-                    ColorInOut3 in [[ stage_in ]],
+                    ColorInOut in [[ stage_in ]],
                     texture2d<float> texture [[ texture(0) ]]
     ){
     constexpr sampler colorSampler;
