@@ -48,12 +48,13 @@ float4 radialParticle(float4 pos, uint iid, float time) {
     return ret;
 }
 
-vertex ColorInOut3 vertexShader5(const device float4 *positions [[ buffer(0)]],
-                       device float2 *texCoords [[ buffer(1) ]],
-                       constant Uniforms &uniforms [[buffer(2)]],
-                       uint           vid       [[ vertex_id ]],
-                       uint iid [[ instance_id ]]
-                                 ) {
+vertex ColorInOut3 vertexShader5(
+                        const device float4 *positions [[ buffer(0)]],
+                        const device float2 *texCoords [[ buffer(1) ]],
+                        constant Uniforms &uniforms [[buffer(2)]],
+                        uint vid [[ vertex_id ]],
+                        uint iid [[ instance_id ]]
+    ) {
     ColorInOut3 out;
     
     float t = uniforms.time;
@@ -70,16 +71,13 @@ vertex ColorInOut3 vertexShader5(const device float4 *positions [[ buffer(0)]],
 fragment float4 fragmentShader6(ColorInOut3 in [[ stage_in ]],
                                 texture2d<float> texture [[ texture(0) ]]){
     constexpr sampler colorSampler;
-    int width = texture.get_width();
-    int height = texture.get_height();
     float2 p = ((in.texCoords.xy * 2) - 1)*float2(1,-1);
     float2 converted = p;
     float4 sample_color = texture.sample(colorSampler, in.texCoords);
     float l = 1.0 - step(0, heart2(converted*1.3));
     if(l == 0){
         discard_fragment();
-    } else {
-        float4 color = sample_color + float4(float3(0.95, 0.4, 0.4)*l,1);
-        return color;
     }
+    float4 color = sample_color + float4(float3(0.95, 0.4, 0.4)*l,1);
+    return color;
 }

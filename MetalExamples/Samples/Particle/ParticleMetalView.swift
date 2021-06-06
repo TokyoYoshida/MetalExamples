@@ -141,7 +141,7 @@ struct ParticleMetalView: UIViewRepresentable {
 
                 renderEncoder.setVertexBytes(&uniforms, length: MemoryLayout<Uniforms>.stride, index: 2)
                 
-                renderEncoder.drawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: 4, instanceCount: 1000)
+                renderEncoder.drawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: 4, instanceCount: 10000)
             }
             
             renderEncoder.endEncoding()
