@@ -29,18 +29,18 @@ struct ContentView: View {
                             .padding()
                     }
                 }
-//                Section(header: Text("Metal Best Practices Code Samples")) {
-//                    Section(header: Text("Persistent Objects")) {
-//                        NavigationLink(destination: PersistentObjectsView1()) {
-//                            Text("Pattern1: Generate Every Frame")
-//                                .padding()
-//                        }
+                Section(header: Text("Metal Best Practices Code Samples")) {
+                    Section(header: Text("Persistent Objects")) {
+                        NavigationLink(destination: PersistentObjects1View()) {
+                            Text("Pattern1: Generate Every Frame")
+                                .padding()
+                        }
 //                        NavigationLink(destination: PersistentObjectsView2()) {
 //                            Text("Pattern1: Reuse")
 //                                .padding()
 //                        }
-//                    }
-//                }
+                    }
+                }
             }
             .listStyle(SidebarListStyle())
         }
