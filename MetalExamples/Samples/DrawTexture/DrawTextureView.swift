@@ -7,8 +7,9 @@
 
 import SwiftUI
 
-struct SimpleView: View {
+struct DrawTextureView: View {
     var body: some View {
-        MetalView()
+        DrawTextureMetalView()
+        .navigationBarTitle(Text("Draw Texture"), displayMode: .inline)
     }
 }

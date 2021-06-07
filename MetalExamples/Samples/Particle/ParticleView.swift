@@ -7,8 +7,9 @@
 
 import SwiftUI
 
-struct DrawTextureView: View {
+struct ParticleViewv: View {
     var body: some View {
-        DrawTextureMetalView()
+        ParticleMetalView()
+        .navigationBarTitle(Text("Particle"), displayMode: .inline)
     }
 }
