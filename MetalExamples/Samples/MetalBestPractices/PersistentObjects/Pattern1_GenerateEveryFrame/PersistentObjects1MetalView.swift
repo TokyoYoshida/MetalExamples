@@ -121,13 +121,23 @@ struct PersistentObjects1MetalView: UIViewRepresentable {
             guard let drawable = view.currentDrawable else {return}
 
             // wasteful processing start
-            os_signpost(.begin, log: metalLog, name: "createObjects")
+            os_signpost(.begin, log: metalLog, name: "create Objects")
+            os_signpost(.begin, log: metalLog, name: "create Device")
             let metalDevice = MTLCreateSystemDefaultDevice()!
+            os_signpost(.end, log: metalLog, name: "create Device")
+            os_signpost(.begin, log: metalLog, name: "create CommandQueue")
             let metalCommandQueue = metalDevice.makeCommandQueue()!
+            os_signpost(.end, log: metalLog, name: "create CommandQueue")
+            os_signpost(.begin, log: metalLog, name: "create Pipeline")
             buildPipeline()
+            os_signpost(.end, log: metalLog, name: "create Pipeline")
+            os_signpost(.begin, log: metalLog, name: "create Texture")
             initTexture()
+            os_signpost(.end, log: metalLog, name: "create Texture")
+            os_signpost(.begin, log: metalLog, name: "create Buffers")
             makeBuffers()
-            os_signpost(.end, log: metalLog, name: "createObjects")
+            os_signpost(.end, log: metalLog, name: "create Buffers")
+            os_signpost(.end, log: metalLog, name: "create Objects")
             // wasteful processing end
 
             let commandBuffer = metalCommandQueue.makeCommandBuffer()!
