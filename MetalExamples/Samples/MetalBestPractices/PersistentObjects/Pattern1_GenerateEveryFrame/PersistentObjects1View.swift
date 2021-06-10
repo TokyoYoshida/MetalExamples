@@ -9,7 +9,7 @@ import SwiftUI
 
 struct PersistentObjects1View: View {
     var body: some View {
-        ParticleMetalView()
-        .navigationBarTitle(Text("Particle"), displayMode: .inline)
+        PersistentObjects1MetalView()
+        .navigationBarTitle(Text("Pattern1 GenerateEveryFrame"), displayMode: .inline)
     }
 }
