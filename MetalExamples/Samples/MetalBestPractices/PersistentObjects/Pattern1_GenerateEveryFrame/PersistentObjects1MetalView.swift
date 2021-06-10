@@ -7,6 +7,7 @@
 
 import SwiftUI
 import MetalKit
+import os.signpost
 
 struct PersistentObjects1MetalView: UIViewRepresentable {
     typealias UIViewType = MTKView
@@ -53,6 +54,7 @@ struct PersistentObjects1MetalView: UIViewRepresentable {
         var preferredFramesTime: Float!
         var vertextBuffers: [MTLBuffer] = []
         var texCoordBuffer: MTLBuffer!
+        let metalLog = OSLog(subsystem: "Examples.app.MetalExamples", category: "MetalPerformance")
 
         func buildPipeline() {
             guard let library = self.metalDevice.makeDefaultLibrary() else {fatalError()}
@@ -119,11 +121,13 @@ struct PersistentObjects1MetalView: UIViewRepresentable {
             guard let drawable = view.currentDrawable else {return}
 
             // wasteful processing start
+            os_signpost(.begin, log: metalLog, name: "createObjects")
             let metalDevice = MTLCreateSystemDefaultDevice()!
             let metalCommandQueue = metalDevice.makeCommandQueue()!
             buildPipeline()
             initTexture()
             makeBuffers()
+            os_signpost(.end, log: metalLog, name: "createObjects")
             // wasteful processing end
 
             let commandBuffer = metalCommandQueue.makeCommandBuffer()!

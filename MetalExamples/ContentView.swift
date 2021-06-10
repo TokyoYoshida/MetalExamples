@@ -24,7 +24,7 @@ struct ContentView: View {
                         Text("Simple Shader")
                             .padding()
                     }
-                    NavigationLink(destination: ParticleViewv()) {
+                    NavigationLink(destination: ParticleView()) {
                         Text("Particle")
                             .padding()
                     }
@@ -35,10 +35,10 @@ struct ContentView: View {
                             Text("Pattern1: Generate Every Frame")
                                 .padding()
                         }
-//                        NavigationLink(destination: PersistentObjectsView2()) {
-//                            Text("Pattern1: Reuse")
-//                                .padding()
-//                        }
+                        NavigationLink(destination: PersistentObjects2View()) {
+                            Text("Pattern2: Reuse")
+                                .padding()
+                        }
                     }
                 }
             }

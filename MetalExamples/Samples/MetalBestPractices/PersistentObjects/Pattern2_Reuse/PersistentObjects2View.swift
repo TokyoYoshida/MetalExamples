@@ -7,9 +7,9 @@
 
 import SwiftUI
 
-struct ParticleView: View {
+struct PersistentObjects2View: View {
     var body: some View {
         ParticleMetalView()
-        .navigationBarTitle(Text("Particle"), displayMode: .inline)
+        .navigationBarTitle(Text("Pattern2 Reuse"), displayMode: .inline)
     }
 }
