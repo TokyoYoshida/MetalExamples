@@ -43,7 +43,12 @@ struct ContentView: View {
                     Section(header: Text("Resource Options")) {
                         NavigationLink(destination:
                             ResourceOptions1View()) {
-                            Text("Pattern1")
+                            Text("Pattern1: Texture usage set to unknown")
+                                .padding()
+                        }
+                        NavigationLink(destination:
+                            ResourceOptions2View()) {
+                            Text("Pattern2: Texture usage set to shaderRead")
                                 .padding()
                         }
                     }
