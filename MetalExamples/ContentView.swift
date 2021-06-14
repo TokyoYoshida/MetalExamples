@@ -29,30 +29,6 @@ struct ContentView: View {
                             .padding()
                     }
                 }
-                Section(header: Text("Metal Best Practices Code Samples")) {
-                    Section(header: Text("Persistent Objects")) {
-                        NavigationLink(destination: PersistentObjects1View()) {
-                            Text("Pattern1: Generate Every Frame")
-                                .padding()
-                        }
-                        NavigationLink(destination: PersistentObjects2View()) {
-                            Text("Pattern2: Reuse")
-                                .padding()
-                        }
-                    }
-                    Section(header: Text("Resource Options")) {
-                        NavigationLink(destination:
-                            ResourceOptions1View()) {
-                            Text("Pattern1: Texture usage set to unknown")
-                                .padding()
-                        }
-                        NavigationLink(destination:
-                            ResourceOptions2View()) {
-                            Text("Pattern2: Texture usage set to shaderRead")
-                                .padding()
-                        }
-                    }
-                }
             }
             .listStyle(SidebarListStyle())
         }
