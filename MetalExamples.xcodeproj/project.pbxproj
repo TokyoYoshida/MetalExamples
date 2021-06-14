@@ -222,6 +222,7 @@
 			children = (
 				1E6047ED2669E8EA00AAF2DD /* 01_PersistentObjects */,
 				1ED18A1B2677352C000CE87C /* 02_ResourceOptions */,
+				1ED18A25267739E1000CE87C /* Common */,
 			);
 			path = MetalBestPractices;
 			sourceTree = "<group>";
@@ -231,7 +232,6 @@
 			children = (
 				1EFE5341266B607300290F86 /* Pattern1_GenerateEveryFrame */,
 				1EFE5342266B60A700290F86 /* Pattern2_Reuse */,
-				1E613439266CBF7E009A4FBC /* ParticleShader.metal */,
 			);
 			path = 01_PersistentObjects;
 			sourceTree = "<group>";
@@ -289,6 +289,14 @@
 				1ED18A212677390D000CE87C /* ResourceOptions1MetalView.swift */,
 			);
 			path = Pattern1;
+			sourceTree = "<group>";
+		};
+		1ED18A25267739E1000CE87C /* Common */ = {
+			isa = PBXGroup;
+			children = (
+				1E613439266CBF7E009A4FBC /* ParticleShader.metal */,
+			);
+			path = Common;
 			sourceTree = "<group>";
 		};
 		1EFE5341266B607300290F86 /* Pattern1_GenerateEveryFrame */ = {
