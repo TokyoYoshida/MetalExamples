@@ -40,6 +40,13 @@ struct ContentView: View {
                                 .padding()
                         }
                     }
+                    Section(header: Text("Resource Options")) {
+                        NavigationLink(destination:
+                            ResourceOptions1View()) {
+                            Text("Pattern1")
+                                .padding()
+                        }
+                    }
                 }
             }
             .listStyle(SidebarListStyle())
