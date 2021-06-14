@@ -7,7 +7,6 @@
 
 import SwiftUI
 import MetalKit
-import os.signpost
 
 struct ResourceOptions1MetalView: UIViewRepresentable {
     typealias UIViewType = MTKView
@@ -54,55 +53,52 @@ struct ResourceOptions1MetalView: UIViewRepresentable {
         var preferredFramesTime: Float!
         var vertextBuffers: [MTLBuffer] = []
         var texCoordBuffer: MTLBuffer!
-        let metalLog = OSLog(subsystem: "Examples.app.MetalExamples", category: "MetalPerformance")
-
-        func buildPipeline() {
-            guard let library = self.metalDevice.makeDefaultLibrary() else {fatalError()}
-            let descriptor = MTLRenderPipelineDescriptor()
-            descriptor.vertexFunction = library.makeFunction(name: "persistentObjectsVertexShader")
-            descriptor.fragmentFunction = library.makeFunction(name: "persistentObjectsFragmentShader")
-            descriptor.colorAttachments[0].pixelFormat = .bgra8Unorm_srgb
-            renderPipeline = try! self.metalDevice.makeRenderPipelineState(descriptor: descriptor)
-        }
-        func initTexture() {
-            func makeRenderTexture() -> MTLTexture {
-                let texDesc = MTLTextureDescriptor()
-                texDesc.width =  100//(parent.mtkView.currentDrawable?.texture.width)!
-                texDesc.height =  100//(parent.mtkView.currentDrawable?.texture.height)!
-                texDesc.depth = 1
-                texDesc.textureType = MTLTextureType.type2D
-
-                texDesc.usage = [MTLTextureUsage.renderTarget, MTLTextureUsage.shaderRead]
-                texDesc.storageMode = .private
-                texDesc.pixelFormat = .bgra8Unorm
-
-                texDesc.usage = .unknown
-
-                return metalDevice.makeTexture(descriptor: texDesc)!
-            }
-            texture = makeRenderTexture()
-        }
-
-        func makeBuffers() {
-            func makeVertexBuffer() {
-                vertextBuffers = vertexDatas.map {vertextData in
-                    let size = vertextData.count * MemoryLayout<Float>.size
-                    return metalDevice.makeBuffer(bytes: vertextData, length: size)!
-                }
-            }
-            func makeTextureDataBuffer(){
-                let size = textureCoordinateData.count * MemoryLayout<Float>.size
-                texCoordBuffer = metalDevice.makeBuffer(bytes: textureCoordinateData, length: size)
-            }
-            makeVertexBuffer()
-            makeTextureDataBuffer()
-        }
 
         init(_ parent: ResourceOptions1MetalView) {
+            func buildPipeline() {
+                guard let library = self.metalDevice.makeDefaultLibrary() else {fatalError()}
+                let descriptor = MTLRenderPipelineDescriptor()
+                descriptor.vertexFunction = library.makeFunction(name: "particleVertexShader")
+                descriptor.fragmentFunction = library.makeFunction(name: "particleFragmentShader")
+                descriptor.colorAttachments[0].pixelFormat = .bgra8Unorm_srgb
+                renderPipeline = try! self.metalDevice.makeRenderPipelineState(descriptor: descriptor)
+            }
+            func initTexture() {
+                func makeRenderTexture() -> MTLTexture {
+                    let texDesc = MTLTextureDescriptor()
+                    texDesc.width =  100//(parent.mtkView.currentDrawable?.texture.width)!
+                    texDesc.height =  100//(parent.mtkView.currentDrawable?.texture.height)!
+                    texDesc.depth = 1
+                    texDesc.textureType = MTLTextureType.type2D
+
+                    texDesc.usage = [MTLTextureUsage.renderTarget, MTLTextureUsage.unknown]
+                    texDesc.storageMode = .private
+                    texDesc.pixelFormat = .bgra8Unorm
+
+                    texDesc.usage = .unknown
+
+                    return metalDevice.makeTexture(descriptor: texDesc)!
+                }
+                texture = makeRenderTexture()
+            }
             func initUniform() {
                 uniforms = Uniforms(time: Float(0.0), aspectRatio: Float(0.0), touch: SIMD2<Float>())
                 uniforms.aspectRatio = Float(parent.mtkView.frame.size.width / parent.mtkView.frame.size.height)
                 preferredFramesTime = 1.0 / Float(parent.mtkView.preferredFramesPerSecond)
+            }
+            func makeBuffers() {
+                func makeVertexBuffer() {
+                    vertextBuffers = vertexDatas.map {vertextData in
+                        let size = vertextData.count * MemoryLayout<Float>.size
+                        return metalDevice.makeBuffer(bytes: vertextData, length: size)!
+                    }
+                }
+                func makeTextureDataBuffer(){
+                    let size = textureCoordinateData.count * MemoryLayout<Float>.size
+                    texCoordBuffer = metalDevice.makeBuffer(bytes: textureCoordinateData, length: size)
+                }
+                makeVertexBuffer()
+                makeTextureDataBuffer()
             }
             self.parent = parent
             if let metalDevice = MTLCreateSystemDefaultDevice() {
@@ -119,27 +115,7 @@ struct ResourceOptions1MetalView: UIViewRepresentable {
         }
         func draw(in view: MTKView) {
             guard let drawable = view.currentDrawable else {return}
-
-            // wasteful processing start
-            os_signpost(.begin, log: metalLog, name: "create Objects")
-            os_signpost(.begin, log: metalLog, name: "create Device")
-            let metalDevice = MTLCreateSystemDefaultDevice()!
-            os_signpost(.end, log: metalLog, name: "create Device")
-            os_signpost(.begin, log: metalLog, name: "create CommandQueue")
-            let metalCommandQueue = metalDevice.makeCommandQueue()!
-            os_signpost(.end, log: metalLog, name: "create CommandQueue")
-            os_signpost(.begin, log: metalLog, name: "create Pipeline")
-            buildPipeline()
-            os_signpost(.end, log: metalLog, name: "create Pipeline")
-            os_signpost(.begin, log: metalLog, name: "create Texture")
-            initTexture()
-            os_signpost(.end, log: metalLog, name: "create Texture")
-            os_signpost(.begin, log: metalLog, name: "create Buffers")
-            makeBuffers()
-            os_signpost(.end, log: metalLog, name: "create Buffers")
-            os_signpost(.end, log: metalLog, name: "create Objects")
-            // wasteful processing end
-
+            
             let commandBuffer = metalCommandQueue.makeCommandBuffer()!
             
             renderPassDescriptor.colorAttachments[0].texture = drawable.texture

@@ -10,6 +10,6 @@ import SwiftUI
 struct ResourceOptions1View: View {
     var body: some View {
         ResourceOptions1MetalView()
-        .navigationBarTitle(Text("Pattern1 GenerateEveryFrame"), displayMode: .inline)
+        .navigationBarTitle(Text("Particle"), displayMode: .inline)
     }
 }
