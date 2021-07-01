@@ -182,6 +182,7 @@
 				1E6047E72669E2BA00AAF2DD /* DrawTexture */,
 				1EAF6C60266B6C7200772496 /* SimpleShader */,
 				1E61342E266C9EBB009A4FBC /* Particle */,
+				1EF6899F268DA19600571F3F /* Triple Buffering */,
 			);
 			path = Samples;
 			sourceTree = "<group>";
@@ -240,6 +241,13 @@
 				1EAF6C67266B6DE500772496 /* SimpleShaderType.h */,
 			);
 			path = SimpleShader;
+			sourceTree = "<group>";
+		};
+		1EF6899F268DA19600571F3F /* Triple Buffering */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = "Triple Buffering";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
