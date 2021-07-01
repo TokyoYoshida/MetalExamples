@@ -26,6 +26,8 @@
 		1EAF6C63266B6CD200772496 /* SimpleShaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EAF6C62266B6C7C00772496 /* SimpleShaderView.swift */; };
 		1EAF6C64266B6CD400772496 /* SimpleShaderMetalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EAF6C61266B6C7C00772496 /* SimpleShaderMetalView.swift */; };
 		1EAF6C66266B6D4400772496 /* SimpleShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 1EAF6C65266B6D4400772496 /* SimpleShader.metal */; };
+		1EF689A2268DA21200571F3F /* TripleBufferingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EF689A0268DA1A900571F3F /* TripleBufferingView.swift */; };
+		1EF689A3268DA21500571F3F /* TripleBufferingMetalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EF689A1268DA1AB00571F3F /* TripleBufferingMetalView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -86,6 +88,8 @@
 		1EAF6C62266B6C7C00772496 /* SimpleShaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleShaderView.swift; sourceTree = "<group>"; };
 		1EAF6C65266B6D4400772496 /* SimpleShader.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = SimpleShader.metal; sourceTree = "<group>"; };
 		1EAF6C67266B6DE500772496 /* SimpleShaderType.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SimpleShaderType.h; sourceTree = "<group>"; };
+		1EF689A0268DA1A900571F3F /* TripleBufferingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripleBufferingView.swift; sourceTree = "<group>"; };
+		1EF689A1268DA1AB00571F3F /* TripleBufferingMetalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripleBufferingMetalView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -246,6 +250,8 @@
 		1EF6899F268DA19600571F3F /* Triple Buffering */ = {
 			isa = PBXGroup;
 			children = (
+				1EF689A0268DA1A900571F3F /* TripleBufferingView.swift */,
+				1EF689A1268DA1AB00571F3F /* TripleBufferingMetalView.swift */,
 			);
 			path = "Triple Buffering";
 			sourceTree = "<group>";
@@ -408,6 +414,7 @@
 				1E6047EA2669E3BF00AAF2DD /* DrawTextureView.swift in Sources */,
 				1E1DD85B2668E47100F98410 /* ContentView.swift in Sources */,
 				1E61343E266CC052009A4FBC /* CommnShaders.metal in Sources */,
+				1EF689A3268DA21500571F3F /* TripleBufferingMetalView.swift in Sources */,
 				1E613433266C9F0B009A4FBC /* ParticleView.swift in Sources */,
 				1E1DD8592668E47100F98410 /* MetalExamplesApp.swift in Sources */,
 				1E6047EB2669E3C200AAF2DD /* DrawTextureMetalView.swift in Sources */,
@@ -415,6 +422,7 @@
 				1EAF6C66266B6D4400772496 /* SimpleShader.metal in Sources */,
 				1E1DD8862668E53D00F98410 /* SimpleView.swift in Sources */,
 				1EAF6C63266B6CD200772496 /* SimpleShaderView.swift in Sources */,
+				1EF689A2268DA21200571F3F /* TripleBufferingView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
