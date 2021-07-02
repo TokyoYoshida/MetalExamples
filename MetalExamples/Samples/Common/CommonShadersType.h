@@ -19,6 +19,11 @@ struct Uniforms {
     vector_float2 touch;
 };
 
+struct Particle {
+    vector_float2 position;
+};
+
+
 float heart2(vector_float2 p);
 vector_float4 rotatePosition(vector_float4 pos, float theta);
 vector_float4 move(vector_float4 pos, vector_float2 step);
