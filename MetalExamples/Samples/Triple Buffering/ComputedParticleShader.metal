@@ -16,7 +16,7 @@ struct ColorInOut
     uint instanceId;
 };
 
-vertex ColorInOut particleVertexShader(
+vertex ColorInOut computedParticleVertexShader(
                         const device float4 *positions [[ buffer(0)]],
                         const device float2 *texCoords [[ buffer(1) ]],
                         constant Uniforms &uniforms [[buffer(2)]],
@@ -34,7 +34,7 @@ vertex ColorInOut particleVertexShader(
     return out;
 }
 
-fragment float4 particleFragmentShader(
+fragment float4 computedParticleFragmentShader(
                     ColorInOut in [[ stage_in ]],
                     texture2d<float> texture [[ texture(0) ]]
     ){

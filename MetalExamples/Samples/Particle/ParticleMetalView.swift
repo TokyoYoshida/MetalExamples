@@ -58,8 +58,8 @@ struct ParticleMetalView: UIViewRepresentable {
             func buildPipeline() {
                 guard let library = self.metalDevice.makeDefaultLibrary() else {fatalError()}
                 let descriptor = MTLRenderPipelineDescriptor()
-                descriptor.vertexFunction = library.makeFunction(name: "particleVertexShader")
-                descriptor.fragmentFunction = library.makeFunction(name: "particleFragmentShader")
+                descriptor.vertexFunction = library.makeFunction(name: "randomParticleVertexShader")
+                descriptor.fragmentFunction = library.makeFunction(name: "randomParticleFragmentShader")
                 descriptor.colorAttachments[0].pixelFormat = .bgra8Unorm_srgb
                 renderPipeline = try! self.metalDevice.makeRenderPipelineState(descriptor: descriptor)
             }
