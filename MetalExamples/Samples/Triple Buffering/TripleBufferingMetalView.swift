@@ -30,7 +30,7 @@ struct TripleBufferingMetalView: UIViewRepresentable {
     func updateUIView(_ uiView: MTKView, context: Context) {
     }
     class Coordinator : NSObject, MTKViewDelegate {
-        static let numberOfParticles = 100000
+        static let numberOfParticles = 100
         static let maxBuffers = 3
         var parent: TripleBufferingMetalView
         var metalDevice: MTLDevice!
@@ -61,8 +61,8 @@ struct TripleBufferingMetalView: UIViewRepresentable {
             func buildPipeline() {
                 guard let library = self.metalDevice.makeDefaultLibrary() else {fatalError()}
                 let descriptor = MTLRenderPipelineDescriptor()
-                descriptor.vertexFunction = library.makeFunction(name: "computedParticleVertexShader")
-                descriptor.fragmentFunction = library.makeFunction(name: "computedParticleFragmentShader")
+                descriptor.vertexFunction = library.makeFunction(name: "storedParticleVertexShader")
+                descriptor.fragmentFunction = library.makeFunction(name: "storedParticleFragmentShader")
                 descriptor.colorAttachments[0].pixelFormat = .bgra8Unorm_srgb
                 renderPipeline = try! self.metalDevice.makeRenderPipelineState(descriptor: descriptor)
             }
@@ -161,21 +161,17 @@ struct TripleBufferingMetalView: UIViewRepresentable {
 
             
             renderEncoder.setRenderPipelineState(renderPipeline)
-            renderEncoder.setVertexBuffer(vertextBuffer, offset: 0, index: 0)
-
             uniforms.time += preferredFramesTime
 
-            for vertextBuffer in vertextBuffers {
-                renderEncoder.setVertexBuffer(vertextBuffer, offset: 0, index: 0)
-                
-                renderEncoder.setVertexBuffer(texCoordBuffer, offset: 0, index: 1)
+            renderEncoder.setVertexBuffer(particleBuffers[0], offset: 0, index: 0)
+            
+            renderEncoder.setVertexBuffer(texCoordBuffer, offset: 0, index: 1)
 
-                renderEncoder.setFragmentTexture(texture, index: 0)
+            renderEncoder.setVertexBytes(&uniforms, length: MemoryLayout<Uniforms>.stride, index: 2)            
 
-                renderEncoder.setVertexBytes(&uniforms, length: MemoryLayout<Uniforms>.stride, index: 2)
-                
-                renderEncoder.drawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: 4, instanceCount: 1000000)
-            }
+            renderEncoder.setFragmentTexture(texture, index: 0)
+
+            renderEncoder.drawPrimitives(type: .point, vertexStart: 0, vertexCount: Coordinator.numberOfParticles)
             
             renderEncoder.endEncoding()
             

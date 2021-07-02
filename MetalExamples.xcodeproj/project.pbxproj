@@ -14,7 +14,7 @@
 		1E1DD86B2668E47200F98410 /* MetalExamplesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E1DD86A2668E47200F98410 /* MetalExamplesTests.swift */; };
 		1E1DD8762668E47200F98410 /* MetalExamplesUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E1DD8752668E47200F98410 /* MetalExamplesUITests.swift */; };
 		1E1DD8862668E53D00F98410 /* SimpleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E1DD8852668E53D00F98410 /* SimpleView.swift */; };
-		1E32D80C268EF131006BAC95 /* ComputedParticleShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 1E32D80B268EF131006BAC95 /* ComputedParticleShader.metal */; };
+		1E32D80C268EF131006BAC95 /* StoredParticleShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 1E32D80B268EF131006BAC95 /* StoredParticleShader.metal */; };
 		1E6047E42669DECB00AAF2DD /* SimpleMetalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E6047E32669DECB00AAF2DD /* SimpleMetalView.swift */; };
 		1E6047EA2669E3BF00AAF2DD /* DrawTextureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E6047E82669E2D500AAF2DD /* DrawTextureView.swift */; };
 		1E6047EB2669E3C200AAF2DD /* DrawTextureMetalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E6047E92669E2D800AAF2DD /* DrawTextureMetalView.swift */; };
@@ -76,7 +76,7 @@
 		1E1DD8752668E47200F98410 /* MetalExamplesUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetalExamplesUITests.swift; sourceTree = "<group>"; };
 		1E1DD8772668E47200F98410 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1E1DD8852668E53D00F98410 /* SimpleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleView.swift; sourceTree = "<group>"; };
-		1E32D80B268EF131006BAC95 /* ComputedParticleShader.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = ComputedParticleShader.metal; sourceTree = "<group>"; };
+		1E32D80B268EF131006BAC95 /* StoredParticleShader.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = StoredParticleShader.metal; sourceTree = "<group>"; };
 		1E6047E32669DECB00AAF2DD /* SimpleMetalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleMetalView.swift; sourceTree = "<group>"; };
 		1E6047E82669E2D500AAF2DD /* DrawTextureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawTextureView.swift; sourceTree = "<group>"; };
 		1E6047E92669E2D800AAF2DD /* DrawTextureMetalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawTextureMetalView.swift; sourceTree = "<group>"; };
@@ -254,7 +254,7 @@
 			children = (
 				1EF689A0268DA1A900571F3F /* TripleBufferingView.swift */,
 				1EF689A1268DA1AB00571F3F /* TripleBufferingMetalView.swift */,
-				1E32D80B268EF131006BAC95 /* ComputedParticleShader.metal */,
+				1E32D80B268EF131006BAC95 /* StoredParticleShader.metal */,
 			);
 			path = "Triple Buffering";
 			sourceTree = "<group>";
@@ -411,7 +411,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1E32D80C268EF131006BAC95 /* ComputedParticleShader.metal in Sources */,
+				1E32D80C268EF131006BAC95 /* StoredParticleShader.metal in Sources */,
 				1E613435266C9F11009A4FBC /* RandomParticleShader.metal in Sources */,
 				1E6047E42669DECB00AAF2DD /* SimpleMetalView.swift in Sources */,
 				1E613434266C9F0E009A4FBC /* ParticleMetalView.swift in Sources */,
