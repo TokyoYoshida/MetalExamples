@@ -30,7 +30,7 @@ struct TripleBufferingMetalView: UIViewRepresentable {
     func updateUIView(_ uiView: MTKView, context: Context) {
     }
     class Coordinator : NSObject, MTKViewDelegate {
-        static let numberOfParticles = 100000
+        static let numberOfParticles = 10000
         static let maxBuffers = 3
         var parent: TripleBufferingMetalView
         var metalDevice: MTLDevice!
@@ -56,7 +56,11 @@ struct TripleBufferingMetalView: UIViewRepresentable {
         var preferredFramesTime: Float!
         var vertextBuffers: [MTLBuffer] = []
         var texCoordBuffer: MTLBuffer!
-        let semaphore = DispatchSemaphore(value: 1)//Coordinator.maxBuffers)
+        let semaphore = DispatchSemaphore(value: Coordinator.maxBuffers)
+        var currentBufferIndex = 0
+        var beforeBufferIndex: Int {
+            currentBufferIndex == 0 ? Coordinator.maxBuffers - 1 : currentBufferIndex - 1
+        }
 
         init(_ parent: TripleBufferingMetalView) {
             func buildPipeline() {
@@ -105,19 +109,24 @@ struct TripleBufferingMetalView: UIViewRepresentable {
                 makeTextureDataBuffer()
             }
             func initParticles() {
-                func buildBuffer() -> [MTLBuffer] {
+                func allocBuffer() -> [MTLBuffer] {
                     var buffers:[MTLBuffer] = []
                     for _ in 0..<Coordinator.maxBuffers {
                         let particles = makeParticlePositions()
                         let length = MemoryLayout<Particle>.stride * particles.count
-                        guard let buffer = metalDevice.makeBuffer(bytes: particles, length: length, options: .storageModeShared) else {
+                        guard let buffer = metalDevice.makeBuffer(length: length, options: .storageModeShared) else {
                             fatalError("Cannot make particle buffer.")
                         }
                         buffers.append(buffer)
                     }
                     return buffers
                 }
-                self.particleBuffers = buildBuffer()
+                func initParticlePosition(_ particleBuffer: MTLBuffer) {
+                    let particles = makeParticlePositions()
+                    self.particleBuffers[0].contents().copyMemory(from: particles, byteCount: MemoryLayout<Particle>.stride * particles.count)
+                }
+                particleBuffers = allocBuffer()
+                initParticlePosition(particleBuffers[0])
             }
             self.parent = parent
             if let metalDevice = MTLCreateSystemDefaultDevice() {
@@ -149,10 +158,11 @@ struct TripleBufferingMetalView: UIViewRepresentable {
         }
         func draw(in view: MTKView) {
             func calcParticlePostion() {
-                let p = particleBuffers[0].contents()
+                let p = particleBuffers[currentBufferIndex].contents()
+                let b = particleBuffers[beforeBufferIndex].contents()
                 let stride = MemoryLayout<Particle>.stride
                 for i in 0..<Coordinator.numberOfParticles {
-                    var particle = p.load(fromByteOffset: i*stride, as: Particle.self)
+                    var particle = b.load(fromByteOffset: i*stride, as: Particle.self)
                     if particle.position.y > -1 {
                         particle.position.y -= 0.01
                     } else {
@@ -160,13 +170,13 @@ struct TripleBufferingMetalView: UIViewRepresentable {
                     }
                     p.storeBytes(of: particle,toByteOffset: i*stride,  as: Particle.self)
                 }
-
             }
             guard let drawable = view.currentDrawable else {return}
             
             semaphore.wait()
             let commandBuffer = metalCommandQueue.makeCommandBuffer()!
             
+            currentBufferIndex = (currentBufferIndex + 1) % Coordinator.maxBuffers
             calcParticlePostion()
             
             renderPassDescriptor.colorAttachments[0].texture = drawable.texture
@@ -181,7 +191,7 @@ struct TripleBufferingMetalView: UIViewRepresentable {
             renderEncoder.setRenderPipelineState(renderPipeline)
             uniforms.time += preferredFramesTime
 
-            renderEncoder.setVertexBuffer(particleBuffers[0], offset: 0, index: 0)
+            renderEncoder.setVertexBuffer(particleBuffers[currentBufferIndex], offset: 0, index: 0)
             
             renderEncoder.setVertexBuffer(texCoordBuffer, offset: 0, index: 1)
 
@@ -199,8 +209,6 @@ struct TripleBufferingMetalView: UIViewRepresentable {
                 self?.semaphore.signal()
             }
             commandBuffer.commit()
-            
-//            commandBuffer.waitUntilCompleted()
         }
     }
 }
