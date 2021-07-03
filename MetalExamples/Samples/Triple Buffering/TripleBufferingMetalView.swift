@@ -30,7 +30,7 @@ struct TripleBufferingMetalView: UIViewRepresentable {
     func updateUIView(_ uiView: MTKView, context: Context) {
     }
     class Coordinator : NSObject, MTKViewDelegate {
-        static let numberOfParticles = 100
+        static let numberOfParticles = 100000
         static let maxBuffers = 3
         var parent: TripleBufferingMetalView
         var metalDevice: MTLDevice!
@@ -104,17 +104,6 @@ struct TripleBufferingMetalView: UIViewRepresentable {
                 makeTextureDataBuffer()
             }
             func initParticles() {
-                func makeParticlePositions() -> [Particle]{
-                    func makeRandomPosition() -> Particle {
-                        var particle = Particle()
-                        particle.position.x = Float.random(in: 0..<2) - 1
-                        particle.position.y = Float.random(in: 0..<2) - 1
-                        return particle
-                    }
-                    return [Particle](repeating: Particle(), count: Coordinator.numberOfParticles).map {_ in
-                        return makeRandomPosition()
-                    }
-                }
                 func buildBuffer() -> [MTLBuffer] {
                     var buffers:[MTLBuffer] = []
                     for _ in 0..<Coordinator.maxBuffers {
@@ -141,15 +130,42 @@ struct TripleBufferingMetalView: UIViewRepresentable {
             makeBuffers()
             initParticles()
         }
+        
+        func makeRandomPosition() -> Particle {
+            var particle = Particle()
+            particle.position.x = Float.random(in: 0..<2) - 1
+            particle.position.y = Float.random(in: 0..<2) - 1
+            return particle
+        }
+
+        func makeParticlePositions() -> [Particle]{
+            return [Particle](repeating: Particle(), count: Coordinator.numberOfParticles).map {_ in
+                return makeRandomPosition()
+            }
+        }
+
         func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
         }
         func draw(in view: MTKView) {
             func calcParticlePostion() {
-                
+                let p = particleBuffers[0].contents()
+                let stride = MemoryLayout<Particle>.stride
+                for i in 0..<Coordinator.numberOfParticles {
+                    var particle = p.load(fromByteOffset: i*stride, as: Particle.self)
+                    if particle.position.y > -1 {
+                        particle.position.y -= 0.01
+                    } else {
+                        particle.position.y = 1
+                    }
+                    p.storeBytes(of: particle,toByteOffset: i*stride,  as: Particle.self)
+                }
+
             }
             guard let drawable = view.currentDrawable else {return}
             
             let commandBuffer = metalCommandQueue.makeCommandBuffer()!
+            
+            calcParticlePostion()
             
             renderPassDescriptor.colorAttachments[0].texture = drawable.texture
             renderPassDescriptor.colorAttachments[0].loadAction = .clear
