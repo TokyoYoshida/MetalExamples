@@ -56,6 +56,7 @@ struct TripleBufferingMetalView: UIViewRepresentable {
         var preferredFramesTime: Float!
         var vertextBuffers: [MTLBuffer] = []
         var texCoordBuffer: MTLBuffer!
+        let semaphore = DispatchSemaphore(value: 1)//Coordinator.maxBuffers)
 
         init(_ parent: TripleBufferingMetalView) {
             func buildPipeline() {
@@ -133,8 +134,8 @@ struct TripleBufferingMetalView: UIViewRepresentable {
         
         func makeRandomPosition() -> Particle {
             var particle = Particle()
-            particle.position.x = Float.random(in: 0..<2) - 1
-            particle.position.y = Float.random(in: 0..<2) - 1
+            particle.position.x = Float.random(in: 0...2) - 1
+            particle.position.y = Float.random(in: 0...2) - 1
             return particle
         }
 
@@ -163,6 +164,7 @@ struct TripleBufferingMetalView: UIViewRepresentable {
             }
             guard let drawable = view.currentDrawable else {return}
             
+            semaphore.wait()
             let commandBuffer = metalCommandQueue.makeCommandBuffer()!
             
             calcParticlePostion()
@@ -193,9 +195,12 @@ struct TripleBufferingMetalView: UIViewRepresentable {
             
             commandBuffer.present(drawable)
             
+            commandBuffer.addCompletedHandler {[weak self] _ in
+                self?.semaphore.signal()
+            }
             commandBuffer.commit()
             
-            commandBuffer.waitUntilCompleted()
+//            commandBuffer.waitUntilCompleted()
         }
     }
 }
