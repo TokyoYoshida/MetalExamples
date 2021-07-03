@@ -112,8 +112,7 @@ struct TripleBufferingMetalView: UIViewRepresentable {
                 func allocBuffer() -> [MTLBuffer] {
                     var buffers:[MTLBuffer] = []
                     for _ in 0..<Coordinator.maxBuffers {
-                        let particles = makeParticlePositions()
-                        let length = MemoryLayout<Particle>.stride * particles.count
+                        let length = MemoryLayout<Particle>.stride * Coordinator.numberOfParticles
                         guard let buffer = metalDevice.makeBuffer(length: length, options: .storageModeShared) else {
                             fatalError("Cannot make particle buffer.")
                         }
