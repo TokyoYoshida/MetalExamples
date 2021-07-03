@@ -107,8 +107,8 @@ struct TripleBufferingMetalView: UIViewRepresentable {
                 func makeParticlePositions() -> [Particle]{
                     func makeRandomPosition() -> Particle {
                         var particle = Particle()
-                        particle.position.x = Float.random(in: 0..<1)
-                        particle.position.y = Float.random(in: 0..<1)
+                        particle.position.x = Float.random(in: 0..<2) - 1
+                        particle.position.y = Float.random(in: 0..<2) - 1
                         return particle
                     }
                     return [Particle](repeating: Particle(), count: Coordinator.numberOfParticles).map {_ in
