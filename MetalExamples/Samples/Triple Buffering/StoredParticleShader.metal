@@ -35,10 +35,5 @@ fragment float4 storedParticleFragmentShader(
                     ColorInOut in [[ stage_in ]],
                     texture2d<float> texture [[ texture(0) ]]
     ){
-//    float r = randFloat(float3(iid));
-//    float g = randFloat(float3(iid+1, iid+2, iid+3));
-//    float b = randFloat(float3(iid+4, iid+5, iid+6));
-
-//    float4 color = sample_color + float4(float3(r, g, b)*l,1);
-    return float4(1,0,0,1);
+    return float4(0,0,1,1);
 }

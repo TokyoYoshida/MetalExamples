@@ -134,8 +134,8 @@ struct TripleBufferingMetalView: UIViewRepresentable {
         
         func makeRandomPosition() -> Particle {
             var particle = Particle()
-            particle.position.x = Float.random(in: 0...2) - 1
-            particle.position.y = Float.random(in: 0...2) - 1
+            particle.position.x = Float.random(in: -1...1)
+            particle.position.y = Float.random(in: -1...1)
             return particle
         }
 
@@ -156,7 +156,7 @@ struct TripleBufferingMetalView: UIViewRepresentable {
                     if particle.position.y > -1 {
                         particle.position.y -= 0.01
                     } else {
-                        particle.position.y = 1
+                        particle.position.y += 2 - 0.01
                     }
                     p.storeBytes(of: particle,toByteOffset: i*stride,  as: Particle.self)
                 }
