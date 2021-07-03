@@ -8,7 +8,7 @@
 import SwiftUI
 import MetalKit
 
-struct ParticleMetalView: UIViewRepresentable {
+struct TripleBufferingMetalView: UIViewRepresentable {
     typealias UIViewType = MTKView
     let mtkView = MTKView()
 
@@ -30,7 +30,9 @@ struct ParticleMetalView: UIViewRepresentable {
     func updateUIView(_ uiView: MTKView, context: Context) {
     }
     class Coordinator : NSObject, MTKViewDelegate {
-        var parent: ParticleMetalView
+        static let numberOfParticles = 10000
+        static let maxBuffers = 3
+        var parent: TripleBufferingMetalView
         var metalDevice: MTLDevice!
         var metalCommandQueue: MTLCommandQueue!
         var renderPipeline: MTLRenderPipelineState!
@@ -46,20 +48,26 @@ struct ParticleMetalView: UIViewRepresentable {
         ]
         let textureCoordinateData: [Float] = [0, 1,
                                               1, 1,
-        0, 0,
-        1, 0]
+                                              0, 0,
+                                              1, 0]
+        var particleBuffers:[MTLBuffer] = []
         var renderPassDescriptor: MTLRenderPassDescriptor = MTLRenderPassDescriptor()
         var uniforms: Uniforms!
         var preferredFramesTime: Float!
         var vertextBuffers: [MTLBuffer] = []
         var texCoordBuffer: MTLBuffer!
+        let semaphore = DispatchSemaphore(value: Coordinator.maxBuffers)
+        var currentBufferIndex = 0
+        var beforeBufferIndex: Int {
+            currentBufferIndex == 0 ? Coordinator.maxBuffers - 1 : currentBufferIndex - 1
+        }
 
-        init(_ parent: ParticleMetalView) {
+        init(_ parent: TripleBufferingMetalView) {
             func buildPipeline() {
                 guard let library = self.metalDevice.makeDefaultLibrary() else {fatalError()}
                 let descriptor = MTLRenderPipelineDescriptor()
-                descriptor.vertexFunction = library.makeFunction(name: "randomParticleVertexShader")
-                descriptor.fragmentFunction = library.makeFunction(name: "randomParticleFragmentShader")
+                descriptor.vertexFunction = library.makeFunction(name: "storedParticleVertexShader")
+                descriptor.fragmentFunction = library.makeFunction(name: "storedParticleFragmentShader")
                 descriptor.colorAttachments[0].pixelFormat = .bgra8Unorm_srgb
                 renderPipeline = try! self.metalDevice.makeRenderPipelineState(descriptor: descriptor)
             }
@@ -100,6 +108,26 @@ struct ParticleMetalView: UIViewRepresentable {
                 makeVertexBuffer()
                 makeTextureDataBuffer()
             }
+            func initParticles() {
+                func allocBuffer() -> [MTLBuffer] {
+                    var buffers:[MTLBuffer] = []
+                    for _ in 0..<Coordinator.maxBuffers {
+                        let particles = makeParticlePositions()
+                        let length = MemoryLayout<Particle>.stride * particles.count
+                        guard let buffer = metalDevice.makeBuffer(length: length, options: .storageModeShared) else {
+                            fatalError("Cannot make particle buffer.")
+                        }
+                        buffers.append(buffer)
+                    }
+                    return buffers
+                }
+                func initParticlePosition(_ particleBuffer: MTLBuffer) {
+                    let particles = makeParticlePositions()
+                    self.particleBuffers[0].contents().copyMemory(from: particles, byteCount: MemoryLayout<Particle>.stride * particles.count)
+                }
+                particleBuffers = allocBuffer()
+                initParticlePosition(particleBuffers[0])
+            }
             self.parent = parent
             if let metalDevice = MTLCreateSystemDefaultDevice() {
                 self.metalDevice = metalDevice
@@ -110,13 +138,46 @@ struct ParticleMetalView: UIViewRepresentable {
             initUniform()
             initTexture()
             makeBuffers()
+            initParticles()
         }
+        
+        func makeRandomPosition() -> Particle {
+            var particle = Particle()
+            particle.position.x = Float.random(in: -1...1)
+            particle.position.y = Float.random(in: -1...1)
+            return particle
+        }
+
+        func makeParticlePositions() -> [Particle]{
+            return [Particle](repeating: Particle(), count: Coordinator.numberOfParticles).map {_ in
+                return makeRandomPosition()
+            }
+        }
+
         func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
         }
         func draw(in view: MTKView) {
+            func calcParticlePostion() {
+                let p = particleBuffers[currentBufferIndex].contents()
+                let b = particleBuffers[beforeBufferIndex].contents()
+                let stride = MemoryLayout<Particle>.stride
+                for i in 0..<Coordinator.numberOfParticles {
+                    var particle = b.load(fromByteOffset: i*stride, as: Particle.self)
+                    if particle.position.y > -1 {
+                        particle.position.y -= 0.01
+                    } else {
+                        particle.position.y += 2 - 0.01
+                    }
+                    p.storeBytes(of: particle,toByteOffset: i*stride,  as: Particle.self)
+                }
+            }
             guard let drawable = view.currentDrawable else {return}
             
+            semaphore.wait()
             let commandBuffer = metalCommandQueue.makeCommandBuffer()!
+            
+            currentBufferIndex = (currentBufferIndex + 1) % Coordinator.maxBuffers
+            calcParticlePostion()
             
             renderPassDescriptor.colorAttachments[0].texture = drawable.texture
             renderPassDescriptor.colorAttachments[0].loadAction = .clear
@@ -128,29 +189,26 @@ struct ParticleMetalView: UIViewRepresentable {
 
             
             renderEncoder.setRenderPipelineState(renderPipeline)
-            renderEncoder.setVertexBuffer(vertextBuffer, offset: 0, index: 0)
-
             uniforms.time += preferredFramesTime
 
-            for vertextBuffer in vertextBuffers {
-                renderEncoder.setVertexBuffer(vertextBuffer, offset: 0, index: 0)
-                
-                renderEncoder.setVertexBuffer(texCoordBuffer, offset: 0, index: 1)
+            renderEncoder.setVertexBuffer(particleBuffers[currentBufferIndex], offset: 0, index: 0)
+            
+            renderEncoder.setVertexBuffer(texCoordBuffer, offset: 0, index: 1)
 
-                renderEncoder.setFragmentTexture(texture, index: 0)
+            renderEncoder.setVertexBytes(&uniforms, length: MemoryLayout<Uniforms>.stride, index: 2)            
 
-                renderEncoder.setVertexBytes(&uniforms, length: MemoryLayout<Uniforms>.stride, index: 2)
-                
-                renderEncoder.drawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: 4, instanceCount: 1000000)
-            }
+            renderEncoder.setFragmentTexture(texture, index: 0)
+
+            renderEncoder.drawPrimitives(type: .point, vertexStart: 0, vertexCount: Coordinator.numberOfParticles)
             
             renderEncoder.endEncoding()
             
             commandBuffer.present(drawable)
             
+            commandBuffer.addCompletedHandler {[weak self] _ in
+                self?.semaphore.signal()
+            }
             commandBuffer.commit()
-            
-            commandBuffer.waitUntilCompleted()
         }
     }
 }

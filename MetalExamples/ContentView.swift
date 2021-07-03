@@ -28,6 +28,10 @@ struct ContentView: View {
                         Text("Particle")
                             .padding()
                     }
+                    NavigationLink(destination: TripleBufferingView()) {
+                        Text("TripleBuffering")
+                            .padding()
+                    }
                 }
             }
             .listStyle(SidebarListStyle())
