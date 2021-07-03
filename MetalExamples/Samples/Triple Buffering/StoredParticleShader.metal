@@ -12,6 +12,7 @@ using namespace metal;
 struct ColorInOut
 {
     float4 position [[ position ]];
+    float size [[point_size]];
     float2 texCoords;
 };
 
@@ -26,6 +27,7 @@ vertex ColorInOut storedParticleVertexShader(
     out.position = float4(0, 0, 0, 1);
     out.position.xy = particles[vid].position;
     out.texCoords = texCoords[vid];
+    out.size = 5.0f;
     return out;
 }
 
