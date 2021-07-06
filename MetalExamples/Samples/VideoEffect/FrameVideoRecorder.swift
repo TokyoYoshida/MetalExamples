@@ -1,6 +1,5 @@
 //
 //  VideoRecorder.swift
-//  RecordingVideoExample
 //
 //  Created by TokyoYoshida on 2021/03/27.
 //

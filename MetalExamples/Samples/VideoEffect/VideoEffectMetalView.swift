@@ -45,6 +45,9 @@ struct VideoEffectMetalView: UIViewRepresentable {
         var beforeBufferIndex: Int {
             currentBufferIndex == 0 ? Coordinator.maxBuffers - 1 : currentBufferIndex - 1
         }
+        var texture: MTLTexture!
+        let videoRecorder =  FrameVideoRecorder()
+        var textureCache : CVMetalTextureCache?
 
         init(_ parent: VideoEffectMetalView) {
             func buildPipeline() {
@@ -83,11 +86,23 @@ struct VideoEffectMetalView: UIViewRepresentable {
             if let metalDevice = MTLCreateSystemDefaultDevice() {
                 self.metalDevice = metalDevice
             }
+            func setFrameTextureCapture() {
+                CVMetalTextureCacheCreate(kCFAllocatorDefault, nil, metalDevice, nil, &textureCache)
+                videoRecorder.imageBufferHandler = {[unowned self] (imageBuffer, timestamp, outputBuffer) in
+                    guard let textureCache = self.textureCache else {return}
+                    self.texture = imageBuffer.createTexture(pixelFormat: mtkView.colorPixelFormat, planeIndex: 0, capturedImageTextureCache: textureCache)
+    //                let ciImage = CIImage(cvPixelBuffer: imageBuffer)
+                    if let ciImage = CIImage(mtlTexture: self.texture, options: nil) {
+                        self.cgImage = self.ciContext.createCGImage(ciImage, from: ciImage.extent)
+                    }
+                }
+            }
             self.metalCommandQueue = metalDevice.makeCommandQueue()!
             super.init()
             buildPipeline()
             initUniform()
             initParticles()
+            setFrameTextureCapture()
         }
         
         func makeRandomPosition() -> Particle {
