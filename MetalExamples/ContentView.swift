@@ -32,6 +32,10 @@ struct ContentView: View {
                         Text("TripleBuffering")
                             .padding()
                     }
+                    NavigationLink(destination: ShaderExamplesView()) {
+                        Text("ShaderExamples")
+                            .padding()
+                    }
                 }
             }
             .listStyle(SidebarListStyle())
