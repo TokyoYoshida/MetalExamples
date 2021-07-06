@@ -45,9 +45,12 @@ struct VideoEffectMetalView: UIViewRepresentable {
         var beforeBufferIndex: Int {
             currentBufferIndex == 0 ? Coordinator.maxBuffers - 1 : currentBufferIndex - 1
         }
+
+        var ciContext : CIContext!
         var texture: MTLTexture!
         let videoRecorder =  FrameVideoRecorder()
         var textureCache : CVMetalTextureCache?
+        var cgImage: CGImage?
 
         init(_ parent: VideoEffectMetalView) {
             func buildPipeline() {
@@ -82,20 +85,28 @@ struct VideoEffectMetalView: UIViewRepresentable {
                 particleBuffers = allocBuffer()
                 initParticlePosition(particleBuffers[0])
             }
-            self.parent = parent
-            if let metalDevice = MTLCreateSystemDefaultDevice() {
-                self.metalDevice = metalDevice
+            func setupVideoRecorder() {
+                do {
+                    try videoRecorder.prepare()
+                } catch {
+                    fatalError("Cannot prepare video recoreder.")
+                }
             }
             func setFrameTextureCapture() {
                 CVMetalTextureCacheCreate(kCFAllocatorDefault, nil, metalDevice, nil, &textureCache)
                 videoRecorder.imageBufferHandler = {[unowned self] (imageBuffer, timestamp, outputBuffer) in
                     guard let textureCache = self.textureCache else {return}
-                    self.texture = imageBuffer.createTexture(pixelFormat: mtkView.colorPixelFormat, planeIndex: 0, capturedImageTextureCache: textureCache)
+                    self.texture = imageBuffer.createTexture(pixelFormat: parent.mtkView.colorPixelFormat, planeIndex: 0, capturedImageTextureCache: textureCache)
     //                let ciImage = CIImage(cvPixelBuffer: imageBuffer)
                     if let ciImage = CIImage(mtlTexture: self.texture, options: nil) {
                         self.cgImage = self.ciContext.createCGImage(ciImage, from: ciImage.extent)
                     }
                 }
+            }
+
+            self.parent = parent
+            if let metalDevice = MTLCreateSystemDefaultDevice() {
+                self.metalDevice = metalDevice
             }
             self.metalCommandQueue = metalDevice.makeCommandQueue()!
             super.init()
@@ -103,6 +114,7 @@ struct VideoEffectMetalView: UIViewRepresentable {
             initUniform()
             initParticles()
             setFrameTextureCapture()
+            setupVideoRecorder()
         }
         
         func makeRandomPosition() -> Particle {

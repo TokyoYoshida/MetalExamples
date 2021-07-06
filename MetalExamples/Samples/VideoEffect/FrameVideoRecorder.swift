@@ -132,15 +132,15 @@ extension FrameVideoRecorder: AVCaptureVideoDataOutputSampleBufferDelegate, AVCa
 
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
         self.lockQueue.sync() {
-            if !self.isCapturing || self.isPaused {
-                return
-            }
-            
             if let imageBufferHandler = imageBufferHandler, let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) {
                 let timestamp = CMSampleBufferGetPresentationTimeStamp(sampleBuffer)
                 imageBufferHandler(imageBuffer, timestamp, nil)
             }
 
+            if !self.isCapturing || self.isPaused {
+                return
+            }
+            
             let isVideo = output is AVCaptureVideoDataOutput
             
             if self.videoWriter == nil && !isVideo {
