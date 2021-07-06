@@ -109,12 +109,13 @@ struct VideoEffectMetalView: UIViewRepresentable {
                 self.metalDevice = metalDevice
             }
             self.metalCommandQueue = metalDevice.makeCommandQueue()!
+            ciContext = CIContext.init(mtlDevice: metalDevice)
             super.init()
             buildPipeline()
             initUniform()
             initParticles()
-            setFrameTextureCapture()
             setupVideoRecorder()
+            setFrameTextureCapture()
         }
         
         func makeRandomPosition() -> Particle {
@@ -159,22 +160,38 @@ struct VideoEffectMetalView: UIViewRepresentable {
             renderPassDescriptor.colorAttachments[0].loadAction = .clear
             renderPassDescriptor.colorAttachments[0].clearColor = MTLClearColorMake(0.8, 0.7, 0.1, 1.0)
 
-            let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)!
+//            let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)!
 
-            guard let renderPipeline = renderPipeline else {fatalError()}
+//            guard let renderPipeline = renderPipeline else {fatalError()}
+//
+//
+//            renderEncoder.setRenderPipelineState(renderPipeline)
+//            uniforms.time += preferredFramesTime
+//
+//            renderEncoder.setVertexBuffer(particleBuffers[currentBufferIndex], offset: 0, index: 0)
+//
+//            renderEncoder.setVertexBytes(&uniforms, length: MemoryLayout<Uniforms>.stride, index: 2)
 
+//            renderEncoder.drawPrimitives(type: .point, vertexStart: 0, vertexCount: Coordinator.numberOfParticles)
             
-            renderEncoder.setRenderPipelineState(renderPipeline)
-            uniforms.time += preferredFramesTime
+            let w = min(texture.width, drawable.texture.width)
+            let h = min(texture.height, drawable.texture.height)
 
-            renderEncoder.setVertexBuffer(particleBuffers[currentBufferIndex], offset: 0, index: 0)
-            
-            renderEncoder.setVertexBytes(&uniforms, length: MemoryLayout<Uniforms>.stride, index: 2)            
+            let blitEncoder = commandBuffer.makeBlitCommandEncoder()!
 
-            renderEncoder.drawPrimitives(type: .point, vertexStart: 0, vertexCount: Coordinator.numberOfParticles)
-            
-            renderEncoder.endEncoding()
-            
+            blitEncoder.copy(from: texture,
+                              sourceSlice: 0,
+                              sourceLevel: 0,
+                              sourceOrigin: MTLOrigin(x:0, y:0 ,z:0),
+                              sourceSize: MTLSizeMake(w, h, texture.depth),
+                              to: drawable.texture,
+                              destinationSlice: 0,
+                              destinationLevel: 0,
+                              destinationOrigin: MTLOrigin(x:0, y:0 ,z:0))
+
+//            renderEncoder.endEncoding()
+            blitEncoder.endEncoding()
+
             commandBuffer.present(drawable)
             
             commandBuffer.addCompletedHandler {[weak self] _ in
