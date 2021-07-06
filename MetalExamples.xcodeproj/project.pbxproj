@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1E18AD0B26942B5600C70468 /* VideoWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E18AD0A26942B5600C70468 /* VideoWriter.swift */; };
+		1E18AD0C26942B5600C70468 /* FrameVideoRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E18AD0926942B5500C70468 /* FrameVideoRecorder.swift */; };
 		1E1DD8592668E47100F98410 /* MetalExamplesApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E1DD8582668E47100F98410 /* MetalExamplesApp.swift */; };
 		1E1DD85B2668E47100F98410 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E1DD85A2668E47100F98410 /* ContentView.swift */; };
 		1E1DD85D2668E47200F98410 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1E1DD85C2668E47200F98410 /* Assets.xcassets */; };
@@ -65,6 +67,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		1E18AD0926942B5500C70468 /* FrameVideoRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrameVideoRecorder.swift; sourceTree = "<group>"; };
+		1E18AD0A26942B5600C70468 /* VideoWriter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoWriter.swift; sourceTree = "<group>"; };
 		1E1DD8552668E47100F98410 /* MetalExamples.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MetalExamples.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1E1DD8582668E47100F98410 /* MetalExamplesApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetalExamplesApp.swift; sourceTree = "<group>"; };
 		1E1DD85A2668E47100F98410 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -214,6 +218,8 @@
 				1E4303A7269426FD00BFB25C /* VideoEffectView.swift */,
 				1E4303A8269426FD00BFB25C /* VideoEffectMetalView.swift */,
 				1E4303A6269426FC00BFB25C /* VideoEffectShader.metal */,
+				1E18AD0926942B5500C70468 /* FrameVideoRecorder.swift */,
+				1E18AD0A26942B5600C70468 /* VideoWriter.swift */,
 			);
 			path = VideoEffect;
 			sourceTree = "<group>";
@@ -432,11 +438,13 @@
 				1E6047E42669DECB00AAF2DD /* SimpleMetalView.swift in Sources */,
 				1E613434266C9F0E009A4FBC /* ParticleMetalView.swift in Sources */,
 				1E437C2D26942770001D1CCF /* VideoEffectMetalView.swift in Sources */,
+				1E18AD0B26942B5600C70468 /* VideoWriter.swift in Sources */,
 				1E6047EA2669E3BF00AAF2DD /* DrawTextureView.swift in Sources */,
 				1E1DD85B2668E47100F98410 /* ContentView.swift in Sources */,
 				1E61343E266CC052009A4FBC /* CommnShaders.metal in Sources */,
 				1EF689A3268DA21500571F3F /* TripleBufferingMetalView.swift in Sources */,
 				1E613433266C9F0B009A4FBC /* ParticleView.swift in Sources */,
+				1E18AD0C26942B5600C70468 /* FrameVideoRecorder.swift in Sources */,
 				1E1DD8592668E47100F98410 /* MetalExamplesApp.swift in Sources */,
 				1E6047EB2669E3C200AAF2DD /* DrawTextureMetalView.swift in Sources */,
 				1EAF6C64266B6CD400772496 /* SimpleShaderMetalView.swift in Sources */,
