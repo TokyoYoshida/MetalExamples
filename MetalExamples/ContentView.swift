@@ -32,8 +32,8 @@ struct ContentView: View {
                         Text("TripleBuffering")
                             .padding()
                     }
-                    NavigationLink(destination: ShaderExamplesView()) {
-                        Text("ShaderExamples")
+                    NavigationLink(destination: VideoEffectView()) {
+                        Text("Video Effect")
                             .padding()
                     }
                 }

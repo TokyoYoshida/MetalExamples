@@ -8,7 +8,7 @@
 import SwiftUI
 import MetalKit
 
-struct ShaderExamplesMetalView: UIViewRepresentable {
+struct VideoEffectMetalView: UIViewRepresentable {
     typealias UIViewType = MTKView
     let mtkView = MTKView()
 
@@ -32,7 +32,7 @@ struct ShaderExamplesMetalView: UIViewRepresentable {
     class Coordinator : NSObject, MTKViewDelegate {
         static let numberOfParticles = 10000
         static let maxBuffers = 3
-        var parent: ShaderExamplesMetalView
+        var parent: VideoEffectMetalView
         var metalDevice: MTLDevice!
         var metalCommandQueue: MTLCommandQueue!
         var renderPipeline: MTLRenderPipelineState!
@@ -46,7 +46,7 @@ struct ShaderExamplesMetalView: UIViewRepresentable {
             currentBufferIndex == 0 ? Coordinator.maxBuffers - 1 : currentBufferIndex - 1
         }
 
-        init(_ parent: ShaderExamplesMetalView) {
+        init(_ parent: VideoEffectMetalView) {
             func buildPipeline() {
                 guard let library = self.metalDevice.makeDefaultLibrary() else {fatalError()}
                 let descriptor = MTLRenderPipelineDescriptor()

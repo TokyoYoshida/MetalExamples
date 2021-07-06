@@ -7,9 +7,9 @@
 
 import SwiftUI
 
-struct ShaderExamplesView: View {
+struct VideoEffectView: View {
     var body: some View {
-        ShaderExamplesMetalView()
+        VideoEffectMetalView()
         .navigationBarTitle(Text("ShaderExamplesView"), displayMode: .inline)
     }
 }
