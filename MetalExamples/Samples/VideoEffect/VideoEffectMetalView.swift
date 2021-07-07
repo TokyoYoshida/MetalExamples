@@ -36,15 +36,9 @@ struct VideoEffectMetalView: UIViewRepresentable {
         var metalDevice: MTLDevice!
         var metalCommandQueue: MTLCommandQueue!
         var renderPipeline: MTLRenderPipelineState!
-        var particleBuffers:[MTLBuffer] = []
         var renderPassDescriptor: MTLRenderPassDescriptor = MTLRenderPassDescriptor()
         var uniforms: Uniforms!
         var preferredFramesTime: Float!
-        let semaphore = DispatchSemaphore(value: Coordinator.maxBuffers)
-        var currentBufferIndex = 0
-        var beforeBufferIndex: Int {
-            currentBufferIndex == 0 ? Coordinator.maxBuffers - 1 : currentBufferIndex - 1
-        }
 
         var ciContext : CIContext!
         var texture: MTLTexture!
@@ -82,25 +76,6 @@ struct VideoEffectMetalView: UIViewRepresentable {
                 uniforms.aspectRatio = Float(parent.mtkView.frame.size.width / parent.mtkView.frame.size.height)
                 preferredFramesTime = 1.0 / Float(parent.mtkView.preferredFramesPerSecond)
             }
-            func initParticles() {
-                func allocBuffer() -> [MTLBuffer] {
-                    var buffers:[MTLBuffer] = []
-                    for _ in 0..<Coordinator.maxBuffers {
-                        let length = MemoryLayout<Particle>.stride * Coordinator.numberOfParticles
-                        guard let buffer = metalDevice.makeBuffer(length: length, options: .storageModeShared) else {
-                            fatalError("Cannot make particle buffer.")
-                        }
-                        buffers.append(buffer)
-                    }
-                    return buffers
-                }
-                func initParticlePosition(_ particleBuffer: MTLBuffer) {
-                    let particles = makeParticlePositions()
-                    self.particleBuffers[0].contents().copyMemory(from: particles, byteCount: MemoryLayout<Particle>.stride * particles.count)
-                }
-                particleBuffers = allocBuffer()
-                initParticlePosition(particleBuffers[0])
-            }
             func setupVideoRecorder() {
                 do {
                     try videoRecorder.prepare()
@@ -136,7 +111,6 @@ struct VideoEffectMetalView: UIViewRepresentable {
             super.init()
             buildPipeline()
             initUniform()
-            initParticles()
             setupVideoRecorder()
             setFrameTextureCapture()
             makeBuffers()
@@ -158,27 +132,9 @@ struct VideoEffectMetalView: UIViewRepresentable {
         func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
         }
         func draw(in view: MTKView) {
-            func calcParticlePostion() {
-                let p = particleBuffers[currentBufferIndex].contents()
-                let b = particleBuffers[beforeBufferIndex].contents()
-                let stride = MemoryLayout<Particle>.stride
-                for i in 0..<Coordinator.numberOfParticles {
-                    var particle = b.load(fromByteOffset: i*stride, as: Particle.self)
-                    if particle.position.y > -1 {
-                        particle.position.y -= 0.01
-                    } else {
-                        particle.position.y += 2 - 0.01
-                    }
-                    p.storeBytes(of: particle,toByteOffset: i*stride,  as: Particle.self)
-                }
-            }
             guard let drawable = view.currentDrawable else {return}
             
-//            semaphore.wait()
             let commandBuffer = metalCommandQueue.makeCommandBuffer()!
-            
-            currentBufferIndex = (currentBufferIndex + 1) % Coordinator.maxBuffers
-            calcParticlePostion()
             
             renderPassDescriptor.colorAttachments[0].texture = drawable.texture
             renderPassDescriptor.colorAttachments[0].loadAction = .clear
@@ -200,29 +156,11 @@ struct VideoEffectMetalView: UIViewRepresentable {
 
             renderEncoder.drawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: 4)
             
-//            let w = min(texture.width, drawable.texture.width)
-//            let h = min(texture.height, drawable.texture.height)
-//
-//            let blitEncoder = commandBuffer.makeBlitCommandEncoder()!
-//
-//            blitEncoder.copy(from: texture,
-//                              sourceSlice: 0,
-//                              sourceLevel: 0,
-//                              sourceOrigin: MTLOrigin(x:0, y:0 ,z:0),
-//                              sourceSize: MTLSizeMake(w, h, texture.depth),
-//                              to: drawable.texture,
-//                              destinationSlice: 0,
-//                              destinationLevel: 0,
-//                              destinationOrigin: MTLOrigin(x:0, y:0 ,z:0))
 
             renderEncoder.endEncoding()
-//            blitEncoder.endEncoding()
 
             commandBuffer.present(drawable)
             
-//            commandBuffer.addCompletedHandler {[weak self] _ in
-//                self?.semaphore.signal()
-//            }
             commandBuffer.commit()
             
             commandBuffer.waitUntilCompleted()
