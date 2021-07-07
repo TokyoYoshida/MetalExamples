@@ -52,12 +52,28 @@ struct VideoEffectMetalView: UIViewRepresentable {
         var textureCache : CVMetalTextureCache?
         var cgImage: CGImage?
 
+        let vertexData: [Float] = [
+            -1, -1, 0, 1,
+             1, -1, 0, 1,
+            -1,  1, 0, 1,
+             1,  1, 0, 1,
+        ]
+        let textureCordinatedata: [Float] = [
+            0,1,
+            1,1,
+            0,0,
+            1,0
+        ]
+        var vertextBuffer: MTLBuffer!
+        var texCordBuffer: MTLBuffer!
+
+        
         init(_ parent: VideoEffectMetalView) {
             func buildPipeline() {
                 guard let library = self.metalDevice.makeDefaultLibrary() else {fatalError()}
                 let descriptor = MTLRenderPipelineDescriptor()
-                descriptor.vertexFunction = library.makeFunction(name: "storedParticleVertexShader")
-                descriptor.fragmentFunction = library.makeFunction(name: "storedParticleFragmentShader")
+                descriptor.vertexFunction = library.makeFunction(name: "simpleVertexShader")
+                descriptor.fragmentFunction = library.makeFunction(name: "simpleFragmentShader")
                 descriptor.colorAttachments[0].pixelFormat = .bgra8Unorm_srgb
                 renderPipeline = try! self.metalDevice.makeRenderPipelineState(descriptor: descriptor)
             }
@@ -103,6 +119,13 @@ struct VideoEffectMetalView: UIViewRepresentable {
                     }
                 }
             }
+            func makeBuffers() {
+                let size = vertexData.count * MemoryLayout<Float>.size
+                vertextBuffer = metalDevice.makeBuffer(bytes: vertexData, length: size, options: [])
+                
+                let texSize = textureCordinatedata.count * MemoryLayout<Float>.size
+                texCordBuffer = metalDevice.makeBuffer(bytes: textureCordinatedata, length: texSize, options: [])
+            }
 
             self.parent = parent
             if let metalDevice = MTLCreateSystemDefaultDevice() {
@@ -116,6 +139,7 @@ struct VideoEffectMetalView: UIViewRepresentable {
             initParticles()
             setupVideoRecorder()
             setFrameTextureCapture()
+            makeBuffers()
         }
         
         func makeRandomPosition() -> Particle {
@@ -160,37 +184,39 @@ struct VideoEffectMetalView: UIViewRepresentable {
             renderPassDescriptor.colorAttachments[0].loadAction = .clear
             renderPassDescriptor.colorAttachments[0].clearColor = MTLClearColorMake(0.8, 0.7, 0.1, 1.0)
 
-//            let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)!
+            let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)!
 
-//            guard let renderPipeline = renderPipeline else {fatalError()}
-//
-//
-//            renderEncoder.setRenderPipelineState(renderPipeline)
-//            uniforms.time += preferredFramesTime
-//
-//            renderEncoder.setVertexBuffer(particleBuffers[currentBufferIndex], offset: 0, index: 0)
-//
-//            renderEncoder.setVertexBytes(&uniforms, length: MemoryLayout<Uniforms>.stride, index: 2)
+            guard let renderPipeline = renderPipeline else {fatalError()}
 
-//            renderEncoder.drawPrimitives(type: .point, vertexStart: 0, vertexCount: Coordinator.numberOfParticles)
+
+            renderEncoder.setRenderPipelineState(renderPipeline)
+            uniforms.time += preferredFramesTime
+
+            renderEncoder.setVertexBuffer(vertextBuffer, offset: 0, index: 0)
+            renderEncoder.setVertexBuffer(texCordBuffer, offset: 0, index: 1)
+            renderEncoder.setVertexBytes(&uniforms, length: MemoryLayout<Uniforms>.stride, index: 2)
+
+            renderEncoder.setFragmentTexture(texture, index: 0)
+
+            renderEncoder.drawPrimitives(type: .point, vertexStart: 0, vertexCount: Coordinator.numberOfParticles)
             
-            let w = min(texture.width, drawable.texture.width)
-            let h = min(texture.height, drawable.texture.height)
+//            let w = min(texture.width, drawable.texture.width)
+//            let h = min(texture.height, drawable.texture.height)
+//
+//            let blitEncoder = commandBuffer.makeBlitCommandEncoder()!
+//
+//            blitEncoder.copy(from: texture,
+//                              sourceSlice: 0,
+//                              sourceLevel: 0,
+//                              sourceOrigin: MTLOrigin(x:0, y:0 ,z:0),
+//                              sourceSize: MTLSizeMake(w, h, texture.depth),
+//                              to: drawable.texture,
+//                              destinationSlice: 0,
+//                              destinationLevel: 0,
+//                              destinationOrigin: MTLOrigin(x:0, y:0 ,z:0))
 
-            let blitEncoder = commandBuffer.makeBlitCommandEncoder()!
-
-            blitEncoder.copy(from: texture,
-                              sourceSlice: 0,
-                              sourceLevel: 0,
-                              sourceOrigin: MTLOrigin(x:0, y:0 ,z:0),
-                              sourceSize: MTLSizeMake(w, h, texture.depth),
-                              to: drawable.texture,
-                              destinationSlice: 0,
-                              destinationLevel: 0,
-                              destinationOrigin: MTLOrigin(x:0, y:0 ,z:0))
-
-//            renderEncoder.endEncoding()
-            blitEncoder.endEncoding()
+            renderEncoder.endEncoding()
+//            blitEncoder.endEncoding()
 
             commandBuffer.present(drawable)
             

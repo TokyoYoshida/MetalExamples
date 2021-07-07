@@ -27,6 +27,7 @@
 		1E613434266C9F0E009A4FBC /* ParticleMetalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E613430266C9EC7009A4FBC /* ParticleMetalView.swift */; };
 		1E613435266C9F11009A4FBC /* RandomParticleShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 1E613432266C9EC7009A4FBC /* RandomParticleShader.metal */; };
 		1E61343E266CC052009A4FBC /* CommnShaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 1E61343D266CC052009A4FBC /* CommnShaders.metal */; };
+		1E8CF5E826959EF100FE2F4B /* VideoEffectShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 1E4303A6269426FC00BFB25C /* VideoEffectShader.metal */; };
 		1EAF6C5B266B67A100772496 /* GDPerformanceView.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1EAF6C5A266B67A100772496 /* GDPerformanceView.xcframework */; };
 		1EAF6C5C266B67A100772496 /* GDPerformanceView.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1EAF6C5A266B67A100772496 /* GDPerformanceView.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		1EAF6C63266B6CD200772496 /* SimpleShaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EAF6C62266B6C7C00772496 /* SimpleShaderView.swift */; };
@@ -219,9 +220,9 @@
 			children = (
 				1E4303A7269426FD00BFB25C /* VideoEffectView.swift */,
 				1E4303A8269426FD00BFB25C /* VideoEffectMetalView.swift */,
-				1E4303A6269426FC00BFB25C /* VideoEffectShader.metal */,
 				1E18AD0926942B5500C70468 /* FrameVideoRecorder.swift */,
 				1E18AD0A26942B5600C70468 /* VideoWriter.swift */,
+				1E4303A6269426FC00BFB25C /* VideoEffectShader.metal */,
 			);
 			path = VideoEffect;
 			sourceTree = "<group>";
@@ -457,6 +458,7 @@
 				1E1DD8862668E53D00F98410 /* SimpleView.swift in Sources */,
 				1EAF6C63266B6CD200772496 /* SimpleShaderView.swift in Sources */,
 				1EF689A2268DA21200571F3F /* TripleBufferingView.swift in Sources */,
+				1E8CF5E826959EF100FE2F4B /* VideoEffectShader.metal in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
