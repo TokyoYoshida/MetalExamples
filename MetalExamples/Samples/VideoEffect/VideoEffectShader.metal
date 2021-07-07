@@ -17,15 +17,14 @@ struct ColorInOut
 };
 
 vertex ColorInOut simpleVertexShader(
-                        const device Particle *particles [[ buffer(0)]],
+                        const device float4 *positions [[ buffer(0)]],
                         const device float2 *texCords  [[ buffer(1)]],
                         constant Uniforms &uniforms [[buffer(2)]],
                         uint vid [[ vertex_id ]]
     ) {
     ColorInOut out;
     
-    out.position = float4(0, 0, 0, 1);
-    out.position.xy = particles[vid].position;
+    out.position = positions[vid];
     out.size = 5.0f;
     out.texCords = texCords[vid];
     return out;

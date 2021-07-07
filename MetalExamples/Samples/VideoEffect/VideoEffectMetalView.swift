@@ -174,7 +174,7 @@ struct VideoEffectMetalView: UIViewRepresentable {
             }
             guard let drawable = view.currentDrawable else {return}
             
-            semaphore.wait()
+//            semaphore.wait()
             let commandBuffer = metalCommandQueue.makeCommandBuffer()!
             
             currentBufferIndex = (currentBufferIndex + 1) % Coordinator.maxBuffers
@@ -198,7 +198,7 @@ struct VideoEffectMetalView: UIViewRepresentable {
 
             renderEncoder.setFragmentTexture(texture, index: 0)
 
-            renderEncoder.drawPrimitives(type: .point, vertexStart: 0, vertexCount: Coordinator.numberOfParticles)
+            renderEncoder.drawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: 4)
             
 //            let w = min(texture.width, drawable.texture.width)
 //            let h = min(texture.height, drawable.texture.height)
@@ -220,10 +220,12 @@ struct VideoEffectMetalView: UIViewRepresentable {
 
             commandBuffer.present(drawable)
             
-            commandBuffer.addCompletedHandler {[weak self] _ in
-                self?.semaphore.signal()
-            }
+//            commandBuffer.addCompletedHandler {[weak self] _ in
+//                self?.semaphore.signal()
+//            }
             commandBuffer.commit()
+            
+            commandBuffer.waitUntilCompleted()
         }
     }
 }
