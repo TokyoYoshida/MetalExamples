@@ -11,5 +11,6 @@ struct VideoEffectView: View {
     var body: some View {
         VideoEffectMetalView()
         .navigationBarTitle(Text("ShaderExamplesView"), displayMode: .inline)
+        .edgesIgnoringSafeArea(.all)
     }
 }
