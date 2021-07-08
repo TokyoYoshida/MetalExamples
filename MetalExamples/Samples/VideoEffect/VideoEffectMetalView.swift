@@ -75,7 +75,7 @@ struct VideoEffectMetalView: UIViewRepresentable {
                 renderPipeline = try! self.metalDevice.makeRenderPipelineState(descriptor: descriptor)
             }
             func initUniform() {
-                uniforms = Uniforms(time: Float(0.0), aspectRatio: Float(0.0), touch: SIMD2<Float>())
+                uniforms = Uniforms(time: Float(0.0), aspectRatio: Float(0.0), touch: SIMD2<Float>(), resolution: SIMD4<Float>())
                 uniforms.aspectRatio = Float(parent.mtkView.frame.size.width / parent.mtkView.frame.size.height)
                 preferredFramesTime = 1.0 / Float(parent.mtkView.preferredFramesPerSecond)
             }
@@ -133,6 +133,8 @@ struct VideoEffectMetalView: UIViewRepresentable {
         }
 
         func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
+            uniforms.resolution.x = Float(size.width)
+            uniforms.resolution.y = Float(size.height)
         }
         func draw(in view: MTKView) {
             guard let drawable = view.currentDrawable else {return}
@@ -156,6 +158,7 @@ struct VideoEffectMetalView: UIViewRepresentable {
             renderEncoder.setVertexBytes(&uniforms, length: MemoryLayout<Uniforms>.stride, index: 2)
 
             renderEncoder.setFragmentTexture(texture, index: 0)
+            renderEncoder.setFragmentBytes(&uniforms, length: MemoryLayout<Uniforms>.stride, index: 1)
 
             renderEncoder.drawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: 4)
             

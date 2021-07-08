@@ -111,15 +111,24 @@ float2 Drops(float2 uv, float t, float l0, float l1, float l2) {
     return float2(c, max(m1.y*l0, m2.y*l1));
 }
 
-void mainImage( out float4 fragColor, in float2 fragCoord )
-{
+fragment float4 rainDropFragmentShader(
+                    ColorInOut in [[ stage_in ]],
+                    texture2d<float, access::sample> texture [[texture(0)]],
+                   constant Uniforms &uniforms [[buffer(1)]] ) {
+    constexpr sampler colorSampler;
+ 
+    float2 fragCoord = in.texCords;
+    float4 iResolution = uniforms.resolution;
+    float4 iMouse = float4(0,0,0,0);
+    float iTime = uniforms.time;
+    
     float2 uv = (fragCoord.xy-.5*iResolution.xy) / iResolution.y;
     float2 UV = fragCoord.xy/iResolution.xy;
     float3 M = iMouse.xyz/iResolution.xyz;
     float T = iTime+M.x*2.;
     
     #ifdef HAS_HEART
-    T = mod(iTime, 102.);
+    T = fmod(iTime, 102.);
     T = mix(T, M.x*102., M.z>0.?1.:0.);
     #endif
     
@@ -185,8 +194,7 @@ void mainImage( out float4 fragColor, in float2 fragCoord )
     #endif
     
     float focus = mix(maxBlur-c.y, minBlur, S(.1, .2, c.x));
-    float3 col = textureLod(iChannel0, UV+n, focus).rgb;
-    
+    float3 col = texture.sample(colorSampler, in.texCords).rgb;
     
     #ifdef USE_POST_PROCESSING
     t = (T+3.)*.5;                                        // make time sync with first lightnoing
@@ -207,16 +215,6 @@ void mainImage( out float4 fragColor, in float2 fragCoord )
     #endif
     
     //col = float3(heart);
-    fragColor = float4(col, 1.);
+    return float4(col, 1.);
 }
 
-fragment float4 rainDropFragmentShader(
-                    ColorInOut in [[ stage_in ]],
-                    texture2d<float, access::sample> texture [[texture(0)]]) {
-    constexpr sampler colorSampler;
-        
-    float4 color = texture.sample(colorSampler, in.texCords);
-    color.r += 0.2;
-    
-    return color;
-}
