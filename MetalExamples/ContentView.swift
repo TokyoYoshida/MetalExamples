@@ -37,8 +37,8 @@ struct ContentView: View {
                             .padding()
                     }
                     Section(header: Text("MSL Shader Examples")) {
-                        NavigationLink(destination: VideoEffectView()) {
-                            Text("Video Effect")
+                        NavigationLink(destination: RainDropEffectView()) {
+                            Text("Rain Drop")
                                 .padding()
                         }
                     }

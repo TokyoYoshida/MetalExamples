@@ -33,6 +33,8 @@
 		1EAF6C63266B6CD200772496 /* SimpleShaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EAF6C62266B6C7C00772496 /* SimpleShaderView.swift */; };
 		1EAF6C64266B6CD400772496 /* SimpleShaderMetalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EAF6C61266B6C7C00772496 /* SimpleShaderMetalView.swift */; };
 		1EAF6C66266B6D4400772496 /* SimpleShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 1EAF6C65266B6D4400772496 /* SimpleShader.metal */; };
+		1EE5073E269682D600CD34DF /* RainDropShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 1EE5073B2696824800CD34DF /* RainDropShader.metal */; };
+		1EE5073F269682FA00CD34DF /* RainDropEffectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EE5073C2696829200CD34DF /* RainDropEffectView.swift */; };
 		1EF689A2268DA21200571F3F /* TripleBufferingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EF689A0268DA1A900571F3F /* TripleBufferingView.swift */; };
 		1EF689A3268DA21500571F3F /* TripleBufferingMetalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EF689A1268DA1AB00571F3F /* TripleBufferingMetalView.swift */; };
 /* End PBXBuildFile section */
@@ -102,6 +104,8 @@
 		1EAF6C62266B6C7C00772496 /* SimpleShaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleShaderView.swift; sourceTree = "<group>"; };
 		1EAF6C65266B6D4400772496 /* SimpleShader.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = SimpleShader.metal; sourceTree = "<group>"; };
 		1EAF6C67266B6DE500772496 /* SimpleShaderType.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SimpleShaderType.h; sourceTree = "<group>"; };
+		1EE5073B2696824800CD34DF /* RainDropShader.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = RainDropShader.metal; sourceTree = "<group>"; };
+		1EE5073C2696829200CD34DF /* RainDropEffectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RainDropEffectView.swift; sourceTree = "<group>"; };
 		1EF689A0268DA1A900571F3F /* TripleBufferingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripleBufferingView.swift; sourceTree = "<group>"; };
 		1EF689A1268DA1AB00571F3F /* TripleBufferingMetalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripleBufferingMetalView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -202,6 +206,7 @@
 				1E61342E266C9EBB009A4FBC /* Particle */,
 				1EF6899F268DA19600571F3F /* Triple Buffering */,
 				1E4303A5269426EA00BFB25C /* VideoEffect */,
+				1EE5073A2696823500CD34DF /* ShaderExamples */,
 			);
 			path = Samples;
 			sourceTree = "<group>";
@@ -273,6 +278,23 @@
 				1EAF6C67266B6DE500772496 /* SimpleShaderType.h */,
 			);
 			path = SimpleShader;
+			sourceTree = "<group>";
+		};
+		1EE5073A2696823500CD34DF /* ShaderExamples */ = {
+			isa = PBXGroup;
+			children = (
+				1EE5073D2696829A00CD34DF /* RainDrop */,
+			);
+			path = ShaderExamples;
+			sourceTree = "<group>";
+		};
+		1EE5073D2696829A00CD34DF /* RainDrop */ = {
+			isa = PBXGroup;
+			children = (
+				1EE5073C2696829200CD34DF /* RainDropEffectView.swift */,
+				1EE5073B2696824800CD34DF /* RainDropShader.metal */,
+			);
+			path = RainDrop;
 			sourceTree = "<group>";
 		};
 		1EF6899F268DA19600571F3F /* Triple Buffering */ = {
@@ -438,6 +460,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1E32D80C268EF131006BAC95 /* StoredParticleShader.metal in Sources */,
+				1EE5073E269682D600CD34DF /* RainDropShader.metal in Sources */,
 				1E613435266C9F11009A4FBC /* RandomParticleShader.metal in Sources */,
 				1E6047E42669DECB00AAF2DD /* SimpleMetalView.swift in Sources */,
 				1E613434266C9F0E009A4FBC /* ParticleMetalView.swift in Sources */,
@@ -446,6 +469,7 @@
 				1E6047EA2669E3BF00AAF2DD /* DrawTextureView.swift in Sources */,
 				1E1DD85B2668E47100F98410 /* ContentView.swift in Sources */,
 				1E61343E266CC052009A4FBC /* CommnShaders.metal in Sources */,
+				1EE5073F269682FA00CD34DF /* RainDropEffectView.swift in Sources */,
 				1E18AD0E26942BFE00C70468 /* CVPixelBuffer+Ext.swift in Sources */,
 				1EF689A3268DA21500571F3F /* TripleBufferingMetalView.swift in Sources */,
 				1E613433266C9F0B009A4FBC /* ParticleView.swift in Sources */,

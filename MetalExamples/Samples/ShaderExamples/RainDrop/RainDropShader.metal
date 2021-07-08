@@ -6,7 +6,7 @@
 //
 
 #include <metal_stdlib>
-#include "../Common/CommonShadersType.h"
+#include "../../Common/CommonShadersType.h"
 using namespace metal;
 
 struct ColorInOut
@@ -16,21 +16,7 @@ struct ColorInOut
     float2 texCords;
 };
 
-vertex ColorInOut simpleVertexShader(
-                        const device float4 *positions [[ buffer(0)]],
-                        const device float2 *texCords  [[ buffer(1)]],
-                        constant Uniforms &uniforms [[buffer(2)]],
-                        uint vid [[ vertex_id ]]
-    ) {
-    ColorInOut out;
-    
-    out.position = positions[vid];
-    out.size = 5.0f;
-    out.texCords = texCords[vid];
-    return out;
-}
-
-fragment float4 redFilterFragmentShader(
+fragment float4 rainDropFragmentShader(
                     ColorInOut in [[ stage_in ]],
                     texture2d<float, access::sample> texture [[texture(0)]]) {
     constexpr sampler colorSampler;

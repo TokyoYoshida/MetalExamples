@@ -9,8 +9,8 @@ import SwiftUI
 
 struct VideoEffectView: View {
     var body: some View {
-        VideoEffectMetalView(vertexShaderName: "simpleVertexShader", fragmentShaderName: "simpleFragmentShader")
-        .navigationBarTitle(Text("ShaderExamplesView"), displayMode: .inline)
+        VideoEffectMetalView(vertexShaderName: "simpleVertexShader", fragmentShaderName: "redFilterFragmentShader")
+        .navigationBarTitle(Text("Video Effect"), displayMode: .inline)
         .edgesIgnoringSafeArea(.all)
     }
 }
