@@ -11,6 +11,9 @@ import MetalKit
 struct VideoEffectMetalView: UIViewRepresentable {
     typealias UIViewType = MTKView
     let mtkView = MTKView()
+    
+    let vertexShaderName: String
+    let fragmentShaderName: String
 
     func makeCoordinator() -> Coordinator {
         Coordinator(self)
@@ -66,8 +69,8 @@ struct VideoEffectMetalView: UIViewRepresentable {
             func buildPipeline() {
                 guard let library = self.metalDevice.makeDefaultLibrary() else {fatalError()}
                 let descriptor = MTLRenderPipelineDescriptor()
-                descriptor.vertexFunction = library.makeFunction(name: "simpleVertexShader")
-                descriptor.fragmentFunction = library.makeFunction(name: "simpleFragmentShader")
+                descriptor.vertexFunction = library.makeFunction(name: parent.vertexShaderName)
+                descriptor.fragmentFunction = library.makeFunction(name: parent.fragmentShaderName)
                 descriptor.colorAttachments[0].pixelFormat = .bgra8Unorm_srgb
                 renderPipeline = try! self.metalDevice.makeRenderPipelineState(descriptor: descriptor)
             }

@@ -9,7 +9,7 @@ import SwiftUI
 
 struct VideoEffectView: View {
     var body: some View {
-        VideoEffectMetalView()
+        VideoEffectMetalView(vertexShaderName: "simpleVertexShader", fragmentShaderName: "simpleFragmentShader")
         .navigationBarTitle(Text("ShaderExamplesView"), displayMode: .inline)
         .edgesIgnoringSafeArea(.all)
     }

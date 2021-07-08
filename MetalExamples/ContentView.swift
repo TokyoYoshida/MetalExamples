@@ -36,6 +36,12 @@ struct ContentView: View {
                         Text("Video Effect")
                             .padding()
                     }
+                    Section(header: Text("MSL Shader Examples")) {
+                        NavigationLink(destination: VideoEffectView()) {
+                            Text("Video Effect")
+                                .padding()
+                        }
+                    }
                 }
             }
             .listStyle(SidebarListStyle())
