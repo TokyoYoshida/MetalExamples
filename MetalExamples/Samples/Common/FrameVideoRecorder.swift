@@ -102,12 +102,12 @@ class FrameVideoRecorder: NSObject {
                 DispatchQueue.main.async {
                     self.videoWriter!.finish { () -> Void in
                         self.videoWriter = nil
-//                        PHPhotoLibrary.shared().performChanges({
-//                            PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: self.filePathUrl() as URL)
-//                        }) { [weak self] completed, error in
-//                            self?.completionHandler?(completed ,error)
-//                            self?.fileIndex += 1
-//                        }
+                        PHPhotoLibrary.shared().performChanges({
+                            PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: self.filePathUrl() as URL)
+                        }) { [weak self] completed, error in
+                            self?.completionHandler?(completed ,error)
+                            self?.fileIndex += 1
+                        }
                     }
                     
                 }

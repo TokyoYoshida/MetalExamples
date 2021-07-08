@@ -36,6 +36,7 @@ fragment float4 simpleFragmentShader(
     constexpr sampler colorSampler;
         
     float4 color = texture.sample(colorSampler, in.texCords);
+    color.r += 0.2;
     
     return color;
 }

@@ -220,8 +220,6 @@
 			children = (
 				1E4303A7269426FD00BFB25C /* VideoEffectView.swift */,
 				1E4303A8269426FD00BFB25C /* VideoEffectMetalView.swift */,
-				1E18AD0926942B5500C70468 /* FrameVideoRecorder.swift */,
-				1E18AD0A26942B5600C70468 /* VideoWriter.swift */,
 				1E4303A6269426FC00BFB25C /* VideoEffectShader.metal */,
 			);
 			path = VideoEffect;
@@ -252,6 +250,8 @@
 				1E613431266C9EC7009A4FBC /* CommonShadersType.h */,
 				1E61343D266CC052009A4FBC /* CommnShaders.metal */,
 				1E18AD0D26942BFE00C70468 /* CVPixelBuffer+Ext.swift */,
+				1E18AD0926942B5500C70468 /* FrameVideoRecorder.swift */,
+				1E18AD0A26942B5600C70468 /* VideoWriter.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
