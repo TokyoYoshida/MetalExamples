@@ -45,6 +45,7 @@ struct TripleBufferingMetalView: UIViewRepresentable {
         var beforeBufferIndex: Int {
             currentBufferIndex == 0 ? Coordinator.maxBuffers - 1 : currentBufferIndex - 1
         }
+        let pattern = 0
 
         init(_ parent: TripleBufferingMetalView) {
             func buildPipeline() {
@@ -144,8 +145,22 @@ struct TripleBufferingMetalView: UIViewRepresentable {
             
             renderEncoder.setVertexBytes(&uniforms, length: MemoryLayout<Uniforms>.stride, index: 2)            
 
-            renderEncoder.drawPrimitives(type: .point, vertexStart: 0, vertexCount: Coordinator.numberOfParticles)
-            
+// sanple 1:まとめて渡す
+//            renderEncoder.drawPrimitives(type: .point, vertexStart: 0, vertexCount: Coordinator.numberOfParticles)
+
+// sanple 2:setVertexBufferOffsetを使う
+//            for i in 0 ..< Coordinator.numberOfParticles {
+//                renderEncoder.setVertexBufferOffset(i * MemoryLayout<Particle>.stride, index: 0)
+//                renderEncoder.drawPrimitives(type: .point, vertexStart: 0, vertexCount: 1)
+//            }
+
+// sanple 3:setVertexBytesで渡す
+//            for i in 0 ..< Coordinator.numberOfParticles {
+//                let p = particleBuffers[currentBufferIndex].contents()
+//                renderEncoder.setVertexBytes(p + MemoryLayout<Particle>.stride*i, length: MemoryLayout<Particle>.stride, index: 0)
+//                renderEncoder.drawPrimitives(type: .point, vertexStart: 0, vertexCount: 1)
+//            }
+
             renderEncoder.endEncoding()
             
             commandBuffer.present(drawable)
