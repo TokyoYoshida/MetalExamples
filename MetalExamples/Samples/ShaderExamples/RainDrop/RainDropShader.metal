@@ -10,8 +10,6 @@
 using namespace metal;
 
 #define S(a, b, t) smoothstep(a, b, t)
-#define HAS_HEART
-#define USE_POST_PROCESSING
 
 struct ColorInOut
 {
@@ -117,7 +115,6 @@ fragment float4 rainDropFragmentShader(
                    constant Uniforms &uniforms [[buffer(1)]] ) {
     constexpr sampler colorSampler;
  
-    float2 fragCoord = in.texCords;
     float4 iResolution = uniforms.resolution;
     float4 iMouse = float4(0,0,0,0);
     float iTime = uniforms.time;
@@ -128,49 +125,13 @@ fragment float4 rainDropFragmentShader(
     float3 M = iMouse.xyz/iResolution.xyz;
     float T = iTime+M.x*2.;
     
-    #ifdef HAS_HEART
-    T = fmod(iTime, 102.);
-    T = mix(T, M.x*102., M.z>0.?1.:0.);
-    #endif
-    
-    
     float t = T*.2;
     
     float rainAmount = iMouse.z>0. ? M.y : sin(T*.05)*.3+.7;
     
-    float maxBlur = mix(3., 6., rainAmount);
-    float minBlur = 2.;
-    
-    float story = 0.;
-    float heart = 0.;
-    
-    #ifdef HAS_HEART
-    story = S(0., 70., T);
-    
-    t = min(1., T/70.);                        // remap drop time so it goes slower when it freezes
-    t = 1.-t;
-    t = (1.-t*t)*70.;
-    
-    float zoom= mix(.3, 1.2, story);        // slowly zoom out
-    uv *=zoom;
-    minBlur = 4.+S(.5, 1., story)*3.;        // more opaque glass towards the end
-    maxBlur = 6.+S(.5, 1., story)*1.5;
-    
-    float2 hv = uv-float2(.0, -.1);                // build heart
-    hv.x *= .5;
-    float s = S(110., 70., T);                // heart gets smaller and fades towards the end
-    hv.y-=sqrt(abs(hv.x))*.5*s;
-    heart = length(hv);
-    heart = S(.4*s, .2*s, heart)*s;
-    rainAmount = heart;                        // the rain is where the heart is
-    
-    maxBlur-=heart;                            // inside the heart slighly less foggy
-    uv *= 1.5;                                // zoom out a bit more
-    t *= .25;
-    #else
-    float zoom = -cos(T*.2);
+    float zoom = 1;
     uv *= .7+zoom*.3;
-    #endif
+
     UV = (UV-.5)*(.9+zoom*.1)+.5;
     
     float staticDrops = S(-.5, 1., rainAmount)*2.;
@@ -179,43 +140,14 @@ fragment float4 rainDropFragmentShader(
     
     
     float2 c = Drops(uv, t, staticDrops, layer1, layer2);
-   #ifdef CHEAP_NORMALS
-        float2 n = float2(dFdx(c.x), dFdy(c.x));// cheap normals (3x cheaper, but 2 times shittier ;))
-    #else
-        float2 e = float2(.001, 0.);
-        float cx = Drops(uv+e, t, staticDrops, layer1, layer2).x;
-        float cy = Drops(uv+e.yx, t, staticDrops, layer1, layer2).x;
-        float2 n = float2(cx-c.x, cy-c.x);        // expensive normals
-    #endif
+
+    float2 e = float2(.001, 0.);
+    float cx = Drops(uv+e, t, staticDrops, layer1, layer2).x;
+    float cy = Drops(uv+e.yx, t, staticDrops, layer1, layer2).x;
+    float2 n = float2(cx-c.x, cy-c.x);        // expensive normals
     
     
-    #ifdef HAS_HEART
-    n *= 1.-S(60., 85., T);
-    c.y *= 1.-S(80., 100., T)*.8;
-    #endif
-    
-    float focus = mix(maxBlur-c.y, minBlur, S(.1, .2, c.x));
     float3 col = texture.sample(colorSampler, UV + n).rgb;
-    
-    #ifdef USE_POST_PROCESSING
-    t = (T+3.)*.5;                                        // make time sync with first lightnoing
-    float colFade = sin(t*.2)*.5+.5+story;
-    col *= mix(float3(1.), float3(.8, .9, 1.3), colFade);    // subtle color shift
-    float fade = S(0., 10., T);                            // fade in at the start
-    float lightning = sin(t*sin(t*10.));                // lighting flicker
-    lightning *= pow(max(0., sin(t+sin(t))), 10.);        // lightning flash
-    col *= 1.+lightning*fade*mix(1., .1, story*story);    // composite lightning
-    col *= 1.-dot(UV-=.5, UV);                            // vignette
-                                                
-    #ifdef HAS_HEART
-        col = mix(pow(col, float3(1.2)), col, heart);
-        fade *= S(102., 97., T);
-    #endif
-    
-    col *= fade;                                        // composite start and end fade
-    #endif
-    
-    //col = float3(heart);
+        
     return float4(col, 1.);
 }
-
