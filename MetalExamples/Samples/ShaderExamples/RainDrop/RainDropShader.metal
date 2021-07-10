@@ -122,8 +122,9 @@ fragment float4 rainDropFragmentShader(
     float4 iMouse = float4(0,0,0,0);
     float iTime = uniforms.time;
     
-    float2 uv = in.texCords;//(fragCoord.xy-.5*iResolution.xy) / iResolution.y;
-    float2 UV = in.texCords;//fragCoord.xy/iResolution.xy;
+    float2 uv = in.texCords - 0.5*in.texCords;
+    uv.y *= -1.0;
+    float2 UV = in.texCords;
     float3 M = iMouse.xyz/iResolution.xyz;
     float T = iTime+M.x*2.;
     
