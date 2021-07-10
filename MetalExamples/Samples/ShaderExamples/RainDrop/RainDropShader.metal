@@ -115,19 +115,16 @@ fragment float4 rainDropFragmentShader(
                    constant Uniforms &uniforms [[buffer(1)]] ) {
     constexpr sampler colorSampler;
  
-    float4 iResolution = uniforms.resolution;
-    float4 iMouse = float4(0,0,0,0);
     float iTime = uniforms.time;
     
     float2 uv = in.texCords - 0.5*in.texCords;
     uv.y *= -1.0;
     float2 UV = in.texCords;
-    float3 M = iMouse.xyz/iResolution.xyz;
-    float T = iTime+M.x*2.;
+    float T = iTime;
     
     float t = T*.2;
     
-    float rainAmount = iMouse.z>0. ? M.y : sin(T*.05)*.3+.7;
+    float rainAmount = sin(T*.05)*.3+.7;
     
     float zoom = 1;
     uv *= .7+zoom*.3;
