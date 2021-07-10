@@ -122,8 +122,8 @@ fragment float4 rainDropFragmentShader(
     float4 iMouse = float4(0,0,0,0);
     float iTime = uniforms.time;
     
-    float2 uv = (fragCoord.xy-.5*iResolution.xy) / iResolution.y;
-    float2 UV = fragCoord.xy/iResolution.xy;
+    float2 uv = in.texCords;//(fragCoord.xy-.5*iResolution.xy) / iResolution.y;
+    float2 UV = in.texCords;//fragCoord.xy/iResolution.xy;
     float3 M = iMouse.xyz/iResolution.xyz;
     float T = iTime+M.x*2.;
     
@@ -194,7 +194,7 @@ fragment float4 rainDropFragmentShader(
     #endif
     
     float focus = mix(maxBlur-c.y, minBlur, S(.1, .2, c.x));
-    float3 col = texture.sample(colorSampler, in.texCords).rgb;
+    float3 col = texture.sample(colorSampler, UV + n).rgb;
     
     #ifdef USE_POST_PROCESSING
     t = (T+3.)*.5;                                        // make time sync with first lightnoing
