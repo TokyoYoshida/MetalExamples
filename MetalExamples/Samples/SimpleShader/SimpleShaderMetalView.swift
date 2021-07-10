@@ -49,8 +49,8 @@ struct SimpleShaderMetalView: UIViewRepresentable {
             func buildPipeline() {
                 guard let library = self.metalDevice.makeDefaultLibrary() else {fatalError()}
                 let descriptor = MTLRenderPipelineDescriptor()
-                descriptor.vertexFunction = library.makeFunction(name: "vertexShader")
-                descriptor.fragmentFunction = library.makeFunction(name: "fragmentShader")
+                descriptor.vertexFunction = library.makeFunction(name: "simpleVertexShader")
+                descriptor.fragmentFunction = library.makeFunction(name: "simpleFragmentShader")
                 descriptor.colorAttachments[0].pixelFormat = .bgra8Unorm_srgb
                 renderPipeline = try! self.metalDevice.makeRenderPipelineState(descriptor: descriptor)
             }

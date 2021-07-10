@@ -82,7 +82,7 @@ struct ParticleMetalView: UIViewRepresentable {
                 texture = makeRenderTexture()
             }
             func initUniform() {
-                uniforms = Uniforms(time: Float(0.0), aspectRatio: Float(0.0), touch: SIMD2<Float>())
+                uniforms = Uniforms(time: Float(0.0), aspectRatio: Float(0.0), touch: SIMD2<Float>(), resolution: SIMD4<Float>())
                 uniforms.aspectRatio = Float(parent.mtkView.frame.size.width / parent.mtkView.frame.size.height)
                 preferredFramesTime = 1.0 / Float(parent.mtkView.preferredFramesPerSecond)
             }

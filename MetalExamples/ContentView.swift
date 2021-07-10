@@ -32,6 +32,16 @@ struct ContentView: View {
                         Text("TripleBuffering")
                             .padding()
                     }
+                    NavigationLink(destination: VideoEffectView()) {
+                        Text("Video Effect")
+                            .padding()
+                    }
+                    Section(header: Text("MSL Shader Examples")) {
+                        NavigationLink(destination: RainDropEffectView()) {
+                            Text("Rain Drop")
+                                .padding()
+                        }
+                    }
                 }
             }
             .listStyle(SidebarListStyle())

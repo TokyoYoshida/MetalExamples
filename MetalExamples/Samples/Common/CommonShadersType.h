@@ -17,6 +17,7 @@ struct Uniforms {
     float time;
     float aspectRatio;
     vector_float2 touch;
+    vector_float4 resolution;
 };
 
 struct Particle {
