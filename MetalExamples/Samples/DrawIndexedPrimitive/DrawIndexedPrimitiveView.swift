@@ -10,6 +10,6 @@ import SwiftUI
 struct DrawIndexedPrimitiveView: View {
     var body: some View {
         DrawIndexedPrimitiveMetalView()
-        .navigationBarTitle(Text("Particle"), displayMode: .inline)
+        .navigationBarTitle(Text("TripleBuffering"), displayMode: .inline)
     }
 }
