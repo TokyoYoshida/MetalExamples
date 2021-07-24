@@ -36,6 +36,10 @@ struct ContentView: View {
                         Text("Video Effect")
                             .padding()
                     }
+                    NavigationLink(destination: DrawIndexedPrimitiveView()) {
+                        Text("Draw Indexed Primitive")
+                            .padding()
+                    }
                     Section(header: Text("MSL Shader Examples")) {
                         NavigationLink(destination: RainDropEffectView()) {
                             Text("Rain Drop")
