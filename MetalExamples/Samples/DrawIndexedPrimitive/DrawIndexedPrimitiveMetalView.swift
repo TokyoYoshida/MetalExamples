@@ -30,7 +30,7 @@ struct DrawIndexedPrimitiveMetalView: UIViewRepresentable {
     func updateUIView(_ uiView: MTKView, context: Context) {
     }
     class Coordinator : NSObject, MTKViewDelegate {
-        static let numberOfParticles = 10000
+        static let numberOfParticles = 100
         static let maxBuffers = 3
         var parent: DrawIndexedPrimitiveMetalView
         var metalDevice: MTLDevice!
@@ -97,9 +97,22 @@ struct DrawIndexedPrimitiveMetalView: UIViewRepresentable {
             return particle
         }
 
-        func makeParticlePositions() -> [Particle]{
-            return [Particle](repeating: Particle(), count: Coordinator.numberOfParticles).map {_ in
-                return makeRandomPosition()
+        func makeParticlePositions() -> [Particle] {
+            let particles = [Particle](repeating: Particle(), count: Coordinator.numberOfParticles)
+
+            let width = Float(parent.mtkView.bounds.width)
+            let height = Float(parent.mtkView.bounds.height)
+            let gridArea = width * height
+            let spacing = sqrt(gridArea / Float(Coordinator.numberOfParticles))
+            let deltaX = Int(round(width / spacing))
+            let deltaY = Int(round(height / spacing))
+            
+            var meshBuffers = [MTLBuffer]()
+            for gridY in 0 ..< deltaY {
+                let alternatingOffsetX = Float(gridY % 2) * spacing / 2
+                for gridX in 0 ..< deltaX {
+                    Float2(alternatingOffsetX + (Float(gridX) + 0.5) * spacing, (Float(gridY) + 0.5) * spacing)
+                }
             }
         }
 
