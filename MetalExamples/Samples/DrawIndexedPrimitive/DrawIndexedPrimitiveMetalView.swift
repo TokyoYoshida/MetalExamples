@@ -30,14 +30,15 @@ struct DrawIndexedPrimitiveMetalView: UIViewRepresentable {
     func updateUIView(_ uiView: MTKView, context: Context) {
     }
     class Coordinator : NSObject, MTKViewDelegate {
-        static let numberOfParticles = 3
+        static let numberOfParticles = 4
         static let maxBuffers = 3
+        static let indexCount = 6 * 2
         var parent: DrawIndexedPrimitiveMetalView
         var metalDevice: MTLDevice!
         var metalCommandQueue: MTLCommandQueue!
         var renderPipeline: MTLRenderPipelineState!
         var particleBuffers:[MTLBuffer] = []
-        lazy var indexBuffer: MTLBuffer = metalDevice.makeBuffer(length: Coordinator.numberOfParticles * 2, options: .storageModeShared)!
+        lazy var indexBuffer: MTLBuffer = metalDevice.makeBuffer(length: Coordinator.indexCount, options: .storageModeShared)!
         var renderPassDescriptor: MTLRenderPassDescriptor = MTLRenderPassDescriptor()
         var uniforms: Uniforms!
         var preferredFramesTime: Float!
@@ -79,7 +80,7 @@ struct DrawIndexedPrimitiveMetalView: UIViewRepresentable {
                 }
                 func initIndexBuffer() {
                     let indexes = makeParticleIndexes()
-                    self.indexBuffer.contents().copyMemory(from: indexes, byteCount: MemoryLayout<UInt16>.stride * 3)
+                    self.indexBuffer.contents().copyMemory(from: indexes, byteCount: MemoryLayout<UInt16>.stride * Coordinator.indexCount)
                 }
                 particleBuffers = allocBuffer()
                 initParticlePosition(particleBuffers[0])
@@ -114,7 +115,7 @@ struct DrawIndexedPrimitiveMetalView: UIViewRepresentable {
             let deltaY = Int(round(height / spacing))
             
             for gridY in 0 ..< deltaY {
-                let alternatingOffsetX = Float(gridY % 2) * spacing / 2 - 1
+                let alternatingOffsetX: Float = -1
                 for gridX in 0 ..< deltaX {
                     let position = SIMD2<Float>(alternatingOffsetX + (Float(gridX) + 0.5) * spacing, (Float(gridY) + 0.5) * spacing - 1)
                     let particle = Particle(position: position)
@@ -126,7 +127,10 @@ struct DrawIndexedPrimitiveMetalView: UIViewRepresentable {
         }
         
         func makeParticleIndexes() -> [UInt16] {
-            return [0, 2, 1]
+            return [
+                    0, 2, 1,
+                    1, 2, 3,
+                   ]
         }
 
         func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
@@ -173,7 +177,7 @@ struct DrawIndexedPrimitiveMetalView: UIViewRepresentable {
 //            renderEncoder.drawPrimitives(type: .point, vertexStart: 0, vertexCount: Coordinator.numberOfParticles)
             
             renderEncoder.drawIndexedPrimitives(type: .triangle,
-                                                indexCount: 3,
+                                                indexCount: 6,
                                                 indexType: .uint16,
                                                 indexBuffer: indexBuffer,
                                                 indexBufferOffset: 0,
