@@ -30,13 +30,14 @@ struct DrawIndexedPrimitiveMetalView: UIViewRepresentable {
     func updateUIView(_ uiView: MTKView, context: Context) {
     }
     class Coordinator : NSObject, MTKViewDelegate {
-        static let numberOfParticles = 100
+        static let numberOfParticles = 3
         static let maxBuffers = 3
         var parent: DrawIndexedPrimitiveMetalView
         var metalDevice: MTLDevice!
         var metalCommandQueue: MTLCommandQueue!
         var renderPipeline: MTLRenderPipelineState!
         var particleBuffers:[MTLBuffer] = []
+        lazy var indexBuffer: MTLBuffer = metalDevice.makeBuffer(length: Coordinator.numberOfParticles * 2, options: .storageModeShared)!
         var renderPassDescriptor: MTLRenderPassDescriptor = MTLRenderPassDescriptor()
         var uniforms: Uniforms!
         var preferredFramesTime: Float!
@@ -75,6 +76,10 @@ struct DrawIndexedPrimitiveMetalView: UIViewRepresentable {
                 func initParticlePosition(_ particleBuffer: MTLBuffer) {
                     let particles = makeParticlePositions()
                     self.particleBuffers[0].contents().copyMemory(from: particles, byteCount: MemoryLayout<Particle>.stride * particles.count)
+                }
+                func initIndexBuffer() {
+                    let indexes = makeParticleIndexes()
+                    self.indexBuffer.contents().copyMemory(from: indexes, byteCount: MemoryLayout<UInt16>.stride * 3)
                 }
                 particleBuffers = allocBuffer()
                 initParticlePosition(particleBuffers[0])
@@ -117,6 +122,10 @@ struct DrawIndexedPrimitiveMetalView: UIViewRepresentable {
             }
             
             return particles
+        }
+        
+        func makeParticleIndexes() -> [UInt16] {
+            return [0, 1, 2, 2, 1,  0]
         }
 
         func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
@@ -162,6 +171,13 @@ struct DrawIndexedPrimitiveMetalView: UIViewRepresentable {
 
             renderEncoder.drawPrimitives(type: .point, vertexStart: 0, vertexCount: Coordinator.numberOfParticles)
             
+            renderEncoder.drawIndexedPrimitives(type: .triangle,
+                                                indexCount: 3,
+                                                indexType: .uint16,
+                                                indexBuffer: indexBuffer,
+                                                indexBufferOffset: 0,
+                                                instanceCount: 1)
+
             renderEncoder.endEncoding()
             
             commandBuffer.present(drawable)
