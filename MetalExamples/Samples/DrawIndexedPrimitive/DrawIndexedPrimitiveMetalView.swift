@@ -98,22 +98,25 @@ struct DrawIndexedPrimitiveMetalView: UIViewRepresentable {
         }
 
         func makeParticlePositions() -> [Particle] {
-            let particles = [Particle](repeating: Particle(), count: Coordinator.numberOfParticles)
+            var particles: [Particle] = []
 
-            let width = Float(parent.mtkView.bounds.width)
-            let height = Float(parent.mtkView.bounds.height)
+            let width: Float = 2
+            let height: Float = 2
             let gridArea = width * height
             let spacing = sqrt(gridArea / Float(Coordinator.numberOfParticles))
             let deltaX = Int(round(width / spacing))
             let deltaY = Int(round(height / spacing))
             
-            var meshBuffers = [MTLBuffer]()
             for gridY in 0 ..< deltaY {
-                let alternatingOffsetX = Float(gridY % 2) * spacing / 2
+                let alternatingOffsetX = Float(gridY % 2) * spacing / 2 - 1
                 for gridX in 0 ..< deltaX {
-                    Float2(alternatingOffsetX + (Float(gridX) + 0.5) * spacing, (Float(gridY) + 0.5) * spacing)
+                    let position = SIMD2<Float>(alternatingOffsetX + (Float(gridX) + 0.5) * spacing, (Float(gridY) + 0.5) * spacing - 1)
+                    let particle = Particle(position: position)
+                    particles.append(particle)
                 }
             }
+            
+            return particles
         }
 
         func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
