@@ -103,16 +103,22 @@ struct DrawIndexedPrimitiveMetalView: UIViewRepresentable {
             particle.position.y = Float.random(in: -1...1)
             return particle
         }
-
-        func makeParticlePositions() -> [Particle] {
-            var particles: [Particle] = []
-
+        
+        func calcLayoutParams() -> (deltaX: UInt16, deltaY: UInt16, spacing: Float) {
             let width: Float = 2
             let height: Float = 2
             let gridArea = width * height
             let spacing = sqrt(gridArea / Float(Coordinator.numberOfParticles))
-            let deltaX = Int(round(width / spacing))
-            let deltaY = Int(round(height / spacing))
+            let deltaX = UInt16(round(width / spacing))
+            let deltaY = UInt16(round(height / spacing))
+            
+            return (deltaX: deltaX, deltaY: deltaY, spacing: spacing)
+        }
+
+        func makeParticlePositions() -> [Particle] {
+            var particles: [Particle] = []
+
+            let (deltaX, deltaY, spacing) = calcLayoutParams()
             
             for gridY in 0 ..< deltaY {
                 let alternatingOffsetX: Float = -1
@@ -127,10 +133,22 @@ struct DrawIndexedPrimitiveMetalView: UIViewRepresentable {
         }
         
         func makeParticleIndexes() -> [UInt16] {
-            return [
-                    0, 2, 1,
-                    1, 2, 3,
-                   ]
+            let (deltaX, deltaY, _) = calcLayoutParams()
+
+            var indexes: [UInt16] = []
+            for gridY in 0 ..< deltaY - 1 {
+                for gridX in 0 ..< deltaX - 1 {
+                    let topLeft = gridY * deltaY + gridX 
+                    let topRight = gridX + 1
+                    let bottomLeft = gridX + deltaY
+                    let bottomRight = gridX + bottomLeft + 1
+                    let leftTriangle = [topLeft, bottomLeft, topRight]
+                    let rightTriangle = [topRight, bottomRight, bottomLeft]
+                    indexes += (leftTriangle + rightTriangle)
+                }
+            }
+            
+            return indexes
         }
 
         func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
