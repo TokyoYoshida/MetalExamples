@@ -83,6 +83,7 @@ struct DrawIndexedPrimitiveMetalView: UIViewRepresentable {
                 }
                 particleBuffers = allocBuffer()
                 initParticlePosition(particleBuffers[0])
+                initIndexBuffer()
             }
             self.parent = parent
             if let metalDevice = MTLCreateSystemDefaultDevice() {
@@ -125,7 +126,7 @@ struct DrawIndexedPrimitiveMetalView: UIViewRepresentable {
         }
         
         func makeParticleIndexes() -> [UInt16] {
-            return [0, 1, 2, 2, 1,  0]
+            return [0, 2, 1]
         }
 
         func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
@@ -169,7 +170,7 @@ struct DrawIndexedPrimitiveMetalView: UIViewRepresentable {
             
             renderEncoder.setVertexBytes(&uniforms, length: MemoryLayout<Uniforms>.stride, index: 2)            
 
-            renderEncoder.drawPrimitives(type: .point, vertexStart: 0, vertexCount: Coordinator.numberOfParticles)
+//            renderEncoder.drawPrimitives(type: .point, vertexStart: 0, vertexCount: Coordinator.numberOfParticles)
             
             renderEncoder.drawIndexedPrimitives(type: .triangle,
                                                 indexCount: 3,
