@@ -32,13 +32,13 @@ struct DrawIndexedPrimitiveMetalView: UIViewRepresentable {
     class Coordinator : NSObject, MTKViewDelegate {
         static let numberOfParticles = 4
         static let maxBuffers = 3
-        static let indexCount = 6 * 2
+        lazy var indexes = makeParticleIndexes()
         var parent: DrawIndexedPrimitiveMetalView
         var metalDevice: MTLDevice!
         var metalCommandQueue: MTLCommandQueue!
         var renderPipeline: MTLRenderPipelineState!
         var particleBuffers:[MTLBuffer] = []
-        lazy var indexBuffer: MTLBuffer = metalDevice.makeBuffer(length: Coordinator.indexCount, options: .storageModeShared)!
+        lazy var indexBuffer: MTLBuffer = metalDevice.makeBuffer(length: MemoryLayout<UInt16>.stride * indexes.count, options: .storageModeShared)!
         var renderPassDescriptor: MTLRenderPassDescriptor = MTLRenderPassDescriptor()
         var uniforms: Uniforms!
         var preferredFramesTime: Float!
@@ -80,7 +80,7 @@ struct DrawIndexedPrimitiveMetalView: UIViewRepresentable {
                 }
                 func initIndexBuffer() {
                     let indexes = makeParticleIndexes()
-                    self.indexBuffer.contents().copyMemory(from: indexes, byteCount: MemoryLayout<UInt16>.stride * Coordinator.indexCount)
+                    self.indexBuffer.contents().copyMemory(from: indexes, byteCount: MemoryLayout<UInt16>.stride * indexes.count)
                 }
                 particleBuffers = allocBuffer()
                 initParticlePosition(particleBuffers[0])
@@ -177,7 +177,7 @@ struct DrawIndexedPrimitiveMetalView: UIViewRepresentable {
 //            renderEncoder.drawPrimitives(type: .point, vertexStart: 0, vertexCount: Coordinator.numberOfParticles)
             
             renderEncoder.drawIndexedPrimitives(type: .triangle,
-                                                indexCount: 6,
+                                                indexCount: indexes.count,
                                                 indexType: .uint16,
                                                 indexBuffer: indexBuffer,
                                                 indexBufferOffset: 0,
