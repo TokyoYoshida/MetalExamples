@@ -47,22 +47,23 @@ struct DepthStencilMetalView: UIViewRepresentable {
         var beforeBufferIndex: Int {
             currentBufferIndex == 0 ? Coordinator.maxBuffers - 1 : currentBufferIndex - 1
         }
+        var mesh: MTKMesh!
 
         init(_ parent: DepthStencilMetalView) {
-            func loadModel() -> MTLVertexDescriptor? {
+            func loadModel() {
                 let allocator = MTKMeshBufferAllocator(device: metalDevice)
                 let mdlMesh = MDLMesh.newBox(withDimensions: vector_float3(repeating: 1),
                                              segments: vector_uint3(repeating: 2),
                                              geometryType: .triangles,
                                              inwardNormals: false,
                                              allocator: allocator)
-                let mesh = try! MTKMesh(mesh: mdlMesh, device: metalDevice)
-                let vertexDescriptor = MTKMetalVertexDescriptorFromModelIO(mesh.vertexDescriptor)
-                return vertexDescriptor
+                mesh = try! MTKMesh(mesh: mdlMesh, device: metalDevice)
             }
             func buildPipeline() {
+                loadModel()
                 guard let library = self.metalDevice.makeDefaultLibrary() else {fatalError()}
                 let descriptor = MTLRenderPipelineDescriptor()
+                descriptor.vertexDescriptor = MTKMetalVertexDescriptorFromModelIO(mesh.vertexDescriptor)
                 descriptor.vertexFunction = library.makeFunction(name: "storedParticleVertexShader")
                 descriptor.fragmentFunction = library.makeFunction(name: "storedParticleFragmentShader")
                 descriptor.colorAttachments[0].pixelFormat = .bgra8Unorm_srgb
@@ -199,18 +200,25 @@ struct DepthStencilMetalView: UIViewRepresentable {
             renderEncoder.setRenderPipelineState(renderPipeline)
             uniforms.time += preferredFramesTime
 
-            renderEncoder.setVertexBuffer(particleBuffers[currentBufferIndex], offset: 0, index: 0)
+            renderEncoder.setVertexBuffer(mesh.vertexBuffers[0].buffer, offset: 0, index: 0)
+//            renderEncoder.setVertexBuffer(particleBuffers[currentBufferIndex], offset: 0, index: 0)
             
             renderEncoder.setVertexBytes(&uniforms, length: MemoryLayout<Uniforms>.stride, index: 2)            
 
-//            renderEncoder.drawPrimitives(type: .point, vertexStart: 0, vertexCount: Coordinator.numberOfParticles)
+            renderEncoder.drawIndexedPrimitives(type: mesh.submeshes[0].primitiveType,
+                                                indexCount: mesh.submeshes[0].indexCount,
+                                                indexType: mesh.submeshes[0].indexType,
+                                                indexBuffer: mesh.submeshes[0].indexBuffer.buffer,
+                                                indexBufferOffset: mesh.submeshes[0].indexBuffer.offset)
+
+            //            renderEncoder.drawPrimitives(type: .point, vertexStart: 0, vertexCount: Coordinator.numberOfParticles)
             
-            renderEncoder.drawIndexedPrimitives(type: .triangle,
-                                                indexCount: indexes.count,
-                                                indexType: .uint32,
-                                                indexBuffer: indexBuffer,
-                                                indexBufferOffset: 0,
-                                                instanceCount: 1)
+//            renderEncoder.drawIndexedPrimitives(type: .triangle,
+//                                                indexCount: indexes.count,
+//                                                indexType: .uint32,
+//                                                indexBuffer: indexBuffer,
+//                                                indexBufferOffset: 0,
+//                                                instanceCount: 1)
 
             renderEncoder.endEncoding()
             
