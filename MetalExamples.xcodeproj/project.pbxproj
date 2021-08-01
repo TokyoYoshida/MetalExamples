@@ -23,6 +23,7 @@
 		1E5A595926B67D050000500C /* DepthStencilView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E5A595726B67C950000500C /* DepthStencilView.swift */; };
 		1E5A595A26B67D090000500C /* DepthStencilMetalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E5A595826B67C950000500C /* DepthStencilMetalView.swift */; };
 		1E5A595C26B680690000500C /* ShadersFor3D.metal in Sources */ = {isa = PBXBuildFile; fileRef = 1E5A595B26B680690000500C /* ShadersFor3D.metal */; };
+		1E5A595E26B681460000500C /* Matrix.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E5A595D26B681460000500C /* Matrix.swift */; };
 		1E6047E42669DECB00AAF2DD /* SimpleMetalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E6047E32669DECB00AAF2DD /* SimpleMetalView.swift */; };
 		1E6047EA2669E3BF00AAF2DD /* DrawTextureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E6047E82669E2D500AAF2DD /* DrawTextureView.swift */; };
 		1E6047EB2669E3C200AAF2DD /* DrawTextureMetalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E6047E92669E2D800AAF2DD /* DrawTextureMetalView.swift */; };
@@ -99,6 +100,7 @@
 		1E5A595726B67C950000500C /* DepthStencilView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DepthStencilView.swift; sourceTree = "<group>"; };
 		1E5A595826B67C950000500C /* DepthStencilMetalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DepthStencilMetalView.swift; sourceTree = "<group>"; };
 		1E5A595B26B680690000500C /* ShadersFor3D.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = ShadersFor3D.metal; sourceTree = "<group>"; };
+		1E5A595D26B681460000500C /* Matrix.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Matrix.swift; sourceTree = "<group>"; };
 		1E6047E32669DECB00AAF2DD /* SimpleMetalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleMetalView.swift; sourceTree = "<group>"; };
 		1E6047E82669E2D500AAF2DD /* DrawTextureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawTextureView.swift; sourceTree = "<group>"; };
 		1E6047E92669E2D800AAF2DD /* DrawTextureMetalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawTextureMetalView.swift; sourceTree = "<group>"; };
@@ -247,6 +249,7 @@
 			children = (
 				1E5A595726B67C950000500C /* DepthStencilView.swift */,
 				1E5A595826B67C950000500C /* DepthStencilMetalView.swift */,
+				1E5A595D26B681460000500C /* Matrix.swift */,
 				1E5A595B26B680690000500C /* ShadersFor3D.metal */,
 			);
 			path = DepthStencil;
@@ -516,6 +519,7 @@
 				1EAF6C66266B6D4400772496 /* SimpleShader.metal in Sources */,
 				1E437C2C2694276D001D1CCF /* VideoEffectView.swift in Sources */,
 				1E1DD8862668E53D00F98410 /* SimpleView.swift in Sources */,
+				1E5A595E26B681460000500C /* Matrix.swift in Sources */,
 				1EAF6C63266B6CD200772496 /* SimpleShaderView.swift in Sources */,
 				1EF689A2268DA21200571F3F /* TripleBufferingView.swift in Sources */,
 				1E8CF5E826959EF100FE2F4B /* VideoEffectShader.metal in Sources */,

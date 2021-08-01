@@ -8,6 +8,11 @@
 import SwiftUI
 import MetalKit
 
+struct FrameUniforms {
+    var projectionViewMatrinx: matrix_float4x4
+    var normalMatrinx: matrix_float3x3
+}
+
 struct DepthStencilMetalView: UIViewRepresentable {
     typealias UIViewType = MTKView
     let mtkView = MTKView()
@@ -47,7 +52,9 @@ struct DepthStencilMetalView: UIViewRepresentable {
         var beforeBufferIndex: Int {
             currentBufferIndex == 0 ? Coordinator.maxBuffers - 1 : currentBufferIndex - 1
         }
+        lazy var frameUniformBuffer = metalDevice.makeBuffer(length: MemoryLayout<FrameUniforms>.size, options: [])!
         var mesh: MTKMesh!
+        private var modelMatrix = matrix_identity_float4x4
 
         init(_ parent: DepthStencilMetalView) {
             func loadModel() {
@@ -165,6 +172,23 @@ struct DepthStencilMetalView: UIViewRepresentable {
 
         func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
         }
+        
+        private func updateFramUniforms() {
+            // ポインタの取得
+            let p = frameUniformBuffer.contents().assumingMemoryBound(to: FrameUniforms.self)
+            // カメラの向く位置を決める
+            let cameraMatrix = Matrix.lookAt(eye: SIMD3<Float>(0, 2, 1), center: SIMD3<Float>(), up: SIMD3<Float>(0, 1, 0))
+            // パースペクティブ（透視投影法）射影変換行列を得る
+            let projectionMatrix = Matrix.perspective(fovyRadians: radians(fromDegrees: 75),
+                                                      aspect: Float(parent.mtkView.drawableSize.width / parent.mtkView.drawableSize.height),
+                                                      nearZ: 0.1,
+                                                      farZ: 100)
+            let viewModelMatrix = matrix_multiply(cameraMatrix, modelMatrix)
+            p.pointee.projectionViewMatrinx = matrix_multiply(projectionMatrix, viewModelMatrix)
+            let mat3 = Matrix.toUpperLeft3x3(from4x4: viewModelMatrix)
+            p.pointee.normalMatrinx = mat3.transpose.inverse
+        }
+
         func draw(in view: MTKView) {
             func calcParticlePostion() {
                 let p = particleBuffers[currentBufferIndex].contents()
@@ -197,13 +221,17 @@ struct DepthStencilMetalView: UIViewRepresentable {
             guard let renderPipeline = renderPipeline else {fatalError()}
 
             
+            updateFramUniforms()
+
             renderEncoder.setRenderPipelineState(renderPipeline)
             uniforms.time += preferredFramesTime
 
             renderEncoder.setVertexBuffer(mesh.vertexBuffers[0].buffer, offset: 0, index: 0)
 //            renderEncoder.setVertexBuffer(particleBuffers[currentBufferIndex], offset: 0, index: 0)
             
-            renderEncoder.setVertexBytes(&uniforms, length: MemoryLayout<Uniforms>.stride, index: 2)            
+            renderEncoder.setVertexBuffer(frameUniformBuffer, offset: 0, index: 1)
+            
+//            renderEncoder.setVertexBytes(&uniforms, length: MemoryLayout<Uniforms>.stride, index: 2)
 
             renderEncoder.drawIndexedPrimitives(type: mesh.submeshes[0].primitiveType,
                                                 indexCount: mesh.submeshes[0].indexCount,
