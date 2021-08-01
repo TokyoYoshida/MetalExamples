@@ -22,22 +22,45 @@ struct VertexUniforms2 {
     float3x3    normalMatrix; // 法線マップ用の行列
 };
 
-struct VertexOut2 {
-    float4      position    [[ position ]];
-    float3      normal;
-    float2      texcoord;
+struct VertexInput3 {
+    float3      position    [[ attribute(0) ]]; // モデルの頂点の位置
+    float3      normal      [[ attribute(1) ]]; // 法線マップ（＝ノーマルマップ）
+    float2      texcoord    [[ attribute(2) ]]; // テクスチャ座標
 };
 
-vertex VertexOut2 lambertVertex2(VertexInput2 in [[ stage_in ]],
-                               constant VertexUniforms2& uniforms [[ buffer(1) ]]) {
-    VertexOut2 out;
-    out.position = uniforms.projectionViewMatrix * float4(in.position, 1);
-    out.texcoord = float2(in.texcoord.x, in.texcoord.y);
-    out.normal = uniforms.normalMatrix * in.normal;
-    return out;
+struct VertexOut3D {
+    float4 position [[position]];
+    float3 worldNormal;
+    float3 worldPosition;
+    float2 texCoords;
+};
+
+struct Uniforms3D {
+    float4x4 modelMatrix;
+    float4x4 viewProjectionMatrix;
+    float3x3 normalMatrix;
+};
+
+vertex VertexOut3D lambertVertex3(VertexInput3 in [[ stage_in ]],
+                               constant Uniforms3D& uniforms [[ buffer(1) ]]) {
+    float4 worldPosition = uniforms.modelMatrix * float4(in.position, 1);
+    VertexOut3D vertexOut;
+    vertexOut.position = uniforms.viewProjectionMatrix * worldPosition;
+    vertexOut.worldPosition = worldPosition.xyz;
+    vertexOut.worldNormal = uniforms.normalMatrix * in.normal;
+    vertexOut.texCoords = in.texcoord;
+    return vertexOut;
 }
 
-fragment half4 lambertFragment2(VertexOut2 in [[ stage_in ]]) {
-    float diffuseFactor = saturate(dot(in.normal, -lightDirection));
-    return half4(diffuseFactor);
+constant float3 ambientIntensity = 0.1;
+constant float3 lightPosition(2, 2, 2);
+constant float3 lightColor(1, 1, 1);
+constant float3 baseColor(1.0, 0, 0);
+
+fragment float4 fragment_main(VertexOut3D fragmentIn [[stage_in]]) {
+    float3 N = normalize(fragmentIn.worldNormal.xyz);
+    float3 L = normalize(lightPosition - fragmentIn.worldPosition.xyz);
+    float3 diffuseIntensity = saturate(dot(N, L));
+    float3 finalColor = saturate(ambientIntensity + diffuseIntensity) * lightColor * baseColor;
+    return float4(finalColor, 1);
 }
