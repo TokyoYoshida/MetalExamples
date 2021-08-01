@@ -55,6 +55,7 @@ struct DepthStencilMetalView: UIViewRepresentable {
         lazy var frameUniformBuffer = metalDevice.makeBuffer(length: MemoryLayout<FrameUniforms>.size, options: [])!
         var mesh: MTKMesh!
         private var modelMatrix = matrix_identity_float4x4
+        private var depthStencilState: MTLDepthStencilState!
 
         init(_ parent: DepthStencilMetalView) {
             func loadModel() {
@@ -75,6 +76,12 @@ struct DepthStencilMetalView: UIViewRepresentable {
                 descriptor.fragmentFunction = library.makeFunction(name: "lambertFragment2")
                 descriptor.colorAttachments[0].pixelFormat = .bgra8Unorm_srgb
                 renderPipeline = try! self.metalDevice.makeRenderPipelineState(descriptor: descriptor)
+            }
+            func buildDepthStencilState() {
+                let depthDescriptor = MTLDepthStencilDescriptor()
+                depthDescriptor.depthCompareFunction = .less
+                depthDescriptor.isDepthWriteEnabled = true
+                depthStencilState = metalDevice.makeDepthStencilState(descriptor: depthDescriptor)
             }
             func initUniform() {
                 uniforms = Uniforms(time: Float(0.0), aspectRatio: Float(0.0), touch: SIMD2<Float>(), resolution: SIMD4<Float>())
@@ -113,6 +120,7 @@ struct DepthStencilMetalView: UIViewRepresentable {
             super.init()
             buildPipeline()
             initUniform()
+            buildDepthStencilState()
             initParticles()
         }
         
@@ -224,6 +232,8 @@ struct DepthStencilMetalView: UIViewRepresentable {
             updateFramUniforms()
 
             renderEncoder.setRenderPipelineState(renderPipeline)
+            renderEncoder.setDepthStencilState(depthStencilState)
+
             uniforms.time += preferredFramesTime
 
             renderEncoder.setVertexBuffer(mesh.vertexBuffers[0].buffer, offset: 0, index: 0)
