@@ -81,6 +81,7 @@ struct DepthStencilMetalView: UIViewRepresentable {
                 descriptor.fragmentFunction = library.makeFunction(name: "fragment_main")
                 descriptor.colorAttachments[0].pixelFormat = .bgra8Unorm_srgb
                 descriptor.depthAttachmentPixelFormat = parent.mtkView.depthStencilPixelFormat
+                descriptor.stencilAttachmentPixelFormat = parent.mtkView.depthStencilPixelFormat
                 renderPipeline = try! self.metalDevice.makeRenderPipelineState(descriptor: descriptor)
             }
             func buildDepthStencilState() {
