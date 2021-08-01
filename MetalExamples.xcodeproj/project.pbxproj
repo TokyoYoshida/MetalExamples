@@ -22,6 +22,7 @@
 		1E437C2D26942770001D1CCF /* VideoEffectMetalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E4303A8269426FD00BFB25C /* VideoEffectMetalView.swift */; };
 		1E5A595926B67D050000500C /* DepthStencilView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E5A595726B67C950000500C /* DepthStencilView.swift */; };
 		1E5A595A26B67D090000500C /* DepthStencilMetalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E5A595826B67C950000500C /* DepthStencilMetalView.swift */; };
+		1E5A595C26B680690000500C /* ShadersFor3D.metal in Sources */ = {isa = PBXBuildFile; fileRef = 1E5A595B26B680690000500C /* ShadersFor3D.metal */; };
 		1E6047E42669DECB00AAF2DD /* SimpleMetalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E6047E32669DECB00AAF2DD /* SimpleMetalView.swift */; };
 		1E6047EA2669E3BF00AAF2DD /* DrawTextureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E6047E82669E2D500AAF2DD /* DrawTextureView.swift */; };
 		1E6047EB2669E3C200AAF2DD /* DrawTextureMetalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E6047E92669E2D800AAF2DD /* DrawTextureMetalView.swift */; };
@@ -97,6 +98,7 @@
 		1E4303A8269426FD00BFB25C /* VideoEffectMetalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoEffectMetalView.swift; sourceTree = "<group>"; };
 		1E5A595726B67C950000500C /* DepthStencilView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DepthStencilView.swift; sourceTree = "<group>"; };
 		1E5A595826B67C950000500C /* DepthStencilMetalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DepthStencilMetalView.swift; sourceTree = "<group>"; };
+		1E5A595B26B680690000500C /* ShadersFor3D.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = ShadersFor3D.metal; sourceTree = "<group>"; };
 		1E6047E32669DECB00AAF2DD /* SimpleMetalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleMetalView.swift; sourceTree = "<group>"; };
 		1E6047E82669E2D500AAF2DD /* DrawTextureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawTextureView.swift; sourceTree = "<group>"; };
 		1E6047E92669E2D800AAF2DD /* DrawTextureMetalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawTextureMetalView.swift; sourceTree = "<group>"; };
@@ -245,6 +247,7 @@
 			children = (
 				1E5A595726B67C950000500C /* DepthStencilView.swift */,
 				1E5A595826B67C950000500C /* DepthStencilMetalView.swift */,
+				1E5A595B26B680690000500C /* ShadersFor3D.metal */,
 			);
 			path = DepthStencil;
 			sourceTree = "<group>";
@@ -493,6 +496,7 @@
 				1E5A595A26B67D090000500C /* DepthStencilMetalView.swift in Sources */,
 				1E6047E42669DECB00AAF2DD /* SimpleMetalView.swift in Sources */,
 				1E613434266C9F0E009A4FBC /* ParticleMetalView.swift in Sources */,
+				1E5A595C26B680690000500C /* ShadersFor3D.metal in Sources */,
 				1E437C2D26942770001D1CCF /* VideoEffectMetalView.swift in Sources */,
 				1E18AD0B26942B5600C70468 /* VideoWriter.swift in Sources */,
 				1E6047EA2669E3BF00AAF2DD /* DrawTextureView.swift in Sources */,
