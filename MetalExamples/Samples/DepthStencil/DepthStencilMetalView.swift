@@ -15,21 +15,25 @@ struct FrameUniforms {
 
 struct DepthStencilMetalView: UIViewRepresentable {
     typealias UIViewType = MTKView
-    let mtkView = MTKView()
+    var mtkView:MTKView = {
+        let _mtkView = MTKView()
+        _mtkView.preferredFramesPerSecond = 60
+        if let metalDevice = MTLCreateSystemDefaultDevice() {
+            _mtkView.device = metalDevice
+        }
+        _mtkView.framebufferOnly = false
+        _mtkView.clearColor = MTLClearColor(red: 0, green: 0, blue: 0, alpha: 0)
+        _mtkView.drawableSize = _mtkView.frame.size
+        _mtkView.colorPixelFormat = .bgra8Unorm_srgb
+        _mtkView.depthStencilPixelFormat = .depth32Float_stencil8
+        return _mtkView
+    }()
 
     func makeCoordinator() -> Coordinator {
         Coordinator(self)
     }
     func makeUIView(context: Context) -> MTKView {
         mtkView.delegate = context.coordinator
-        mtkView.preferredFramesPerSecond = 60
-        if let metalDevice = MTLCreateSystemDefaultDevice() {
-            mtkView.device = metalDevice
-        }
-        mtkView.framebufferOnly = false
-        mtkView.clearColor = MTLClearColor(red: 0, green: 0, blue: 0, alpha: 0)
-        mtkView.drawableSize = mtkView.frame.size
-        mtkView.colorPixelFormat = .bgra8Unorm_srgb
         return mtkView
     }
     func updateUIView(_ uiView: MTKView, context: Context) {
