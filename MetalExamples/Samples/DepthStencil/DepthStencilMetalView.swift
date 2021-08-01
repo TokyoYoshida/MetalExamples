@@ -75,6 +75,7 @@ struct DepthStencilMetalView: UIViewRepresentable {
                 descriptor.vertexFunction = library.makeFunction(name: "lambertVertex2")
                 descriptor.fragmentFunction = library.makeFunction(name: "lambertFragment2")
                 descriptor.colorAttachments[0].pixelFormat = .bgra8Unorm_srgb
+                descriptor.depthAttachmentPixelFormat = parent.mtkView.depthStencilPixelFormat
                 renderPipeline = try! self.metalDevice.makeRenderPipelineState(descriptor: descriptor)
             }
             func buildDepthStencilState() {
