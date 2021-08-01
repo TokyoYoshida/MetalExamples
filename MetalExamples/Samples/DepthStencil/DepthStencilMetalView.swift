@@ -227,11 +227,11 @@ struct DepthStencilMetalView: UIViewRepresentable {
             currentBufferIndex = (currentBufferIndex + 1) % Coordinator.maxBuffers
             calcParticlePostion()
             
-            renderPassDescriptor.colorAttachments[0].texture = drawable.texture
-            renderPassDescriptor.colorAttachments[0].loadAction = .clear
-            renderPassDescriptor.colorAttachments[0].clearColor = MTLClearColorMake(0.8, 0.7, 0.1, 1.0)
+//            renderPassDescriptor.colorAttachments[0].texture = drawable.texture
+//            renderPassDescriptor.colorAttachments[0].loadAction = .clear
+//            renderPassDescriptor.colorAttachments[0].clearColor = MTLClearColorMake(0.8, 0.7, 0.1, 1.0)
 
-            let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)!
+            let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: parent.mtkView.currentRenderPassDescriptor!)!
 
             guard let renderPipeline = renderPipeline else {fatalError()}
 
