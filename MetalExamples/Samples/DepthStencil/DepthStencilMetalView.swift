@@ -49,6 +49,17 @@ struct DepthStencilMetalView: UIViewRepresentable {
         }
 
         init(_ parent: DepthStencilMetalView) {
+            func loadModel() -> MTLVertexDescriptor? {
+                let allocator = MTKMeshBufferAllocator(device: metalDevice)
+                let mdlMesh = MDLMesh.newBox(withDimensions: vector_float3(repeating: 1),
+                                             segments: vector_uint3(repeating: 2),
+                                             geometryType: .triangles,
+                                             inwardNormals: false,
+                                             allocator: allocator)
+                let mesh = try! MTKMesh(mesh: mdlMesh, device: metalDevice)
+                let vertexDescriptor = MTKMetalVertexDescriptorFromModelIO(mesh.vertexDescriptor)
+                return vertexDescriptor
+            }
             func buildPipeline() {
                 guard let library = self.metalDevice.makeDefaultLibrary() else {fatalError()}
                 let descriptor = MTLRenderPipelineDescriptor()
