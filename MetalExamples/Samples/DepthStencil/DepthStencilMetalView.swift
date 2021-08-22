@@ -74,8 +74,9 @@ struct DepthStencilMetalView: UIViewRepresentable {
             func buildPipeline() {
                 loadModel()
                 guard let library = self.metalDevice.makeDefaultLibrary() else {fatalError()}
+                let vertexDescriptor = MTKMetalVertexDescriptorFromModelIO(mesh.vertexDescriptor)
                 let descriptor = MTLRenderPipelineDescriptor()
-                descriptor.vertexDescriptor = MTKMetalVertexDescriptorFromModelIO(mesh.vertexDescriptor)
+                descriptor.vertexDescriptor = vertexDescriptor
                 descriptor.sampleCount = parent.mtkView.sampleCount
                 descriptor.vertexFunction = library.makeFunction(name: "lambertVertex3")
                 descriptor.fragmentFunction = library.makeFunction(name: "fragment_main")
