@@ -8,6 +8,12 @@
 import SwiftUI
 import MetalKit
 
+struct Uniforms3D {
+    var modelMatrix: float4x4
+    var viewProjectionMatrix: float4x4
+    var normalMatrix: float3x3
+}
+
 struct FrameUniforms {
     var modelMatrix: matrix_float4x4
     var projectionViewMatrinx: matrix_float4x4
@@ -204,6 +210,18 @@ struct DepthStencilMetalView: UIViewRepresentable {
         }
 
         func draw(in view: MTKView) {
+            func buildUniforms() -> Uniforms3D {
+                let angle = Float(-1.0)
+                let modelMatrix = float4x4(rotationAbout: float3(0, 1, 0), by: angle) *  float4x4(scaleBy: 2)
+
+                let viewMatrix = float4x4(translationBy: float3(0, 0, -2))
+                let aspectRatio = Float(view.drawableSize.width / view.drawableSize.height)
+                let projectionMatrix = float4x4(perspectiveProjectionFov: Float.pi / 3, aspectRatio: aspectRatio, nearZ: 0.1, farZ: 100)
+                let viewProjectionMatrix = projectionMatrix * viewMatrix
+                
+                var uniforms = Uniforms3D(modelMatrix: modelMatrix, viewProjectionMatrix: viewProjectionMatrix, normalMatrix: modelMatrix.normalMatrix)
+                return uniforms
+            }
             func calcParticlePostion() {
                 let p = particleBuffers[currentBufferIndex].contents()
                 let b = particleBuffers[beforeBufferIndex].contents()
@@ -245,7 +263,11 @@ struct DepthStencilMetalView: UIViewRepresentable {
             renderEncoder.setVertexBuffer(mesh.vertexBuffers[0].buffer, offset: 0, index: 0)
 //            renderEncoder.setVertexBuffer(particleBuffers[currentBufferIndex], offset: 0, index: 0)
             
-            renderEncoder.setVertexBuffer(frameUniformBuffer, offset: 0, index: 1)
+            var uniforms = buildUniforms()
+
+            renderEncoder.setVertexBytes(&uniforms, length: MemoryLayout<Uniforms3D>.size, index: 1)
+
+//            renderEncoder.setVertexBuffer(frameUniformBuffer, offset: 0, index: 1)
             
 //            renderEncoder.setVertexBytes(&uniforms, length: MemoryLayout<Uniforms>.stride, index: 2)
 
