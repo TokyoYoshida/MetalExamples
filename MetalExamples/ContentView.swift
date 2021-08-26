@@ -40,6 +40,10 @@ struct ContentView: View {
                         Text("Draw Indexed Primitive")
                             .padding()
                     }
+                    NavigationLink(destination: DepthStencilView()) {
+                        Text("Depth Stencil")
+                            .padding()
+                    }
                     Section(header: Text("MSL Shader Examples")) {
                         NavigationLink(destination: RainDropEffectView()) {
                             Text("Rain Drop")
