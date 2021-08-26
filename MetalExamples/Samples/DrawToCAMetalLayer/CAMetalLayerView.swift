@@ -48,14 +48,16 @@ struct CAMetalLayerView: UIViewRepresentable {
     }
 
     func draw() {
-        guard let drawable = metalLayer.nextDrawable() else { return }
-        let commandBuffer = metalCommandQueue.makeCommandBuffer()
+        autoreleasepool {
+            guard let drawable = metalLayer.nextDrawable() else { return }
+            let commandBuffer = metalCommandQueue.makeCommandBuffer()
 
-        renderPassDescriptor.colorAttachments[0].texture = drawable.texture
-        let re = commandBuffer?.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
-        re?.endEncoding()
-        commandBuffer?.present(drawable)
-        commandBuffer?.commit()
+            renderPassDescriptor.colorAttachments[0].texture = drawable.texture
+            let re = commandBuffer?.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
+            re?.endEncoding()
+            commandBuffer?.present(drawable)
+            commandBuffer?.commit()
+        }
     }
 
     class Coordinator : NSObject {}
