@@ -191,11 +191,8 @@ struct DepthStencilMetalView: UIViewRepresentable {
         }
         
         private func updateFramUniforms() {
-            // ポインタの取得
             let p = frameUniformBuffer.contents().assumingMemoryBound(to: FrameUniforms.self)
-            // カメラの向く位置を決める
             let cameraMatrix = Matrix.lookAt(eye: SIMD3<Float>(0, 2, 1), center: SIMD3<Float>(), up: SIMD3<Float>(0, 1, 0))
-            // パースペクティブ（透視投影法）射影変換行列を得る
             let projectionMatrix = Matrix.perspective(fovyRadians: radians(fromDegrees: 75),
                                                       aspect: Float(parent.mtkView.drawableSize.width / parent.mtkView.drawableSize.height),
                                                       nearZ: 0.1,

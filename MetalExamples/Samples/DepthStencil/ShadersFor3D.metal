@@ -12,20 +12,20 @@ using namespace metal;
 #define lightDirection float3(1, -4, -5)
 
 struct VertexInput2 {
-    float3      position    [[ attribute(0) ]]; // モデルの頂点の位置
-    float3      normal      [[ attribute(1) ]]; // 法線マップ（＝ノーマルマップ）
-    float2      texcoord    [[ attribute(2) ]]; // テクスチャ座標
+    float3      position    [[ attribute(0) ]];
+    float3      normal      [[ attribute(1) ]];
+    float2      texcoord    [[ attribute(2) ]];
 };
 
 struct VertexUniforms2 {
-    float4x4    projectionViewMatrix; // 透視投影法の行列
-    float3x3    normalMatrix; // 法線マップ用の行列
+    float4x4    projectionViewMatrix;
+    float3x3    normalMatrix;
 };
 
 struct VertexInput3 {
-    float3      position    [[ attribute(0) ]]; // モデルの頂点の位置
-    float3      normal      [[ attribute(1) ]]; // 法線マップ（＝ノーマルマップ）
-    float2      texcoord    [[ attribute(2) ]]; // テクスチャ座標
+    float3      position    [[ attribute(0) ]];
+    float3      normal      [[ attribute(1) ]];
+    float2      texcoord    [[ attribute(2) ]];
 };
 
 struct VertexOut3D {
