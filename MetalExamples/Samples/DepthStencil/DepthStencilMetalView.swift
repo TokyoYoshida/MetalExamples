@@ -9,6 +9,7 @@ import SwiftUI
 import MetalKit
 
 struct FrameUniforms {
+    var modelMatrix: matrix_float4x4
     var projectionViewMatrinx: matrix_float4x4
     var normalMatrinx: matrix_float3x3
 }
