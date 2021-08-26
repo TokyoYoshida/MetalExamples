@@ -24,6 +24,10 @@ struct ContentView: View {
                         Text("Simple Shader")
                             .padding()
                     }
+                    NavigationLink(destination: DrawToCAMetalLayerView()) {
+                        Text("Draw to CAMetalLayer")
+                            .padding()
+                    }
                     NavigationLink(destination: ParticleView()) {
                         Text("Particle")
                             .padding()
