@@ -220,6 +220,7 @@
 				1E613436266CBED5009A4FBC /* Common */,
 				1E1DD8842668E53400F98410 /* Simple */,
 				1E6047E72669E2BA00AAF2DD /* DrawTexture */,
+				1EAF6C60266B6C7200772496 /* SimpleShader */,
 				1E370BCA26D7634E0013D2FA /* DrawToCAMetalLayer */,
 				1E61342E266C9EBB009A4FBC /* Particle */,
 				1EF6899F268DA19600571F3F /* Triple Buffering */,
@@ -276,7 +277,6 @@
 			children = (
 				1E6047E82669E2D500AAF2DD /* DrawTextureView.swift */,
 				1E6047E92669E2D800AAF2DD /* DrawTextureMetalView.swift */,
-				1EAF6C60266B6C7200772496 /* SimpleShader */,
 			);
 			path = DrawTexture;
 			sourceTree = "<group>";
