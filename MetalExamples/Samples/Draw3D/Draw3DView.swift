@@ -7,9 +7,9 @@
 
 import SwiftUI
 
-struct DepthStencilView: View {
+struct Draw3DView: View {
     var body: some View {
-        DepthStencilMetalView()
+        Draw3DMetalView()
         .navigationBarTitle(Text("TripleBuffering"), displayMode: .inline)
     }
 }

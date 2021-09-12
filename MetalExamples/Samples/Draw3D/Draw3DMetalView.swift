@@ -20,7 +20,7 @@ struct FrameUniforms {
     var normalMatrinx: matrix_float3x3
 }
 
-struct DepthStencilMetalView: UIViewRepresentable {
+struct Draw3DMetalView: UIViewRepresentable {
     typealias UIViewType = MTKView
     var mtkView:MTKView = {
         let _mtkView = MTKView()
@@ -49,7 +49,7 @@ struct DepthStencilMetalView: UIViewRepresentable {
         static let numberOfParticles = 100_000
         static let maxBuffers = 3
         lazy var indexes = makeParticleIndexes()
-        var parent: DepthStencilMetalView
+        var parent: Draw3DMetalView
         var metalDevice: MTLDevice!
         var metalCommandQueue: MTLCommandQueue!
         var renderPipeline: MTLRenderPipelineState!
@@ -68,7 +68,7 @@ struct DepthStencilMetalView: UIViewRepresentable {
         private var modelMatrix = matrix_identity_float4x4
         private var depthStencilState: MTLDepthStencilState!
 
-        init(_ parent: DepthStencilMetalView) {
+        init(_ parent: Draw3DMetalView) {
             func loadModel() {
                 let allocator = MTKMeshBufferAllocator(device: metalDevice)
                 let mdlMesh = MDLMesh.newBox(withDimensions: vector_float3(repeating: 1),

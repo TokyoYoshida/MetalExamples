@@ -44,8 +44,8 @@ struct ContentView: View {
                         Text("Draw Indexed Primitive")
                             .padding()
                     }
-                    NavigationLink(destination: DepthStencilView()) {
-                        Text("Depth Stencil")
+                    NavigationLink(destination: Draw3DView()) {
+                        Text("Draw 3D by Depth Stencil")
                             .padding()
                     }
                     Section(header: Text("MSL Shader Examples")) {
