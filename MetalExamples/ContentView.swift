@@ -53,6 +53,10 @@ struct ContentView: View {
                             Text("Rain Drop")
                                 .padding()
                         }
+                        NavigationLink(destination: SimpleShapeView()) {
+                            Text("Simple Shape")
+                                .padding()
+                        }
                     }
                 }
             }

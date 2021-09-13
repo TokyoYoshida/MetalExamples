@@ -44,6 +44,8 @@
 		1EAF6C66266B6D4400772496 /* SimpleShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 1EAF6C65266B6D4400772496 /* SimpleShader.metal */; };
 		1EE5073E269682D600CD34DF /* RainDropShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 1EE5073B2696824800CD34DF /* RainDropShader.metal */; };
 		1EE5073F269682FA00CD34DF /* RainDropEffectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EE5073C2696829200CD34DF /* RainDropEffectView.swift */; };
+		1EF25D6926EF3CF0004EAFD0 /* SimpleShapeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EF25D6726EF3C92004EAFD0 /* SimpleShapeView.swift */; };
+		1EF25D6A26EF3CF4004EAFD0 /* SimpleShapeShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 1EF25D6826EF3C92004EAFD0 /* SimpleShapeShader.metal */; };
 		1EF689A2268DA21200571F3F /* TripleBufferingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EF689A0268DA1A900571F3F /* TripleBufferingView.swift */; };
 		1EF689A3268DA21500571F3F /* TripleBufferingMetalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EF689A1268DA1AB00571F3F /* TripleBufferingMetalView.swift */; };
 /* End PBXBuildFile section */
@@ -124,6 +126,8 @@
 		1EAF6C67266B6DE500772496 /* SimpleShaderType.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SimpleShaderType.h; sourceTree = "<group>"; };
 		1EE5073B2696824800CD34DF /* RainDropShader.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = RainDropShader.metal; sourceTree = "<group>"; };
 		1EE5073C2696829200CD34DF /* RainDropEffectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RainDropEffectView.swift; sourceTree = "<group>"; };
+		1EF25D6726EF3C92004EAFD0 /* SimpleShapeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleShapeView.swift; sourceTree = "<group>"; };
+		1EF25D6826EF3C92004EAFD0 /* SimpleShapeShader.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = SimpleShapeShader.metal; sourceTree = "<group>"; };
 		1EF689A0268DA1A900571F3F /* TripleBufferingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripleBufferingView.swift; sourceTree = "<group>"; };
 		1EF689A1268DA1AB00571F3F /* TripleBufferingMetalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripleBufferingMetalView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -334,6 +338,7 @@
 		1EE5073A2696823500CD34DF /* ShaderExamples */ = {
 			isa = PBXGroup;
 			children = (
+				1EF25D6626EF3C7B004EAFD0 /* SimpleShape */,
 				1EE5073D2696829A00CD34DF /* RainDrop */,
 			);
 			path = ShaderExamples;
@@ -346,6 +351,15 @@
 				1EE5073B2696824800CD34DF /* RainDropShader.metal */,
 			);
 			path = RainDrop;
+			sourceTree = "<group>";
+		};
+		1EF25D6626EF3C7B004EAFD0 /* SimpleShape */ = {
+			isa = PBXGroup;
+			children = (
+				1EF25D6726EF3C92004EAFD0 /* SimpleShapeView.swift */,
+				1EF25D6826EF3C92004EAFD0 /* SimpleShapeShader.metal */,
+			);
+			path = SimpleShape;
 			sourceTree = "<group>";
 		};
 		1EF6899F268DA19600571F3F /* Triple Buffering */ = {
@@ -510,6 +524,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1EF25D6926EF3CF0004EAFD0 /* SimpleShapeView.swift in Sources */,
 				1E32D80C268EF131006BAC95 /* StoredParticleShader.metal in Sources */,
 				1EE5073E269682D600CD34DF /* RainDropShader.metal in Sources */,
 				1E613435266C9F11009A4FBC /* RandomParticleShader.metal in Sources */,
@@ -529,6 +544,7 @@
 				1E613433266C9F0B009A4FBC /* ParticleView.swift in Sources */,
 				1E18AD0C26942B5600C70468 /* FrameVideoRecorder.swift in Sources */,
 				1E1DD8592668E47100F98410 /* MetalExamplesApp.swift in Sources */,
+				1EF25D6A26EF3CF4004EAFD0 /* SimpleShapeShader.metal in Sources */,
 				1E6047EB2669E3C200AAF2DD /* DrawTextureMetalView.swift in Sources */,
 				1E7DB50526ACC7AC00CFF60B /* DrawIndexedPrimitiveMetalView.swift in Sources */,
 				1E5A595926B67D050000500C /* Draw3DView.swift in Sources */,
