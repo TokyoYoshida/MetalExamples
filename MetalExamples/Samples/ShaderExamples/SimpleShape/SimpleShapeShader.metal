@@ -46,16 +46,16 @@ fragment float4 simpleShapeFragmentShader(
                     ColorInOut in [[ stage_in ]],
                     constant Uniforms &uniforms [[buffer(1)]]) {
     float3 destColor = float3(1.0, 1.0, 1.0);
-    float2 position = (position.xy * 2.0 - uniforms.resolution.xy) / min(uniforms.resolution.x, uniforms.resolution.y);
+    float2 position = (in.position.xy * 2.0 - uniforms.resolution.xy) / min(uniforms.resolution.x, uniforms.resolution.y);
 
-    if (inCircle (position, float2( 0.1, -0.1), 1)) {
+    if (inCircle (position, float2( 0.1, -0.1), 0.5)) {
         destColor *= float3(1.0, 0.0, 0.0);
     }
 
-    if (inRect(position, float2( 0.5, -0.5), 1)) {
+    if (inRect(position, float2(0.5, -0.5), 0.25)) {
         destColor *= float3(0.0, 0.0, 1.0);
     }
-    if (inEllipse(position, float2(-0.5, -0.5), float2(1.0, 1.0), 0.2)) {
+    if (inEllipse(position, float2(-0.5, -0.5), float2(1.0, 1.0), 0.3)) {
         destColor *= float3(0.0, 1.0, 0.0);
     }
     
