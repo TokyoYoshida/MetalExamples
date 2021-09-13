@@ -55,7 +55,7 @@ fragment float4 simpleShapeFragmentShader(
     if (inRect(position, float2(0.5, -0.5), 0.25)) {
         destColor *= float3(0.0, 0.0, 1.0);
     }
-    if (inEllipse(position, float2(-0.5, -0.5), float2(1.0, 1.0), 0.3)) {
+    if (inEllipse(position, float2(-0.5, -0.3), float2(1.0, 1.0), 0.3)) {
         destColor *= float3(0.0, 1.0, 0.0);
     }
     
