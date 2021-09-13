@@ -49,12 +49,12 @@ struct ContentView: View {
                             .padding()
                     }
                     Section(header: Text("MSL Shader Examples")) {
-                        NavigationLink(destination: RainDropEffectView()) {
-                            Text("Rain Drop")
-                                .padding()
-                        }
                         NavigationLink(destination: SimpleShapeView()) {
                             Text("Simple Shape")
+                                .padding()
+                        }
+                        NavigationLink(destination: RainDropEffectView()) {
+                            Text("Rain Drop")
                                 .padding()
                         }
                     }
