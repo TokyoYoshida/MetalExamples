@@ -9,13 +9,13 @@ import SwiftUI
 import MetalKit
 
 struct MultiPassRenderingMetalView: UIViewRepresentable {
+    let mtkView = MTKView()
     typealias UIViewType = MTKView
     
     func makeCoordinator() -> Coordinator {
         Coordinator(self)
     }
     func makeUIView(context: Context) -> MTKView {
-        let mtkView = MTKView()
         mtkView.delegate = context.coordinator
         mtkView.preferredFramesPerSecond = 60
         if let metalDevice = MTLCreateSystemDefaultDevice() {
@@ -43,9 +43,28 @@ struct MultiPassRenderingMetalView: UIViewRepresentable {
             -1,  1, 0, 1,
              1,  1, 0, 1,
         ]
-        var renderPassDescriptor: MTLRenderPassDescriptor = MTLRenderPassDescriptor()
+        var offscreenRenderPassDescriptor: MTLRenderPassDescriptor = MTLRenderPassDescriptor()
+        var pixcelFormat:MTLPixelFormat {
+            parent.mtkView.colorPixelFormat
+        }
+        var size: CGSize {
+            parent.mtkView.drawableSize
+        }
         
         init(_ parent: MultiPassRenderingMetalView) {
+            func buildTexture() -> MTLTexture {
+                let descriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: pixcelFormat , width: Int(size.width), height: Int(size.height), mipmapped: false)
+                descriptor.usage = [.shaderRead, .renderTarget]
+                descriptor.storageMode = .private
+                guard let texture = metalDevice.makeTexture(descriptor: descriptor) else {
+                    fatalError()
+                }
+                return texture
+            }
+            func buildOffscreenRenderPass() {
+                
+//                offscreenRenderPassDescriptor.colorAttachments[0].texture
+            }
             func buildPipeline() {
                 guard let library = self.metalDevice.makeDefaultLibrary() else {fatalError()}
                 let descriptor = MTLRenderPipelineDescriptor()
@@ -75,12 +94,12 @@ struct MultiPassRenderingMetalView: UIViewRepresentable {
         func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
         }
         func draw(in view: MTKView) {
-            guard let drawable = view.currentDrawable else {return}
+            guard let drawable = view.currentDrawable,
+                  let renderPassDescriptor = parent.mtkView.currentRenderPassDescriptor
+            else {return}
             
             let commandBuffer = metalCommandQueue.makeCommandBuffer()!
             
-            renderPassDescriptor.colorAttachments[0].texture = drawable.texture
-
             let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)!
 
             guard let renderPipeline = renderPipeline else {fatalError()}
