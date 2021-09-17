@@ -9,7 +9,9 @@ import SwiftUI
 
 struct MultiPassRenderingView: View {
     var body: some View {
-        MultiPassRenderingMetalView()
-        .navigationBarTitle(Text("Simple Shader"), displayMode: .inline)
+        GeometryReader { proxy in
+            MultiPassRenderingMetalView(frame: proxy.frame(in: .local))
+            .navigationBarTitle(Text("Simple Shader"), displayMode: .inline)
+        }
     }
 }
