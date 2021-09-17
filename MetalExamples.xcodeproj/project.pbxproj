@@ -42,6 +42,8 @@
 		1EAF6C63266B6CD200772496 /* SimpleShaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EAF6C62266B6C7C00772496 /* SimpleShaderView.swift */; };
 		1EAF6C64266B6CD400772496 /* SimpleShaderMetalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EAF6C61266B6C7C00772496 /* SimpleShaderMetalView.swift */; };
 		1EAF6C66266B6D4400772496 /* SimpleShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 1EAF6C65266B6D4400772496 /* SimpleShader.metal */; };
+		1EBE45BB26F489130027FBD0 /* MultiPassRenderingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EBE45B926F488F70027FBD0 /* MultiPassRenderingView.swift */; };
+		1EBE45BC26F489160027FBD0 /* MultiPassRenderingMetalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EBE45BA26F488F70027FBD0 /* MultiPassRenderingMetalView.swift */; };
 		1EE5073E269682D600CD34DF /* RainDropShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 1EE5073B2696824800CD34DF /* RainDropShader.metal */; };
 		1EE5073F269682FA00CD34DF /* RainDropEffectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EE5073C2696829200CD34DF /* RainDropEffectView.swift */; };
 		1EF25D6926EF3CF0004EAFD0 /* SimpleShapeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EF25D6726EF3C92004EAFD0 /* SimpleShapeView.swift */; };
@@ -124,6 +126,8 @@
 		1EAF6C62266B6C7C00772496 /* SimpleShaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleShaderView.swift; sourceTree = "<group>"; };
 		1EAF6C65266B6D4400772496 /* SimpleShader.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = SimpleShader.metal; sourceTree = "<group>"; };
 		1EAF6C67266B6DE500772496 /* SimpleShaderType.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SimpleShaderType.h; sourceTree = "<group>"; };
+		1EBE45B926F488F70027FBD0 /* MultiPassRenderingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiPassRenderingView.swift; sourceTree = "<group>"; };
+		1EBE45BA26F488F70027FBD0 /* MultiPassRenderingMetalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiPassRenderingMetalView.swift; sourceTree = "<group>"; };
 		1EE5073B2696824800CD34DF /* RainDropShader.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = RainDropShader.metal; sourceTree = "<group>"; };
 		1EE5073C2696829200CD34DF /* RainDropEffectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RainDropEffectView.swift; sourceTree = "<group>"; };
 		1EF25D6726EF3C92004EAFD0 /* SimpleShapeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleShapeView.swift; sourceTree = "<group>"; };
@@ -230,6 +234,7 @@
 				1EF6899F268DA19600571F3F /* Triple Buffering */,
 				1E4303A5269426EA00BFB25C /* VideoEffect */,
 				1E7DB4FC26ACBF2100CFF60B /* DrawIndexedPrimitive */,
+				1EBE45B826F488BA0027FBD0 /* MultiPassRendering */,
 				1E5A595626B67C6B0000500C /* Draw3D */,
 				1EE5073A2696823500CD34DF /* ShaderExamples */,
 			);
@@ -333,6 +338,15 @@
 				1EAF6C67266B6DE500772496 /* SimpleShaderType.h */,
 			);
 			path = SimpleShader;
+			sourceTree = "<group>";
+		};
+		1EBE45B826F488BA0027FBD0 /* MultiPassRendering */ = {
+			isa = PBXGroup;
+			children = (
+				1EBE45B926F488F70027FBD0 /* MultiPassRenderingView.swift */,
+				1EBE45BA26F488F70027FBD0 /* MultiPassRenderingMetalView.swift */,
+			);
+			path = MultiPassRendering;
 			sourceTree = "<group>";
 		};
 		1EE5073A2696823500CD34DF /* ShaderExamples */ = {
@@ -538,12 +552,14 @@
 				1E1DD85B2668E47100F98410 /* ContentView.swift in Sources */,
 				1E7DB50426ACC7A900CFF60B /* DrawIndexedPrimitiveView.swift in Sources */,
 				1E61343E266CC052009A4FBC /* CommnShaders.metal in Sources */,
+				1EBE45BB26F489130027FBD0 /* MultiPassRenderingView.swift in Sources */,
 				1EE5073F269682FA00CD34DF /* RainDropEffectView.swift in Sources */,
 				1E18AD0E26942BFE00C70468 /* CVPixelBuffer+Ext.swift in Sources */,
 				1EF689A3268DA21500571F3F /* TripleBufferingMetalView.swift in Sources */,
 				1E613433266C9F0B009A4FBC /* ParticleView.swift in Sources */,
 				1E18AD0C26942B5600C70468 /* FrameVideoRecorder.swift in Sources */,
 				1E1DD8592668E47100F98410 /* MetalExamplesApp.swift in Sources */,
+				1EBE45BC26F489160027FBD0 /* MultiPassRenderingMetalView.swift in Sources */,
 				1EF25D6A26EF3CF4004EAFD0 /* SimpleShapeShader.metal in Sources */,
 				1E6047EB2669E3C200AAF2DD /* DrawTextureMetalView.swift in Sources */,
 				1E7DB50526ACC7AC00CFF60B /* DrawIndexedPrimitiveMetalView.swift in Sources */,
