@@ -34,7 +34,8 @@ struct MultiPassRenderingMetalView: UIViewRepresentable {
         var parent: MultiPassRenderingMetalView
         var metalDevice: MTLDevice!
         var metalCommandQueue: MTLCommandQueue!
-        var renderPipeline: MTLRenderPipelineState!
+        var offscreenRenderPipeline: MTLRenderPipelineState!
+        var onscreenRenderPipeline: MTLRenderPipelineState!
         var texture: MTLTexture!
         var vertextBuffer: MTLBuffer!
         let vertexData: [Float] = [
@@ -62,24 +63,28 @@ struct MultiPassRenderingMetalView: UIViewRepresentable {
                 return texture
             }
             func buildOffscreenRenderPass() {
-                
-//                offscreenRenderPassDescriptor.colorAttachments[0].texture
+                texture = buildTexture()
+                offscreenRenderPassDescriptor.colorAttachments[0].texture = texture
             }
-            func buildPipeline() {
+            func buildOffscreenRenderPipeline() {
                 guard let library = self.metalDevice.makeDefaultLibrary() else {fatalError()}
                 let descriptor = MTLRenderPipelineDescriptor()
                 descriptor.vertexFunction = library.makeFunction(name: "vertexShader")
                 descriptor.fragmentFunction = library.makeFunction(name: "fragmentShader")
                 descriptor.colorAttachments[0].pixelFormat = .bgra8Unorm_srgb
-                renderPipeline = try! self.metalDevice.makeRenderPipelineState(descriptor: descriptor)
+                offscreenRenderPipeline = try! self.metalDevice.makeRenderPipelineState(descriptor: descriptor)
+            }
+            func buildScreenRenderPipeline() {
+                guard let library = self.metalDevice.makeDefaultLibrary() else {fatalError()}
+                let descriptor = MTLRenderPipelineDescriptor()
+                descriptor.vertexFunction = library.makeFunction(name: "vertexShader")
+                descriptor.fragmentFunction = library.makeFunction(name: "fragmentShader")
+                descriptor.colorAttachments[0].pixelFormat = .bgra8Unorm_srgb
+                onscreenRenderPipeline = try! self.metalDevice.makeRenderPipelineState(descriptor: descriptor)
             }
             func buildBuffers() {
                 let size = vertexData.count * MemoryLayout<Float>.size
                 vertextBuffer = self.metalDevice.makeBuffer(bytes: vertexData, length: size)
-            }
-            func loadTexture(_ device: MTLDevice) {
-                let textureLoader = MTKTextureLoader(device: device)
-                texture = try! textureLoader.newTexture(name: "sample_picture", scaleFactor: 1, bundle: nil)
             }
             self.parent = parent
             if let metalDevice = MTLCreateSystemDefaultDevice() {
@@ -87,35 +92,47 @@ struct MultiPassRenderingMetalView: UIViewRepresentable {
             }
             self.metalCommandQueue = metalDevice.makeCommandQueue()!
             super.init()
-            buildPipeline()
+            buildOffscreenRenderPipeline()
+            buildScreenRenderPipeline()
             buildBuffers()
-            loadTexture(self.metalDevice)
         }
         func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
         }
         func draw(in view: MTKView) {
             guard let drawable = view.currentDrawable,
-                  let renderPassDescriptor = parent.mtkView.currentRenderPassDescriptor
+                  let onscreenRenderPassDescriptor = parent.mtkView.currentRenderPassDescriptor
             else {return}
-            
             let commandBuffer = metalCommandQueue.makeCommandBuffer()!
-            
-            let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)!
 
-            guard let renderPipeline = renderPipeline else {fatalError()}
+            func doOffscreenRender() {
+                let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: offscreenRenderPassDescriptor)!
 
-            
-            renderEncoder.setRenderPipelineState(renderPipeline)
-            renderEncoder.setVertexBuffer(vertextBuffer, offset: 0, index: 0)
-            renderEncoder.drawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: 4)
+                guard let renderPipeline = offscreenRenderPipeline else {fatalError()}
+                
+                renderEncoder.setRenderPipelineState(renderPipeline)
+                renderEncoder.setVertexBuffer(vertextBuffer, offset: 0, index: 0)
+                renderEncoder.drawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: 4)
 
-            renderEncoder.endEncoding()
-            
-            commandBuffer.present(drawable)
-            
-            commandBuffer.commit()
-            
-            commandBuffer.waitUntilCompleted()
+                renderEncoder.endEncoding()
+            }
+            func doOnscreenRender() {
+                let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: onscreenRenderPassDescriptor)!
+
+                guard let renderPipeline = onscreenRenderPipeline else {fatalError()}
+                
+                renderEncoder.setRenderPipelineState(renderPipeline)
+                renderEncoder.setVertexBuffer(vertextBuffer, offset: 0, index: 0)
+                renderEncoder.drawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: 4)
+
+                renderEncoder.endEncoding()
+                
+                commandBuffer.present(drawable)
+                
+                commandBuffer.commit()
+                
+                commandBuffer.waitUntilCompleted()
+            }
+            doOnscreenRender()
         }
     }
 }
