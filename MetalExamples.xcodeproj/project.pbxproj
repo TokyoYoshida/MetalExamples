@@ -44,6 +44,7 @@
 		1EAF6C66266B6D4400772496 /* SimpleShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 1EAF6C65266B6D4400772496 /* SimpleShader.metal */; };
 		1EBE45BB26F489130027FBD0 /* MultiPassRenderingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EBE45B926F488F70027FBD0 /* MultiPassRenderingView.swift */; };
 		1EBE45BC26F489160027FBD0 /* MultiPassRenderingMetalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EBE45BA26F488F70027FBD0 /* MultiPassRenderingMetalView.swift */; };
+		1EC2ACD726F886D00063EE4B /* MultiPassRenderingShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 1EC2ACD626F886D00063EE4B /* MultiPassRenderingShader.metal */; };
 		1EE5073E269682D600CD34DF /* RainDropShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 1EE5073B2696824800CD34DF /* RainDropShader.metal */; };
 		1EE5073F269682FA00CD34DF /* RainDropEffectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EE5073C2696829200CD34DF /* RainDropEffectView.swift */; };
 		1EF25D6926EF3CF0004EAFD0 /* SimpleShapeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EF25D6726EF3C92004EAFD0 /* SimpleShapeView.swift */; };
@@ -128,6 +129,7 @@
 		1EAF6C67266B6DE500772496 /* SimpleShaderType.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SimpleShaderType.h; sourceTree = "<group>"; };
 		1EBE45B926F488F70027FBD0 /* MultiPassRenderingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiPassRenderingView.swift; sourceTree = "<group>"; };
 		1EBE45BA26F488F70027FBD0 /* MultiPassRenderingMetalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiPassRenderingMetalView.swift; sourceTree = "<group>"; };
+		1EC2ACD626F886D00063EE4B /* MultiPassRenderingShader.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = MultiPassRenderingShader.metal; sourceTree = "<group>"; };
 		1EE5073B2696824800CD34DF /* RainDropShader.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = RainDropShader.metal; sourceTree = "<group>"; };
 		1EE5073C2696829200CD34DF /* RainDropEffectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RainDropEffectView.swift; sourceTree = "<group>"; };
 		1EF25D6726EF3C92004EAFD0 /* SimpleShapeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleShapeView.swift; sourceTree = "<group>"; };
@@ -345,6 +347,7 @@
 			children = (
 				1EBE45B926F488F70027FBD0 /* MultiPassRenderingView.swift */,
 				1EBE45BA26F488F70027FBD0 /* MultiPassRenderingMetalView.swift */,
+				1EC2ACD626F886D00063EE4B /* MultiPassRenderingShader.metal */,
 			);
 			path = MultiPassRendering;
 			sourceTree = "<group>";
@@ -575,6 +578,7 @@
 				1E370BCE26D764B00013D2FA /* CAMetalLayerView.swift in Sources */,
 				1EF689A2268DA21200571F3F /* TripleBufferingView.swift in Sources */,
 				1E8CF5E826959EF100FE2F4B /* VideoEffectShader.metal in Sources */,
+				1EC2ACD726F886D00063EE4B /* MultiPassRenderingShader.metal in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

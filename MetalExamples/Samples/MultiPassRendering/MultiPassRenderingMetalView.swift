@@ -74,7 +74,7 @@ final class MultiPassRenderingMetalView: UIViewRepresentable {
                 guard let library = self.metalDevice.makeDefaultLibrary() else {fatalError()}
                 let descriptor = MTLRenderPipelineDescriptor()
                 descriptor.vertexFunction = library.makeFunction(name: "vertexShader")
-                descriptor.fragmentFunction = library.makeFunction(name: "fragmentShader")
+                descriptor.fragmentFunction = library.makeFunction(name: "redFilterFragmentShader")
                 descriptor.colorAttachments[0].pixelFormat = .bgra8Unorm_srgb
                 onScreenRenderPipeline = try! self.metalDevice.makeRenderPipelineState(descriptor: descriptor)
             }
@@ -139,6 +139,7 @@ final class MultiPassRenderingMetalView: UIViewRepresentable {
                 
                 renderEncoder.setRenderPipelineState(renderPipeline)
                 renderEncoder.setVertexBuffer(vertextBuffer, offset: 0, index: 0)
+                renderEncoder.setFragmentTexture(texture, index: 0)
                 renderEncoder.drawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: 4)
 
                 renderEncoder.endEncoding()

@@ -14,4 +14,6 @@
 struct ColorInOut
 {
     float4 position [[ position ]];
+    float size [[point_size]];
+    float2 texCords;
 };
