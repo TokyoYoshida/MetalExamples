@@ -23,7 +23,6 @@ final class MultiPassRenderingMetalView: UIViewRepresentable {
         return coordinator
     }
     func makeUIView(context: Context) -> MTKView {
-        mtkView.delegate = context.coordinator
         mtkView.preferredFramesPerSecond = 60
         if let metalDevice = MTLCreateSystemDefaultDevice() {
             mtkView.device = metalDevice
@@ -33,6 +32,7 @@ final class MultiPassRenderingMetalView: UIViewRepresentable {
         mtkView.drawableSize = frame.size
 //        mtkView.enableSetNeedsDisplay = true
         mtkView.colorPixelFormat = .bgra8Unorm_srgb
+        mtkView.delegate = context.coordinator
         coordinator.prepare()
         return mtkView
     }
@@ -46,6 +46,7 @@ final class MultiPassRenderingMetalView: UIViewRepresentable {
         var offScreenRenderPipeline: MTLRenderPipelineState!
         var onScreenRenderPipeline: MTLRenderPipelineState!
         var texture: MTLTexture!
+        var uniforms: Uniforms!
         var vertextBuffer: MTLBuffer!
         let vertexData: [Float] = [
             -1, -1, 0, 1,
@@ -58,7 +59,7 @@ final class MultiPassRenderingMetalView: UIViewRepresentable {
             parent.mtkView.colorPixelFormat
         }
         var size: CGSize {
-            parent.mtkView.drawableSize
+            parent.frame.size
         }
         
         init(_ parent: MultiPassRenderingMetalView) {
@@ -66,7 +67,7 @@ final class MultiPassRenderingMetalView: UIViewRepresentable {
                 guard let library = self.metalDevice.makeDefaultLibrary() else {fatalError()}
                 let descriptor = MTLRenderPipelineDescriptor()
                 descriptor.vertexFunction = library.makeFunction(name: "vertexShader")
-                descriptor.fragmentFunction = library.makeFunction(name: "fragmentShader")
+                descriptor.fragmentFunction = library.makeFunction(name: "simpleShapeFragmentShader")
                 descriptor.colorAttachments[0].pixelFormat = .bgra8Unorm_srgb
                 offScreenRenderPipeline = try! self.metalDevice.makeRenderPipelineState(descriptor: descriptor)
             }
@@ -109,7 +110,14 @@ final class MultiPassRenderingMetalView: UIViewRepresentable {
                 offScreenRenderPassDescriptor?.renderTargetWidth = Int(size.width)
                 offScreenRenderPassDescriptor?.renderTargetHeight = Int(size.height)
             }
+            func initUniform() {
+                uniforms = Uniforms(time: Float(0.0), aspectRatio: Float(0.0), touch: SIMD2<Float>(), resolution: SIMD4<Float>())
+                uniforms.aspectRatio = Float(size.width / size.height)
+                uniforms.resolution.x = Float(size.width)
+                uniforms.resolution.y = Float(size.height)
+            }
             buildOffscreenRenderPass()
+            initUniform()
         }
         func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
         }
@@ -128,6 +136,7 @@ final class MultiPassRenderingMetalView: UIViewRepresentable {
                 
                 renderEncoder.setRenderPipelineState(renderPipeline)
                 renderEncoder.setVertexBuffer(vertextBuffer, offset: 0, index: 0)
+                renderEncoder.setFragmentBytes(&uniforms, length: MemoryLayout<Uniforms>.stride, index: 1)
                 renderEncoder.drawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: 4)
 
                 renderEncoder.endEncoding()
