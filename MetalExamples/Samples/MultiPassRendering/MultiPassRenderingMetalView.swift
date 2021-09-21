@@ -33,7 +33,6 @@ final class MultiPassRenderingMetalView: UIViewRepresentable {
 //        mtkView.enableSetNeedsDisplay = true
         mtkView.colorPixelFormat = .bgra8Unorm_srgb
         mtkView.delegate = context.coordinator
-        coordinator.prepare()
         return mtkView
     }
     func updateUIView(_ uiView: MTKView, context: Context) {
@@ -57,9 +56,6 @@ final class MultiPassRenderingMetalView: UIViewRepresentable {
         var offScreenRenderPassDescriptor: MTLRenderPassDescriptor?
         var pixcelFormat:MTLPixelFormat {
             parent.mtkView.colorPixelFormat
-        }
-        var size: CGSize {
-            parent.frame.size
         }
         
         init(_ parent: MultiPassRenderingMetalView) {
@@ -93,7 +89,7 @@ final class MultiPassRenderingMetalView: UIViewRepresentable {
             buildScreenRenderPipeline()
             buildBuffers()
         }
-        func prepare() {
+        func prepare(size: CGSize) {
             func buildTexture() -> MTLTexture {
                 let descriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: pixcelFormat , width: Int(size.width), height: Int(size.height), mipmapped: false)
                 descriptor.usage = [.shaderRead, .renderTarget]
@@ -118,8 +114,13 @@ final class MultiPassRenderingMetalView: UIViewRepresentable {
             initUniform()
         }
         func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
-            uniforms.resolution.x = Float(size.width)
-            uniforms.resolution.y = Float(size.height)
+            if size != .zero && texture == nil {
+                prepare(size: size)
+            }
+            if uniforms != nil {
+                uniforms.resolution.x = Float(size.width)
+                uniforms.resolution.y = Float(size.height)
+            }
          }
         func draw(in view: MTKView) {
             guard let drawable = view.currentDrawable,
