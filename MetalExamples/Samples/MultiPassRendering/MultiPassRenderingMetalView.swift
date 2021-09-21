@@ -47,11 +47,18 @@ final class MultiPassRenderingMetalView: UIViewRepresentable {
         var texture: MTLTexture!
         var uniforms: Uniforms!
         var vertextBuffer: MTLBuffer!
+        var texCordBuffer: MTLBuffer!
         let vertexData: [Float] = [
             -1, -1, 0, 1,
              1, -1, 0, 1,
             -1,  1, 0, 1,
              1,  1, 0, 1,
+        ]
+        let textureCordinatedata: [Float] = [
+            0,1,
+            1,1,
+            0,0,
+            1,0
         ]
         var offScreenRenderPassDescriptor: MTLRenderPassDescriptor?
         var pixcelFormat:MTLPixelFormat {
@@ -70,7 +77,7 @@ final class MultiPassRenderingMetalView: UIViewRepresentable {
             func buildScreenRenderPipeline() {
                 guard let library = self.metalDevice.makeDefaultLibrary() else {fatalError()}
                 let descriptor = MTLRenderPipelineDescriptor()
-                descriptor.vertexFunction = library.makeFunction(name: "vertexShader")
+                descriptor.vertexFunction = library.makeFunction(name: "simpleVertexShader")
                 descriptor.fragmentFunction = library.makeFunction(name: "redFilterFragmentShader")
                 descriptor.colorAttachments[0].pixelFormat = .bgra8Unorm_srgb
                 onScreenRenderPipeline = try! self.metalDevice.makeRenderPipelineState(descriptor: descriptor)
@@ -78,6 +85,9 @@ final class MultiPassRenderingMetalView: UIViewRepresentable {
             func buildBuffers() {
                 let size = vertexData.count * MemoryLayout<Float>.size
                 vertextBuffer = self.metalDevice.makeBuffer(bytes: vertexData, length: size)
+
+                let texSize = textureCordinatedata.count * MemoryLayout<Float>.size
+                texCordBuffer = metalDevice.makeBuffer(bytes: textureCordinatedata, length: texSize, options: [])
             }
             self.parent = parent
             if let metalDevice = MTLCreateSystemDefaultDevice() {
@@ -137,6 +147,8 @@ final class MultiPassRenderingMetalView: UIViewRepresentable {
                 
                 renderEncoder.setRenderPipelineState(renderPipeline)
                 renderEncoder.setVertexBuffer(vertextBuffer, offset: 0, index: 0)
+                renderEncoder.setVertexBuffer(texCordBuffer, offset: 0, index: 1)
+                renderEncoder.setFragmentTexture(texture, index: 0)
                 renderEncoder.setFragmentBytes(&uniforms, length: MemoryLayout<Uniforms>.stride, index: 1)
                 renderEncoder.drawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: 4)
 
@@ -149,7 +161,14 @@ final class MultiPassRenderingMetalView: UIViewRepresentable {
                 
                 renderEncoder.setRenderPipelineState(renderPipeline)
                 renderEncoder.setVertexBuffer(vertextBuffer, offset: 0, index: 0)
+                renderEncoder.setVertexBuffer(vertextBuffer, offset: 0, index: 0)
+                renderEncoder.setVertexBuffer(texCordBuffer, offset: 0, index: 1)
+                renderEncoder.setVertexBytes(&uniforms, length: MemoryLayout<Uniforms>.stride, index: 2)
+
+
                 renderEncoder.setFragmentTexture(texture, index: 0)
+                renderEncoder.setFragmentBytes(&uniforms, length: MemoryLayout<Uniforms>.stride, index: 1)
+
                 renderEncoder.drawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: 4)
 
                 renderEncoder.endEncoding()
