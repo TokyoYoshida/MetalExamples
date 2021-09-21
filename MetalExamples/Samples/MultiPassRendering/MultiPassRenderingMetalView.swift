@@ -113,14 +113,14 @@ final class MultiPassRenderingMetalView: UIViewRepresentable {
             func initUniform() {
                 uniforms = Uniforms(time: Float(0.0), aspectRatio: Float(0.0), touch: SIMD2<Float>(), resolution: SIMD4<Float>())
                 uniforms.aspectRatio = Float(size.width / size.height)
-                uniforms.resolution.x = Float(size.width)
-                uniforms.resolution.y = Float(size.height)
             }
             buildOffscreenRenderPass()
             initUniform()
         }
         func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
-        }
+            uniforms.resolution.x = Float(size.width)
+            uniforms.resolution.y = Float(size.height)
+         }
         func draw(in view: MTKView) {
             guard let drawable = view.currentDrawable,
                   let offScreenRenderPassDescriptor = self.offScreenRenderPassDescriptor,
