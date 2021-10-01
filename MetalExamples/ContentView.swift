@@ -51,6 +51,10 @@ struct ContentView: View {
                             Text("TripleBuffering")
                                 .padding()
                         }
+                        NavigationLink(destination: IndirectBuffersView()) {
+                            Text("Indirect Buffers")
+                                .padding()
+                        }
                     }
                     Section(header: Text("3D")) {
                         NavigationLink(destination: Draw3DView()) {
