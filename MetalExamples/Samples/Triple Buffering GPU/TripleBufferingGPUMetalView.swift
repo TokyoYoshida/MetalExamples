@@ -36,6 +36,7 @@ struct TripleBufferingMetalViewGPU: UIViewRepresentable {
         var metalDevice: MTLDevice!
         var metalCommandQueue: MTLCommandQueue!
         var renderPipeline: MTLRenderPipelineState!
+        var computePipeline: MTLComputePipelineState!
         var particleBuffers:[MTLBuffer] = []
         var renderPassDescriptor: MTLRenderPassDescriptor = MTLRenderPassDescriptor()
         var uniforms: Uniforms!
@@ -47,13 +48,18 @@ struct TripleBufferingMetalViewGPU: UIViewRepresentable {
         }
 
         init(_ parent: TripleBufferingMetalViewGPU) {
-            func buildPipeline() {
+            func buildRenderPipeline() {
                 guard let library = self.metalDevice.makeDefaultLibrary() else {fatalError()}
                 let descriptor = MTLRenderPipelineDescriptor()
                 descriptor.vertexFunction = library.makeFunction(name: "storedParticleVertexShader")
                 descriptor.fragmentFunction = library.makeFunction(name: "storedParticleFragmentShader")
                 descriptor.colorAttachments[0].pixelFormat = .bgra8Unorm_srgb
                 renderPipeline = try! self.metalDevice.makeRenderPipelineState(descriptor: descriptor)
+            }
+            func buildComputePipeline() {
+                guard let library = self.metalDevice.makeDefaultLibrary() else {fatalError()}
+                let function = library.makeFunction(name: "particleComputeShader")!
+                computePipeline = try! self.metalDevice.makeComputePipelineState(function: function)
             }
             func initUniform() {
                 uniforms = Uniforms(time: Float(0.0), aspectRatio: Float(0.0), touch: SIMD2<Float>(), resolution: SIMD4<Float>())
@@ -85,7 +91,8 @@ struct TripleBufferingMetalViewGPU: UIViewRepresentable {
             }
             self.metalCommandQueue = metalDevice.makeCommandQueue()!
             super.init()
-            buildPipeline()
+            buildRenderPipeline()
+            buildComputePipeline()
             initUniform()
             initParticles()
         }
@@ -106,7 +113,7 @@ struct TripleBufferingMetalViewGPU: UIViewRepresentable {
         func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
         }
         func draw(in view: MTKView) {
-            func calcParticlePostion() {
+            func old_calcParticlePostion() {
                 let p = particleBuffers[currentBufferIndex].contents()
                 let b = particleBuffers[beforeBufferIndex].contents()
                 let stride = MemoryLayout<Particle>.stride
@@ -126,7 +133,7 @@ struct TripleBufferingMetalViewGPU: UIViewRepresentable {
             let commandBuffer = metalCommandQueue.makeCommandBuffer()!
             
             currentBufferIndex = (currentBufferIndex + 1) % Coordinator.maxBuffers
-            calcParticlePostion()
+            old_calcParticlePostion()
             
             renderPassDescriptor.colorAttachments[0].texture = drawable.texture
             renderPassDescriptor.colorAttachments[0].loadAction = .clear
