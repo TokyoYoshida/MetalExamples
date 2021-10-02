@@ -21,6 +21,7 @@ kernel void particleComputeShader(
                           )
 {
     float2 position = particles[gid].position;
+//    particles[gid].position.x += 0.1;
 }
 
 vertex ColorInOut storedParticleVertexGPUShader(
