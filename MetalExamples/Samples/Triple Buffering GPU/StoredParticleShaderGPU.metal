@@ -18,11 +18,14 @@ struct ColorInOut
 kernel void particleComputeShader(
                           device Particle *beforeParticles [[ buffer(0)]],
                           device Particle *particles [[ buffer(1)]],
+                          const device uint *numberOfParticles [[ buffer(2)]],
                           const uint gid [[ thread_position_in_grid ]]
                           )
 {
     float2 position = particles[gid].position;
-    particles[gid].position.x = beforeParticles[gid].position.x + 0.1;
+    if (gid < *numberOfParticles) {
+        particles[gid].position.x = beforeParticles[gid].position.x + 0.1;
+    }
 }
 
 vertex ColorInOut storedParticleVertexGPUShader(

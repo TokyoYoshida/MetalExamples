@@ -30,7 +30,7 @@ struct TripleBufferingMetalViewGPU: UIViewRepresentable {
     func updateUIView(_ uiView: MTKView, context: Context) {
     }
     class Coordinator : NSObject, MTKViewDelegate {
-        static let numberOfParticles = 10000
+        static var numberOfParticles:UInt = 10000
         static let maxBuffers = 3
         var parent: TripleBufferingMetalViewGPU
         var metalDevice: MTLDevice!
@@ -64,8 +64,14 @@ struct TripleBufferingMetalViewGPU: UIViewRepresentable {
                 computePipeline = try! self.metalDevice.makeComputePipelineState(function: function)
             }
             func calcThreadGroup() {
-                threadgroupsPerGrid = MTLSize(width: Coordinator.numberOfParticles, height: 1, depth: 1)
-                threadsPerThreadgroup = MTLSize(width: computePipeline.threadExecutionWidth, height: 1, depth: 1)
+                let maxTotalThreadsPerThreadgroup =  computePipeline.maxTotalThreadsPerThreadgroup
+                let threadExecutionWidth = computePipeline.threadExecutionWidth
+                let groupsWidth  = maxTotalThreadsPerThreadgroup / threadExecutionWidth * threadExecutionWidth
+
+                threadgroupsPerGrid = MTLSize(width: groupsWidth, height: 1, depth: 1)
+                
+                let threadsWidth = ((Coordinator.numberOfParticles + groupsWidth - 1) / groupsWidth)*2
+                threadsPerThreadgroup = MTLSize(width: threadsWidth, height: 1, depth: 1)
             }
             func initUniform() {
                 uniforms = Uniforms(time: Float(0.0), aspectRatio: Float(0.0), touch: SIMD2<Float>(), resolution: SIMD4<Float>())
@@ -137,9 +143,11 @@ struct TripleBufferingMetalViewGPU: UIViewRepresentable {
             func calcParticlePostion(_ commandBuffer: MTLCommandBuffer) {
                 let encoder = commandBuffer.makeComputeCommandEncoder()!
                 
+                encoder.setComputePipelineState(computePipeline)
+
                 encoder.setBuffer(particleBuffers[beforeBufferIndex], offset: 0, index: 0)
                 encoder.setBuffer(particleBuffers[currentBufferIndex], offset: 0, index: 1)
-                encoder.setComputePipelineState(computePipeline)
+                encoder.setBytes(&Coordinator.numberOfParticles, length: MemoryLayout<UInt>.stride, index: 2)
                 
                 encoder.dispatchThreadgroups(threadgroupsPerGrid,
                                                  threadsPerThreadgroup: threadsPerThreadgroup)
