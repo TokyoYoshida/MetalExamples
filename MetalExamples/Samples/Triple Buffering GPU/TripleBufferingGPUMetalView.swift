@@ -46,7 +46,7 @@ struct TripleBufferingMetalViewGPU: UIViewRepresentable {
         var beforeBufferIndex: Int {
             currentBufferIndex == 0 ? Coordinator.maxBuffers - 1 : currentBufferIndex - 1
         }
-        var threadgroupSize: MTLSize!
+        var threadgroupsPerGrid: MTLSize!
         var threadsPerThreadgroup: MTLSize!
 
         init(_ parent: TripleBufferingMetalViewGPU) {
@@ -64,7 +64,7 @@ struct TripleBufferingMetalViewGPU: UIViewRepresentable {
                 computePipeline = try! self.metalDevice.makeComputePipelineState(function: function)
             }
             func calcThreadGroup() {
-                threadgroupSize = MTLSize(width: Coordinator.numberOfParticles, height: 1, depth: 1)
+                threadgroupsPerGrid = MTLSize(width: Coordinator.numberOfParticles, height: 1, depth: 1)
                 threadsPerThreadgroup = MTLSize(width: computePipeline.threadExecutionWidth, height: 1, depth: 1)
             }
             func initUniform() {
@@ -141,7 +141,7 @@ struct TripleBufferingMetalViewGPU: UIViewRepresentable {
                 encoder.setBuffer(particleBuffers[currentBufferIndex], offset: 0, index: 1)
                 encoder.setComputePipelineState(computePipeline)
                 
-                encoder.dispatchThreadgroups(threadgroupSize,
+                encoder.dispatchThreadgroups(threadgroupsPerGrid,
                                                  threadsPerThreadgroup: threadsPerThreadgroup)
                 
                 encoder.endEncoding()
