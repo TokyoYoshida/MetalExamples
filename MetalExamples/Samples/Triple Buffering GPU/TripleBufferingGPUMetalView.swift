@@ -30,7 +30,7 @@ struct TripleBufferingMetalViewGPU: UIViewRepresentable {
     func updateUIView(_ uiView: MTKView, context: Context) {
     }
     class Coordinator : NSObject, MTKViewDelegate {
-        static var numberOfParticles:UInt = 10000
+        static var numberOfParticles:Int = 10000
         static let maxBuffers = 3
         var parent: TripleBufferingMetalViewGPU
         var metalDevice: MTLDevice!
@@ -147,7 +147,7 @@ struct TripleBufferingMetalViewGPU: UIViewRepresentable {
 
                 encoder.setBuffer(particleBuffers[beforeBufferIndex], offset: 0, index: 0)
                 encoder.setBuffer(particleBuffers[currentBufferIndex], offset: 0, index: 1)
-                encoder.setBytes(&Coordinator.numberOfParticles, length: MemoryLayout<UInt>.stride, index: 2)
+                encoder.setBytes(&Coordinator.numberOfParticles, length: MemoryLayout<Int>.stride, index: 2)
                 
                 encoder.dispatchThreadgroups(threadgroupsPerGrid,
                                                  threadsPerThreadgroup: threadsPerThreadgroup)
