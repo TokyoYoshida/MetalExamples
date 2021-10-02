@@ -46,6 +46,8 @@ struct TripleBufferingMetalViewGPU: UIViewRepresentable {
         var beforeBufferIndex: Int {
             currentBufferIndex == 0 ? Coordinator.maxBuffers - 1 : currentBufferIndex - 1
         }
+        var threadgroupSize: MTLSize!
+        var threadgroupCount: MTLSize!
 
         init(_ parent: TripleBufferingMetalViewGPU) {
             func buildRenderPipeline() {
@@ -60,6 +62,16 @@ struct TripleBufferingMetalViewGPU: UIViewRepresentable {
                 guard let library = self.metalDevice.makeDefaultLibrary() else {fatalError()}
                 let function = library.makeFunction(name: "particleComputeShader")!
                 computePipeline = try! self.metalDevice.makeComputePipelineState(function: function)
+            }
+            func calcThreadGroup() {
+                threadgroupSize = MTLSize(width: 16, height: 16, depth: 1)
+                let w = threadgroupSize.width
+                let h = threadgroupSize.height
+                threadgroupCount = MTLSize(
+                    width:  (16  + w - 1) / w,
+                    height: (16 + h - 1) / h,
+                    depth: 1
+                )
             }
             func initUniform() {
                 uniforms = Uniforms(time: Float(0.0), aspectRatio: Float(0.0), touch: SIMD2<Float>(), resolution: SIMD4<Float>())
@@ -93,6 +105,7 @@ struct TripleBufferingMetalViewGPU: UIViewRepresentable {
             super.init()
             buildRenderPipeline()
             buildComputePipeline()
+            calcThreadGroup()
             initUniform()
             initParticles()
         }
@@ -131,6 +144,9 @@ struct TripleBufferingMetalViewGPU: UIViewRepresentable {
                 let encoder = commandBuffer.makeComputeCommandEncoder()!
                 
                 encoder.setComputePipelineState(computePipeline)
+                
+                encoder.dispatchThreadgroups(threadgroupSize,
+                                                 threadsPerThreadgroup: threadgroupCount)
                 
                 encoder.endEncoding()
             }
