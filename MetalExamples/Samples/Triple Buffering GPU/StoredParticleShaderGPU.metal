@@ -22,7 +22,6 @@ kernel void particleComputeShader(
                           const uint gid [[ thread_position_in_grid ]]
                           )
 {
-    float2 position = particles[gid].position;
     if (gid < uint(*numberOfParticles)) {
         particles[gid].position.x = beforeParticles[gid].position.x + 0.1;
     }
