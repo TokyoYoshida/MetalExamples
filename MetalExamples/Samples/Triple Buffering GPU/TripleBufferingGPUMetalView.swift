@@ -127,6 +127,13 @@ struct TripleBufferingMetalViewGPU: UIViewRepresentable {
                     p.storeBytes(of: particle,toByteOffset: i*stride,  as: Particle.self)
                 }
             }
+            func calcParticlePostion(_ commandBuffer: MTLCommandBuffer) {
+                let encoder = commandBuffer.makeComputeCommandEncoder()!
+                
+                encoder.setComputePipelineState(computePipeline)
+                
+                encoder.endEncoding()
+            }
             guard let drawable = view.currentDrawable else {return}
             
             semaphore.wait()
@@ -134,6 +141,7 @@ struct TripleBufferingMetalViewGPU: UIViewRepresentable {
             
             currentBufferIndex = (currentBufferIndex + 1) % Coordinator.maxBuffers
             old_calcParticlePostion()
+            calcParticlePostion(commandBuffer)
             
             renderPassDescriptor.colorAttachments[0].texture = drawable.texture
             renderPassDescriptor.colorAttachments[0].loadAction = .clear
