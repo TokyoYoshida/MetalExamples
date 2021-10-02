@@ -137,7 +137,8 @@ struct TripleBufferingMetalViewGPU: UIViewRepresentable {
             func calcParticlePostion(_ commandBuffer: MTLCommandBuffer) {
                 let encoder = commandBuffer.makeComputeCommandEncoder()!
                 
-                encoder.setBuffer(particleBuffers[currentBufferIndex], offset: 0, index: 0)
+                encoder.setBuffer(particleBuffers[beforeBufferIndex], offset: 0, index: 0)
+                encoder.setBuffer(particleBuffers[currentBufferIndex], offset: 0, index: 1)
                 encoder.setComputePipelineState(computePipeline)
                 
                 encoder.dispatchThreadgroups(threadgroupSize,
