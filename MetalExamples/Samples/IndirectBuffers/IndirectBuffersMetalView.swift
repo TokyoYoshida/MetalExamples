@@ -70,6 +70,7 @@ struct IndirectBuffersMetalView: UIViewRepresentable {
                 descriptor.vertexFunction = library.makeFunction(name: "storedParticleVertexShader")
                 descriptor.fragmentFunction = library.makeFunction(name: "storedParticleFragmentShader")
                 descriptor.colorAttachments[0].pixelFormat = .bgra8Unorm_srgb
+                descriptor.supportIndirectCommandBuffers = true
                 renderPipeline = try! self.metalDevice.makeRenderPipelineState(descriptor: descriptor)
             }
             func buildComputePipeline() {
