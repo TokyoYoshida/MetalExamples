@@ -99,6 +99,7 @@ struct IndirectBuffersMetalView: UIViewRepresentable {
                
                 icbEncoder.setArgumentBuffer(icbBuffer, offset: 0)
                 icbEncoder.setIndirectCommandBuffer(icb, index: 0)
+                icbEncoder.setRenderPipelineState(renderPipeline, index: 1)
             }
             func calcThreadGroup() {
                 let maxTotalThreadsPerThreadgroup =  computePipeline.maxTotalThreadsPerThreadgroup
