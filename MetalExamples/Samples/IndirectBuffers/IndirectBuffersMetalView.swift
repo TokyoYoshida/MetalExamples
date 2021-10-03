@@ -8,6 +8,14 @@
 import SwiftUI
 import MetalKit
 
+class PipelineStateContainer {
+    var pipelineState: MTLRenderPipelineState
+
+    internal init(pipelineState: MTLRenderPipelineState) {
+        self.pipelineState = pipelineState
+    }
+}
+
 struct IndirectBuffersMetalView: UIViewRepresentable {
     typealias UIViewType = MTKView
     let mtkView = MTKView()
@@ -53,6 +61,7 @@ struct IndirectBuffersMetalView: UIViewRepresentable {
         var icb: MTLIndirectCommandBuffer!
         var icbFunction: MTLFunction!
         var icbBuffer: MTLBuffer!
+        lazy var pipelineStateContainer = PipelineStateContainer(pipelineState: renderPipeline)
 
         init(_ parent: IndirectBuffersMetalView) {
             func buildRenderPipeline() {
@@ -84,7 +93,7 @@ struct IndirectBuffersMetalView: UIViewRepresentable {
                 icbFunction = library.makeFunction(name: "particleComputeICBShader")
                 icbPipeline = try! metalDevice.makeComputePipelineState(function: icbFunction)
                 
-                let icbEncoder = icbFunction.makeArgumentEncoder(bufferIndex: 0)
+                let icbEncoder = icbFunction.makeArgumentEncoder(bufferIndex: 4)
                 icbBuffer = metalDevice.makeBuffer(length: icbEncoder.encodedLength, options: [])
                
                 icbEncoder.setArgumentBuffer(icbBuffer, offset: 0)
@@ -154,32 +163,23 @@ struct IndirectBuffersMetalView: UIViewRepresentable {
         func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
         }
         func draw(in view: MTKView) {
-            func old_calcParticlePostion() {
-                let p = particleBuffers[currentBufferIndex].contents()
-                let b = particleBuffers[beforeBufferIndex].contents()
-                let stride = MemoryLayout<Particle>.stride
-                for i in 0..<Coordinator.numberOfParticles {
-                    var particle = b.load(fromByteOffset: i*stride, as: Particle.self)
-                    if particle.position.y > -1 {
-                        particle.position.y -= 0.01
-                    } else {
-                        particle.position.y += 2 - 0.01
-                    }
-                    p.storeBytes(of: particle,toByteOffset: i*stride,  as: Particle.self)
-                }
-            }
             func calcParticlePostion(_ commandBuffer: MTLCommandBuffer) {
                 let encoder = commandBuffer.makeComputeCommandEncoder()!
                 
-                encoder.setComputePipelineState(computePipeline)
+                encoder.setComputePipelineState(icbPipeline)
 
                 encoder.setBuffer(particleBuffers[beforeBufferIndex], offset: 0, index: 0)
                 encoder.setBuffer(particleBuffers[currentBufferIndex], offset: 0, index: 1)
                 encoder.setBytes(&Coordinator.numberOfParticles, length: MemoryLayout<Int>.stride, index: 2)
+                encoder.setBytes(&pipelineStateContainer, length: MemoryLayout<PipelineStateContainer>.stride, index: 3)
                 
                 encoder.dispatchThreadgroups(threadgroupsPerGrid,
                                                  threadsPerThreadgroup: threadsPerThreadgroup)
                 
+                encoder.useResource(icb, usage: .write)
+                encoder.useResource(particleBuffers[beforeBufferIndex], usage: .read)
+                encoder.useResource(particleBuffers[currentBufferIndex], usage: .write)
+
                 encoder.endEncoding()
             }
             guard let drawable = view.currentDrawable else {return}
@@ -189,7 +189,11 @@ struct IndirectBuffersMetalView: UIViewRepresentable {
             
             currentBufferIndex = (currentBufferIndex + 1) % Coordinator.maxBuffers
             calcParticlePostion(commandBuffer)
-            
+
+            let blitEncoder = commandBuffer.makeBlitCommandEncoder()!
+            blitEncoder.optimizeIndirectCommandBuffer(icb, range: 0..<1)
+            blitEncoder.endEncoding()
+
             renderPassDescriptor.colorAttachments[0].texture = drawable.texture
             renderPassDescriptor.colorAttachments[0].loadAction = .clear
             renderPassDescriptor.colorAttachments[0].clearColor = MTLClearColorMake(0.8, 0.7, 0.1, 1.0)
@@ -199,15 +203,16 @@ struct IndirectBuffersMetalView: UIViewRepresentable {
             guard let renderPipeline = renderPipeline else {fatalError()}
 
             
-            renderEncoder.setRenderPipelineState(renderPipeline)
-            uniforms.time += preferredFramesTime
-
-            renderEncoder.setVertexBuffer(particleBuffers[currentBufferIndex], offset: 0, index: 0)
+//            renderEncoder.setRenderPipelineState(renderPipeline)
+//            uniforms.time += preferredFramesTime
+//
+//            renderEncoder.setVertexBuffer(particleBuffers[currentBufferIndex], offset: 0, index: 0)
+//
+//            renderEncoder.setVertexBytes(&uniforms, length: MemoryLayout<Uniforms>.stride, index: 2)
+//
+//            renderEncoder.drawPrimitives(type: .point, vertexStart: 0, vertexCount: Coordinator.numberOfParticles)
             
-            renderEncoder.setVertexBytes(&uniforms, length: MemoryLayout<Uniforms>.stride, index: 2)
-
-            renderEncoder.drawPrimitives(type: .point, vertexStart: 0, vertexCount: Coordinator.numberOfParticles)
-            
+            renderEncoder.executeCommandsInBuffer(icb, range: 0..<1)
             renderEncoder.endEncoding()
             
             commandBuffer.present(drawable)
