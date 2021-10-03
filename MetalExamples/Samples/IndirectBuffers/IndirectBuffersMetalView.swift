@@ -30,12 +30,13 @@ struct IndirectBuffersMetalView: UIViewRepresentable {
     func updateUIView(_ uiView: MTKView, context: Context) {
     }
     class Coordinator : NSObject, MTKViewDelegate {
-        static let numberOfParticles = 10000
+        static var numberOfParticles:Int = 100_000
         static let maxBuffers = 3
         var parent: IndirectBuffersMetalView
         var metalDevice: MTLDevice!
         var metalCommandQueue: MTLCommandQueue!
         var renderPipeline: MTLRenderPipelineState!
+        var computePipeline: MTLComputePipelineState!
         var particleBuffers:[MTLBuffer] = []
         var renderPassDescriptor: MTLRenderPassDescriptor = MTLRenderPassDescriptor()
         var uniforms: Uniforms!
@@ -45,15 +46,32 @@ struct IndirectBuffersMetalView: UIViewRepresentable {
         var beforeBufferIndex: Int {
             currentBufferIndex == 0 ? Coordinator.maxBuffers - 1 : currentBufferIndex - 1
         }
+        var threadgroupsPerGrid: MTLSize!
+        var threadsPerThreadgroup: MTLSize!
 
         init(_ parent: IndirectBuffersMetalView) {
-            func buildPipeline() {
+            func buildRenderPipeline() {
                 guard let library = self.metalDevice.makeDefaultLibrary() else {fatalError()}
                 let descriptor = MTLRenderPipelineDescriptor()
                 descriptor.vertexFunction = library.makeFunction(name: "storedParticleVertexShader")
                 descriptor.fragmentFunction = library.makeFunction(name: "storedParticleFragmentShader")
                 descriptor.colorAttachments[0].pixelFormat = .bgra8Unorm_srgb
                 renderPipeline = try! self.metalDevice.makeRenderPipelineState(descriptor: descriptor)
+            }
+            func buildComputePipeline() {
+                guard let library = self.metalDevice.makeDefaultLibrary() else {fatalError()}
+                let function = library.makeFunction(name: "particleComputeShader")!
+                computePipeline = try! self.metalDevice.makeComputePipelineState(function: function)
+            }
+            func calcThreadGroup() {
+                let maxTotalThreadsPerThreadgroup =  computePipeline.maxTotalThreadsPerThreadgroup
+                let threadExecutionWidth = computePipeline.threadExecutionWidth
+                let groupsWidth  = maxTotalThreadsPerThreadgroup / threadExecutionWidth * threadExecutionWidth
+
+                threadgroupsPerGrid = MTLSize(width: groupsWidth, height: 1, depth: 1)
+                
+                let threadsWidth = ((Coordinator.numberOfParticles + groupsWidth - 1) / groupsWidth)*2
+                threadsPerThreadgroup = MTLSize(width: threadsWidth, height: 1, depth: 1)
             }
             func initUniform() {
                 uniforms = Uniforms(time: Float(0.0), aspectRatio: Float(0.0), touch: SIMD2<Float>(), resolution: SIMD4<Float>())
@@ -85,7 +103,9 @@ struct IndirectBuffersMetalView: UIViewRepresentable {
             }
             self.metalCommandQueue = metalDevice.makeCommandQueue()!
             super.init()
-            buildPipeline()
+            buildRenderPipeline()
+            buildComputePipeline()
+            calcThreadGroup()
             initUniform()
             initParticles()
         }
@@ -106,7 +126,7 @@ struct IndirectBuffersMetalView: UIViewRepresentable {
         func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
         }
         func draw(in view: MTKView) {
-            func calcParticlePostion() {
+            func old_calcParticlePostion() {
                 let p = particleBuffers[currentBufferIndex].contents()
                 let b = particleBuffers[beforeBufferIndex].contents()
                 let stride = MemoryLayout<Particle>.stride
@@ -120,13 +140,27 @@ struct IndirectBuffersMetalView: UIViewRepresentable {
                     p.storeBytes(of: particle,toByteOffset: i*stride,  as: Particle.self)
                 }
             }
+            func calcParticlePostion(_ commandBuffer: MTLCommandBuffer) {
+                let encoder = commandBuffer.makeComputeCommandEncoder()!
+                
+                encoder.setComputePipelineState(computePipeline)
+
+                encoder.setBuffer(particleBuffers[beforeBufferIndex], offset: 0, index: 0)
+                encoder.setBuffer(particleBuffers[currentBufferIndex], offset: 0, index: 1)
+                encoder.setBytes(&Coordinator.numberOfParticles, length: MemoryLayout<Int>.stride, index: 2)
+                
+                encoder.dispatchThreadgroups(threadgroupsPerGrid,
+                                                 threadsPerThreadgroup: threadsPerThreadgroup)
+                
+                encoder.endEncoding()
+            }
             guard let drawable = view.currentDrawable else {return}
             
             semaphore.wait()
             let commandBuffer = metalCommandQueue.makeCommandBuffer()!
             
             currentBufferIndex = (currentBufferIndex + 1) % Coordinator.maxBuffers
-            calcParticlePostion()
+            calcParticlePostion(commandBuffer)
             
             renderPassDescriptor.colorAttachments[0].texture = drawable.texture
             renderPassDescriptor.colorAttachments[0].loadAction = .clear
@@ -142,7 +176,7 @@ struct IndirectBuffersMetalView: UIViewRepresentable {
 
             renderEncoder.setVertexBuffer(particleBuffers[currentBufferIndex], offset: 0, index: 0)
             
-            renderEncoder.setVertexBytes(&uniforms, length: MemoryLayout<Uniforms>.stride, index: 2)            
+            renderEncoder.setVertexBytes(&uniforms, length: MemoryLayout<Uniforms>.stride, index: 2)
 
             renderEncoder.drawPrimitives(type: .point, vertexStart: 0, vertexCount: Coordinator.numberOfParticles)
             
