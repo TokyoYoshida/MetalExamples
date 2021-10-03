@@ -30,7 +30,7 @@ struct TripleBufferingMetalViewGPU: UIViewRepresentable {
     func updateUIView(_ uiView: MTKView, context: Context) {
     }
     class Coordinator : NSObject, MTKViewDelegate {
-        static var numberOfParticles:Int = 10000
+        static var numberOfParticles:Int = 100_000
         static let maxBuffers = 3
         var parent: TripleBufferingMetalViewGPU
         var metalDevice: MTLDevice!
@@ -160,7 +160,6 @@ struct TripleBufferingMetalViewGPU: UIViewRepresentable {
             let commandBuffer = metalCommandQueue.makeCommandBuffer()!
             
             currentBufferIndex = (currentBufferIndex + 1) % Coordinator.maxBuffers
-            old_calcParticlePostion()
             calcParticlePostion(commandBuffer)
             
             renderPassDescriptor.colorAttachments[0].texture = drawable.texture
