@@ -23,7 +23,14 @@ kernel void particleComputeShader(
                           )
 {
     if (gid < uint(*numberOfParticles)) {
-        particles[gid].position.x = beforeParticles[gid].position.x + 0.1;
+        float beforeY = beforeParticles[gid].position.y;
+        float newY;
+        if (beforeY > -1) {
+            newY = beforeY -= 0.01;
+        } else {
+            newY = beforeY += 2 - 0.01;
+        }
+        particles[gid].position.y = newY;        
     }
 }
 
