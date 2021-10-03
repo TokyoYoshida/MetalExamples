@@ -63,6 +63,11 @@ struct IndirectBuffersMetalView: UIViewRepresentable {
                 let function = library.makeFunction(name: "particleComputeShader")!
                 computePipeline = try! self.metalDevice.makeComputePipelineState(function: function)
             }
+            func buildICB() {
+                let icbDescriptor = MTLIndirectCommandBufferDescriptor()
+                icbDescriptor.commandTypes = [.drawIndexed]
+                
+            }
             func calcThreadGroup() {
                 let maxTotalThreadsPerThreadgroup =  computePipeline.maxTotalThreadsPerThreadgroup
                 let threadExecutionWidth = computePipeline.threadExecutionWidth

@@ -126,20 +126,6 @@ struct TripleBufferingMetalViewGPU: UIViewRepresentable {
         func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
         }
         func draw(in view: MTKView) {
-            func old_calcParticlePostion() {
-                let p = particleBuffers[currentBufferIndex].contents()
-                let b = particleBuffers[beforeBufferIndex].contents()
-                let stride = MemoryLayout<Particle>.stride
-                for i in 0..<Coordinator.numberOfParticles {
-                    var particle = b.load(fromByteOffset: i*stride, as: Particle.self)
-                    if particle.position.y > -1 {
-                        particle.position.y -= 0.01
-                    } else {
-                        particle.position.y += 2 - 0.01
-                    }
-                    p.storeBytes(of: particle,toByteOffset: i*stride,  as: Particle.self)
-                }
-            }
             func calcParticlePostion(_ commandBuffer: MTLCommandBuffer) {
                 let encoder = commandBuffer.makeComputeCommandEncoder()!
                 
