@@ -37,6 +37,7 @@ struct IndirectBuffersMetalView: UIViewRepresentable {
         var metalCommandQueue: MTLCommandQueue!
         var renderPipeline: MTLRenderPipelineState!
         var computePipeline: MTLComputePipelineState!
+        var icbPipeline: MTLComputePipelineState!
         var particleBuffers:[MTLBuffer] = []
         var renderPassDescriptor: MTLRenderPassDescriptor = MTLRenderPassDescriptor()
         var uniforms: Uniforms!
@@ -48,6 +49,10 @@ struct IndirectBuffersMetalView: UIViewRepresentable {
         }
         var threadgroupsPerGrid: MTLSize!
         var threadsPerThreadgroup: MTLSize!
+
+        var icb: MTLIndirectCommandBuffer!
+        var icbFunction: MTLFunction!
+        var icbBuffer: MTLBuffer!
 
         init(_ parent: IndirectBuffersMetalView) {
             func buildRenderPipeline() {
@@ -64,9 +69,26 @@ struct IndirectBuffersMetalView: UIViewRepresentable {
                 computePipeline = try! self.metalDevice.makeComputePipelineState(function: function)
             }
             func buildICB() {
+                guard let library = self.metalDevice.makeDefaultLibrary() else {fatalError()}
+
                 let icbDescriptor = MTLIndirectCommandBufferDescriptor()
-                icbDescriptor.commandTypes = [.drawIndexed]
+                icbDescriptor.commandTypes = [.draw]
+                icbDescriptor.inheritBuffers = false
+                icbDescriptor.inheritPipelineState = false
                 
+                guard let icb = metalDevice.makeIndirectCommandBuffer(descriptor: icbDescriptor, maxCommandCount: 1, options: []) else {
+                    fatalError()
+                }
+                self.icb = icb
+                
+                icbFunction = library.makeFunction(name: "particleComputeICBShader")
+                icbPipeline = try! metalDevice.makeComputePipelineState(function: icbFunction)
+                
+                let icbEncoder = icbFunction.makeArgumentEncoder(bufferIndex: 0)
+                icbBuffer = metalDevice.makeBuffer(length: icbEncoder.encodedLength, options: [])
+               
+                icbEncoder.setArgumentBuffer(icbBuffer, offset: 0)
+                icbEncoder.setIndirectCommandBuffer(icb, index: 0)
             }
             func calcThreadGroup() {
                 let maxTotalThreadsPerThreadgroup =  computePipeline.maxTotalThreadsPerThreadgroup
@@ -111,6 +133,7 @@ struct IndirectBuffersMetalView: UIViewRepresentable {
             buildRenderPipeline()
             buildComputePipeline()
             calcThreadGroup()
+            buildICB()
             initUniform()
             initParticles()
         }
