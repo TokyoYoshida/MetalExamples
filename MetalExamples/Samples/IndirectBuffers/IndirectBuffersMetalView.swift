@@ -8,12 +8,8 @@
 import SwiftUI
 import MetalKit
 
-class PipelineStateContainer {
+struct Model {
     var pipelineState: MTLRenderPipelineState
-
-    internal init(pipelineState: MTLRenderPipelineState) {
-        self.pipelineState = pipelineState
-    }
 }
 
 struct IndirectBuffersMetalView: UIViewRepresentable {
@@ -61,7 +57,8 @@ struct IndirectBuffersMetalView: UIViewRepresentable {
         var icb: MTLIndirectCommandBuffer!
         var icbFunction: MTLFunction!
         var icbBuffer: MTLBuffer!
-        lazy var pipelineStateContainer = PipelineStateContainer(pipelineState: renderPipeline)
+        lazy var models = [Model(pipelineState: renderPipeline)]
+        var modelsBuffer: MTLBuffer!
 
         init(_ parent: IndirectBuffersMetalView) {
             func buildRenderPipeline() {
@@ -94,12 +91,31 @@ struct IndirectBuffersMetalView: UIViewRepresentable {
                 icbFunction = library.makeFunction(name: "particleComputeICBShader")
                 icbPipeline = try! metalDevice.makeComputePipelineState(function: icbFunction)
                 
-                let icbEncoder = icbFunction.makeArgumentEncoder(bufferIndex: 4)
+                let icbEncoder = icbFunction.makeArgumentEncoder(bufferIndex: 3)
                 icbBuffer = metalDevice.makeBuffer(length: icbEncoder.encodedLength, options: [])
                
                 icbEncoder.setArgumentBuffer(icbBuffer, offset: 0)
                 icbEncoder.setIndirectCommandBuffer(icb, index: 0)
-                icbEncoder.setRenderPipelineState(renderPipeline, index: 1)
+                
+                var mBuffers: [MTLBuffer] = []
+                var mBuffersLength = 0
+                for _ in models {
+                    let encoder = icbFunction.makeArgumentEncoder(bufferIndex: 4)
+                    let mBuffer = metalDevice.makeBuffer(length: encoder.encodedLength, options: [])!
+                    encoder.setArgumentBuffer(mBuffer, offset: 0)
+                    encoder.setRenderPipelineState(renderPipeline, index: 0)
+                    mBuffers.append(mBuffer)
+                    mBuffersLength += mBuffer.length
+                }
+                
+                modelsBuffer = metalDevice.makeBuffer(length: mBuffersLength, options: [])
+                var offset = 0
+                for mBuffer in mBuffers {
+                  var pointer = modelsBuffer.contents()
+                  pointer = pointer.advanced(by: offset)
+                  pointer.copyMemory(from: mBuffer.contents(), byteCount: mBuffer.length)
+                  offset += mBuffer.length
+                }
             }
             func calcThreadGroup() {
                 let maxTotalThreadsPerThreadgroup =  computePipeline.maxTotalThreadsPerThreadgroup
@@ -173,7 +189,8 @@ struct IndirectBuffersMetalView: UIViewRepresentable {
                 encoder.setBuffer(particleBuffers[beforeBufferIndex], offset: 0, index: 0)
                 encoder.setBuffer(particleBuffers[currentBufferIndex], offset: 0, index: 1)
                 encoder.setBytes(&Coordinator.numberOfParticles, length: MemoryLayout<Int>.stride, index: 2)
-                encoder.setBytes(&pipelineStateContainer, length: MemoryLayout<PipelineStateContainer>.stride, index: 3)
+                encoder.setBuffer(icbBuffer, offset: 0, index: 3)
+                encoder.setBuffer(modelsBuffer, offset: 0, index: 4)
                 
                 encoder.dispatchThreadgroups(threadgroupsPerGrid,
                                                  threadsPerThreadgroup: threadsPerThreadgroup)

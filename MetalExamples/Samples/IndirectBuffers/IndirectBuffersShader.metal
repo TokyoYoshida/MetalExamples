@@ -13,7 +13,7 @@ struct ICBContainer {
   command_buffer icb [[id(0)]];
 };
 
-struct PipelineStateContainer {
+struct Model {
     render_pipeline_state pipelineState;
 };
 
@@ -27,14 +27,14 @@ kernel void particleComputeICBShader(
                         device Particle *beforeParticles [[ buffer(0)]],
                         device Particle *particles [[ buffer(1)]],
                         const device int *numberOfParticles [[ buffer(2)]],
-                        const device PipelineStateContainer *pipelineStateContaner [[ buffer(3)]],
-                        device ICBContainer *icbContainer [[buffer(4)]],
+                        device ICBContainer *icbContainer [[buffer(3)]],
+                         const device Model *modelsArray [[ buffer(4)]],
                         uint gid [[thread_position_in_grid]]
 ){
     
     if (gid < uint(*numberOfParticles)) {
         render_command cmd(icbContainer->icb, gid);
-        cmd.set_render_pipeline_state(pipelineStateContaner->pipelineState);
+        cmd.set_render_pipeline_state(modelsArray[0].pipelineState);
         cmd.set_vertex_buffer(particles, 0);
         cmd.draw_primitives(primitive_type::point, 0, 1, 1);
     }
