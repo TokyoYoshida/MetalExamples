@@ -33,9 +33,9 @@ kernel void particleComputeICBShader(
 ){
     
     if (gid < uint(*numberOfParticles)) {
-        render_command cmd(icbContainer->icb, gid);
+        render_command cmd(icbContainer->icb, 0);
         cmd.set_render_pipeline_state(modelsArray[0].pipelineState);
-        cmd.set_vertex_buffer(particles, 0);
+        cmd.set_vertex_buffer(&beforeParticles[gid], 0);
         cmd.draw_primitives(primitive_type::point, 0, 1, 1);
     }
 }
