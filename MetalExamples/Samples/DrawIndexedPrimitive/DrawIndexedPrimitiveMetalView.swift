@@ -30,7 +30,7 @@ struct DrawIndexedPrimitiveMetalView: UIViewRepresentable {
     func updateUIView(_ uiView: MTKView, context: Context) {
     }
     class Coordinator : NSObject, MTKViewDelegate {
-        static let numberOfParticles = 100_000
+        static let numberOfParticles = 1_000
         static let maxBuffers = 3
         lazy var indexes = makeParticleIndexes()
         var parent: DrawIndexedPrimitiveMetalView
@@ -121,9 +121,8 @@ struct DrawIndexedPrimitiveMetalView: UIViewRepresentable {
             let (deltaX, deltaY, spacing) = calcLayoutParams()
             
             for gridY in 0 ..< deltaY {
-                let alternatingOffsetX: Float = -1
                 for gridX in 0 ..< deltaX {
-                    let position = SIMD2<Float>(alternatingOffsetX + (Float(gridX) + 0.5) * spacing, (Float(gridY) + 0.5) * spacing - 1)
+                    let position = SIMD2<Float>(Float(gridX) * spacing - 1, Float(gridY) * spacing - 1)
                     let particle = Particle(position: position)
                     particles.append(particle)
                 }
@@ -141,10 +140,8 @@ struct DrawIndexedPrimitiveMetalView: UIViewRepresentable {
                     let topLeft = gridY * deltaY + gridX
                     let topRight = topLeft + 1
                     let bottomLeft = topLeft + deltaY
-                    let bottomRight = bottomLeft + 1
                     let leftTriangle = [topLeft, bottomLeft, topRight]
-                    let rightTriangle = [topRight, bottomRight, bottomLeft]
-                    indexes += (leftTriangle + rightTriangle)
+                    indexes += (leftTriangle)
                 }
             }
             
