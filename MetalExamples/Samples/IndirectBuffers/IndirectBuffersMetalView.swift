@@ -124,7 +124,7 @@ struct IndirectBuffersMetalView: UIViewRepresentable {
 
                 threadgroupsPerGrid = MTLSize(width: groupsWidth, height: 1, depth: 1)
                 
-                let threadsWidth = ((Coordinator.numberOfParticles + groupsWidth - 1) / groupsWidth)*2
+                let threadsWidth = ((Coordinator.numberOfParticles + groupsWidth - 1) / groupsWidth)
                 threadsPerThreadgroup = MTLSize(width: threadsWidth, height: 1, depth: 1)
             }
             func initUniform() {
