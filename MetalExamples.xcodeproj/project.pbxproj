@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1E0CE29B270EED1E00133760 /* TripleBufferingGPUIndirectArgumentsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E0CE29A270EEC9700133760 /* TripleBufferingGPUIndirectArgumentsView.swift */; };
+		1E0CE29C270EED2100133760 /* TripleBufferingGPUIndirectArgumentsMetalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E0CE298270EEC9700133760 /* TripleBufferingGPUIndirectArgumentsMetalView.swift */; };
 		1E18AD0B26942B5600C70468 /* VideoWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E18AD0A26942B5600C70468 /* VideoWriter.swift */; };
 		1E18AD0C26942B5600C70468 /* FrameVideoRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E18AD0926942B5500C70468 /* FrameVideoRecorder.swift */; };
 		1E18AD0E26942BFE00C70468 /* CVPixelBuffer+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E18AD0D26942BFE00C70468 /* CVPixelBuffer+Ext.swift */; };
@@ -613,10 +615,12 @@
 				1E1DD8592668E47100F98410 /* MetalExamplesApp.swift in Sources */,
 				1EBE45BC26F489160027FBD0 /* MultiPassRenderingMetalView.swift in Sources */,
 				1EF25D6A26EF3CF4004EAFD0 /* SimpleShapeShader.metal in Sources */,
+				1E0CE29B270EED1E00133760 /* TripleBufferingGPUIndirectArgumentsView.swift in Sources */,
 				1E6047EB2669E3C200AAF2DD /* DrawTextureMetalView.swift in Sources */,
 				1E7DB50526ACC7AC00CFF60B /* DrawIndexedPrimitiveMetalView.swift in Sources */,
 				1E5A595926B67D050000500C /* Draw3DView.swift in Sources */,
 				1E370BC926D762820013D2FA /* MathUtilities.swift in Sources */,
+				1E0CE29C270EED2100133760 /* TripleBufferingGPUIndirectArgumentsMetalView.swift in Sources */,
 				1EDA5E602708581E0023CC59 /* TripleBufferingGPUMetalView.swift in Sources */,
 				1E4FE39B2707B30E008BA0D7 /* IndirectBuffersShader.metal in Sources */,
 				1E370BCD26D764AA0013D2FA /* DrawToCAMetalLayerView.swift in Sources */,

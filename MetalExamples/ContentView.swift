@@ -55,6 +55,10 @@ struct ContentView: View {
                             Text("Triple Buffering(Compute on GPU)")
                                 .padding()
                         }
+                        NavigationLink(destination: TripleBufferingGPUIndirectArgumentsView()) {
+                            Text("Triple Buffering(Compute on GPU) using IndirectArguments")
+                                .padding()
+                        }
                         NavigationLink(destination: IndirectBuffersView()) {
                             Text("Indirect Buffers")
                                 .padding()

@@ -7,9 +7,9 @@
 
 import SwiftUI
 
-struct TripleBufferingGPUView: View {
+struct TripleBufferingGPUIndirectArgumentsView: View {
     var body: some View {
-        TripleBufferingMetalViewGPU()
+        TripleBufferingMetalViewGPUIndirectArguments()
         .navigationBarTitle(Text("TripleBuffering"), displayMode: .inline)
     }
 }

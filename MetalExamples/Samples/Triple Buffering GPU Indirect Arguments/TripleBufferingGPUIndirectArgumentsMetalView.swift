@@ -8,7 +8,7 @@
 import SwiftUI
 import MetalKit
 
-struct TripleBufferingMetalViewGPU: UIViewRepresentable {
+struct TripleBufferingMetalViewGPUIndirectArguments: UIViewRepresentable {
     typealias UIViewType = MTKView
     let mtkView = MTKView()
 
@@ -32,7 +32,7 @@ struct TripleBufferingMetalViewGPU: UIViewRepresentable {
     class Coordinator : NSObject, MTKViewDelegate {
         static var numberOfParticles:Int = 100_000
         static let maxBuffers = 3
-        var parent: TripleBufferingMetalViewGPU
+        var parent: TripleBufferingMetalViewGPUIndirectArguments
         var metalDevice: MTLDevice!
         var metalCommandQueue: MTLCommandQueue!
         var renderPipeline: MTLRenderPipelineState!
@@ -50,7 +50,7 @@ struct TripleBufferingMetalViewGPU: UIViewRepresentable {
         var threadgroupsPerGrid: MTLSize!
         var threadsPerThreadgroup: MTLSize!
 
-        init(_ parent: TripleBufferingMetalViewGPU) {
+        init(_ parent: TripleBufferingMetalViewGPUIndirectArguments) {
             func buildRenderPipeline() {
                 guard let library = self.metalDevice.makeDefaultLibrary() else {fatalError()}
                 let descriptor = MTLRenderPipelineDescriptor()
