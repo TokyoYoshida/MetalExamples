@@ -91,6 +91,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		1E0CE298270EEC9700133760 /* TripleBufferingGPUIndirectArgumentsMetalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripleBufferingGPUIndirectArgumentsMetalView.swift; sourceTree = "<group>"; };
+		1E0CE29A270EEC9700133760 /* TripleBufferingGPUIndirectArgumentsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripleBufferingGPUIndirectArgumentsView.swift; sourceTree = "<group>"; };
 		1E18AD0926942B5500C70468 /* FrameVideoRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrameVideoRecorder.swift; sourceTree = "<group>"; };
 		1E18AD0A26942B5600C70468 /* VideoWriter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoWriter.swift; sourceTree = "<group>"; };
 		1E18AD0D26942BFE00C70468 /* CVPixelBuffer+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CVPixelBuffer+Ext.swift"; sourceTree = "<group>"; };
@@ -176,6 +178,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1E0CE297270EEC7A00133760 /* Triple Buffering GPU Indirect Arguments */ = {
+			isa = PBXGroup;
+			children = (
+				1E0CE29A270EEC9700133760 /* TripleBufferingGPUIndirectArgumentsView.swift */,
+				1E0CE298270EEC9700133760 /* TripleBufferingGPUIndirectArgumentsMetalView.swift */,
+			);
+			path = "Triple Buffering GPU Indirect Arguments";
+			sourceTree = "<group>";
+		};
 		1E1DD84C2668E47100F98410 = {
 			isa = PBXGroup;
 			children = (
@@ -247,6 +258,7 @@
 				1E61342E266C9EBB009A4FBC /* Particle */,
 				1EF6899F268DA19600571F3F /* Triple Buffering */,
 				1EDA5E5B270857DA0023CC59 /* Triple Buffering GPU */,
+				1E0CE297270EEC7A00133760 /* Triple Buffering GPU Indirect Arguments */,
 				1E4FE3952707B290008BA0D7 /* IndirectBuffers */,
 				1E4303A5269426EA00BFB25C /* VideoEffect */,
 				1E7DB4FC26ACBF2100CFF60B /* DrawIndexedPrimitive */,
