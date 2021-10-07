@@ -49,6 +49,8 @@ struct TripleBufferingMetalViewGPUIndirectArguments: UIViewRepresentable {
         }
         var threadgroupsPerGrid: MTLSize!
         var threadsPerThreadgroup: MTLSize!
+        lazy var indexes = makeParticleIndexes()
+        lazy var indexBuffer: MTLBuffer = metalDevice.makeBuffer(length: MemoryLayout<UInt32>.stride * indexes.count, options: .storageModeShared)!
 
         init(_ parent: TripleBufferingMetalViewGPUIndirectArguments) {
             func buildRenderPipeline() {
@@ -98,6 +100,9 @@ struct TripleBufferingMetalViewGPUIndirectArguments: UIViewRepresentable {
                 particleBuffers = allocBuffer()
                 initParticlePosition(particleBuffers[0])
             }
+            func initIndexBuffer() {
+                self.indexBuffer.contents().copyMemory(from: indexes, byteCount: MemoryLayout<UInt32>.stride * indexes.count)
+            }
             self.parent = parent
             if let metalDevice = MTLCreateSystemDefaultDevice() {
                 self.metalDevice = metalDevice
@@ -109,8 +114,13 @@ struct TripleBufferingMetalViewGPUIndirectArguments: UIViewRepresentable {
             calcThreadGroup()
             initUniform()
             initParticles()
+            initIndexBuffer()
         }
         
+        func makeParticleIndexes() -> [UInt32] {
+            return [UInt32](0..<UInt32(Coordinator.numberOfParticles))
+        }
+
         func makeRandomPosition() -> Particle {
             var particle = Particle()
             particle.position.x = Float.random(in: -1...1)
@@ -174,8 +184,13 @@ struct TripleBufferingMetalViewGPUIndirectArguments: UIViewRepresentable {
             
             renderEncoder.setVertexBytes(&uniforms, length: MemoryLayout<Uniforms>.stride, index: 2)            
 
-            renderEncoder.drawPrimitives(type: .point, vertexStart: 0, vertexCount: Coordinator.numberOfParticles)
-            
+            renderEncoder.drawIndexedPrimitives(type: .point,
+                                                indexCount: indexes.count,
+                                                indexType: .uint32,
+                                                indexBuffer: indexBuffer,
+                                                indexBufferOffset: 0,
+                                                instanceCount: 1)
+
             renderEncoder.endEncoding()
             
             commandBuffer.present(drawable)
