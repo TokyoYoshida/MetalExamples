@@ -33,10 +33,18 @@ kernel void particleComputeICBShader(
 ){
     
     if (gid < uint(*numberOfParticles)) {
+        float2 newPosition = beforeParticles[gid].position;
+        if (newPosition.y > -1) {
+            newPosition.y -= 0.01;
+        } else {
+            newPosition.y += 2 - 0.01;
+        }
+        particles[gid].position = newPosition;
+
         render_command cmd(icbContainer->icb, 0);
         cmd.set_render_pipeline_state(modelsArray[0].pipelineState);
         cmd.set_vertex_buffer(beforeParticles, 0);
-        cmd.draw_primitives(primitive_type::point, gid, 1, 1);
+        cmd.draw_primitives(primitive_type::point, 0, *numberOfParticles, 1);
     }
 }
 
