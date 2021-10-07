@@ -30,7 +30,7 @@ struct TripleBufferingMetalViewGPU: UIViewRepresentable {
     func updateUIView(_ uiView: MTKView, context: Context) {
     }
     class Coordinator : NSObject, MTKViewDelegate {
-        static var numberOfParticles:Int = 1_000_000
+        static var numberOfParticles:Int = 100_000
         static let maxBuffers = 3
         var parent: TripleBufferingMetalViewGPU
         var metalDevice: MTLDevice!
