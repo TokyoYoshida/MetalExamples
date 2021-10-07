@@ -34,7 +34,7 @@ struct IndirectBuffersMetalView: UIViewRepresentable {
     func updateUIView(_ uiView: MTKView, context: Context) {
     }
     class Coordinator : NSObject, MTKViewDelegate {
-        static var numberOfParticles:Int = 100_000
+        static var numberOfParticles:Int = 1_000_000
         static let maxBuffers = 3
         var parent: IndirectBuffersMetalView
         var metalDevice: MTLDevice!
@@ -218,18 +218,6 @@ struct IndirectBuffersMetalView: UIViewRepresentable {
             renderPassDescriptor.colorAttachments[0].clearColor = MTLClearColorMake(0.8, 0.7, 0.1, 1.0)
 
             let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)!
-
-            guard let renderPipeline = renderPipeline else {fatalError()}
-
-            
-//            renderEncoder.setRenderPipelineState(renderPipeline)
-//            uniforms.time += preferredFramesTime
-//
-//            renderEncoder.setVertexBuffer(particleBuffers[currentBufferIndex], offset: 0, index: 0)
-//
-//            renderEncoder.setVertexBytes(&uniforms, length: MemoryLayout<Uniforms>.stride, index: 2)
-//
-//            renderEncoder.drawPrimitives(type: .point, vertexStart: 0, vertexCount: Coordinator.numberOfParticles)
             
             renderEncoder.executeCommandsInBuffer(icb, range: 0..<1)
             renderEncoder.endEncoding()

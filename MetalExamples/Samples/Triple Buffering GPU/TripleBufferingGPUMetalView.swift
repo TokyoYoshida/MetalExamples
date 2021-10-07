@@ -30,7 +30,7 @@ struct TripleBufferingMetalViewGPU: UIViewRepresentable {
     func updateUIView(_ uiView: MTKView, context: Context) {
     }
     class Coordinator : NSObject, MTKViewDelegate {
-        static var numberOfParticles:Int = 100_000
+        static var numberOfParticles:Int = 1_000_000
         static let maxBuffers = 3
         var parent: TripleBufferingMetalViewGPU
         var metalDevice: MTLDevice!
@@ -41,7 +41,8 @@ struct TripleBufferingMetalViewGPU: UIViewRepresentable {
         var renderPassDescriptor: MTLRenderPassDescriptor = MTLRenderPassDescriptor()
         var uniforms: Uniforms!
         var preferredFramesTime: Float!
-        let semaphore = DispatchSemaphore(value: Coordinator.maxBuffers)
+        let computeSemaphore = DispatchSemaphore(value: Coordinator.maxBuffers)
+        let renderSemaphore = DispatchSemaphore(value: Coordinator.maxBuffers)
         var currentBufferIndex = 0
         var beforeBufferIndex: Int {
             currentBufferIndex == 0 ? Coordinator.maxBuffers - 1 : currentBufferIndex - 1
@@ -126,7 +127,11 @@ struct TripleBufferingMetalViewGPU: UIViewRepresentable {
         func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
         }
         func draw(in view: MTKView) {
-            func calcParticlePostion(_ commandBuffer: MTLCommandBuffer) {
+            func calcParticlePostion() {
+                computeSemaphore.wait()
+
+                let commandBuffer = metalCommandQueue.makeCommandBuffer()!
+
                 let encoder = commandBuffer.makeComputeCommandEncoder()!
                 
                 encoder.setComputePipelineState(computePipeline)
@@ -139,14 +144,19 @@ struct TripleBufferingMetalViewGPU: UIViewRepresentable {
                                                  threadsPerThreadgroup: threadsPerThreadgroup)
                 
                 encoder.endEncoding()
+
+                commandBuffer.addCompletedHandler {[weak self] _ in
+                    self?.computeSemaphore.signal()
+                }
+                commandBuffer.commit()
             }
             guard let drawable = view.currentDrawable else {return}
             
-            semaphore.wait()
+            renderSemaphore.wait()
             let commandBuffer = metalCommandQueue.makeCommandBuffer()!
             
             currentBufferIndex = (currentBufferIndex + 1) % Coordinator.maxBuffers
-            calcParticlePostion(commandBuffer)
+            calcParticlePostion()
             
             renderPassDescriptor.colorAttachments[0].texture = drawable.texture
             renderPassDescriptor.colorAttachments[0].loadAction = .clear
@@ -171,7 +181,7 @@ struct TripleBufferingMetalViewGPU: UIViewRepresentable {
             commandBuffer.present(drawable)
             
             commandBuffer.addCompletedHandler {[weak self] _ in
-                self?.semaphore.signal()
+                self?.renderSemaphore.signal()
             }
             commandBuffer.commit()
         }
