@@ -41,7 +41,8 @@ struct TripleBufferingMetalViewGPU: UIViewRepresentable {
         var renderPassDescriptor: MTLRenderPassDescriptor = MTLRenderPassDescriptor()
         var uniforms: Uniforms!
         var preferredFramesTime: Float!
-        let semaphore = DispatchSemaphore(value: Coordinator.maxBuffers)
+        let computeSemaphore = DispatchSemaphore(value: Coordinator.maxBuffers)
+        let renderSemaphore = DispatchSemaphore(value: Coordinator.maxBuffers)
         var currentBufferIndex = 0
         var beforeBufferIndex: Int {
             currentBufferIndex == 0 ? Coordinator.maxBuffers - 1 : currentBufferIndex - 1
@@ -70,7 +71,7 @@ struct TripleBufferingMetalViewGPU: UIViewRepresentable {
 
                 threadgroupsPerGrid = MTLSize(width: groupsWidth, height: 1, depth: 1)
                 
-                let threadsWidth = ((Coordinator.numberOfParticles + groupsWidth - 1) / groupsWidth)*2
+                let threadsWidth = ((Coordinator.numberOfParticles + groupsWidth - 1) / groupsWidth)
                 threadsPerThreadgroup = MTLSize(width: threadsWidth, height: 1, depth: 1)
             }
             func initUniform() {
@@ -126,21 +127,11 @@ struct TripleBufferingMetalViewGPU: UIViewRepresentable {
         func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
         }
         func draw(in view: MTKView) {
-            func old_calcParticlePostion() {
-                let p = particleBuffers[currentBufferIndex].contents()
-                let b = particleBuffers[beforeBufferIndex].contents()
-                let stride = MemoryLayout<Particle>.stride
-                for i in 0..<Coordinator.numberOfParticles {
-                    var particle = b.load(fromByteOffset: i*stride, as: Particle.self)
-                    if particle.position.y > -1 {
-                        particle.position.y -= 0.01
-                    } else {
-                        particle.position.y += 2 - 0.01
-                    }
-                    p.storeBytes(of: particle,toByteOffset: i*stride,  as: Particle.self)
-                }
-            }
-            func calcParticlePostion(_ commandBuffer: MTLCommandBuffer) {
+            func calcParticlePostion() {
+                computeSemaphore.wait()
+
+                let commandBuffer = metalCommandQueue.makeCommandBuffer()!
+
                 let encoder = commandBuffer.makeComputeCommandEncoder()!
                 
                 encoder.setComputePipelineState(computePipeline)
@@ -153,14 +144,19 @@ struct TripleBufferingMetalViewGPU: UIViewRepresentable {
                                                  threadsPerThreadgroup: threadsPerThreadgroup)
                 
                 encoder.endEncoding()
+
+                commandBuffer.addCompletedHandler {[weak self] _ in
+                    self?.computeSemaphore.signal()
+                }
+                commandBuffer.commit()
             }
             guard let drawable = view.currentDrawable else {return}
             
-            semaphore.wait()
+            renderSemaphore.wait()
             let commandBuffer = metalCommandQueue.makeCommandBuffer()!
             
             currentBufferIndex = (currentBufferIndex + 1) % Coordinator.maxBuffers
-            calcParticlePostion(commandBuffer)
+            calcParticlePostion()
             
             renderPassDescriptor.colorAttachments[0].texture = drawable.texture
             renderPassDescriptor.colorAttachments[0].loadAction = .clear
@@ -185,7 +181,7 @@ struct TripleBufferingMetalViewGPU: UIViewRepresentable {
             commandBuffer.present(drawable)
             
             commandBuffer.addCompletedHandler {[weak self] _ in
-                self?.semaphore.signal()
+                self?.renderSemaphore.signal()
             }
             commandBuffer.commit()
         }
