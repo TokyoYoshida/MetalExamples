@@ -7,9 +7,9 @@
 
 import SwiftUI
 
-struct IndirectBuffersView: View {
+struct IndirectCommandBuffersView: View {
     var body: some View {
-        IndirectBuffersMetalView()
+        IndirectCommandBuffersMetalView()
         .navigationBarTitle(Text("Indirect Buffers"), displayMode: .inline)
     }
 }

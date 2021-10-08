@@ -12,7 +12,7 @@ struct Model {
     var pipelineState: MTLRenderPipelineState
 }
 
-struct IndirectBuffersMetalView: UIViewRepresentable {
+struct IndirectCommandBuffersMetalView: UIViewRepresentable {
     typealias UIViewType = MTKView
     let mtkView = MTKView()
 
@@ -36,7 +36,7 @@ struct IndirectBuffersMetalView: UIViewRepresentable {
     class Coordinator : NSObject, MTKViewDelegate {
         static var numberOfParticles:Int = 100_000
         static let maxBuffers = 3
-        var parent: IndirectBuffersMetalView
+        var parent: IndirectCommandBuffersMetalView
         var metalDevice: MTLDevice!
         var metalCommandQueue: MTLCommandQueue!
         var renderPipeline: MTLRenderPipelineState!
@@ -60,7 +60,7 @@ struct IndirectBuffersMetalView: UIViewRepresentable {
         lazy var models = [Model(pipelineState: renderPipeline)]
         var modelsBuffer: MTLBuffer!
 
-        init(_ parent: IndirectBuffersMetalView) {
+        init(_ parent: IndirectCommandBuffersMetalView) {
             func buildRenderPipeline() {
                 guard let library = self.metalDevice.makeDefaultLibrary() else {fatalError()}
                 let descriptor = MTLRenderPipelineDescriptor()
