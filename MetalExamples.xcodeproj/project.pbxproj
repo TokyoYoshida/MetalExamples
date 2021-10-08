@@ -245,8 +245,8 @@
 				1EAF6C60266B6C7200772496 /* SimpleShader */,
 				1E370BCA26D7634E0013D2FA /* DrawToCAMetalLayer */,
 				1E61342E266C9EBB009A4FBC /* Particle */,
-				1EF6899F268DA19600571F3F /* Triple Buffering */,
-				1EDA5E5B270857DA0023CC59 /* Triple Buffering GPU */,
+				1EF6899F268DA19600571F3F /* TripleBuffering */,
+				1EDA5E5B270857DA0023CC59 /* TripleBufferingGPU */,
 				1E4FE3952707B290008BA0D7 /* IndirectCommandBuffers */,
 				1E4303A5269426EA00BFB25C /* VideoEffect */,
 				1E7DB4FC26ACBF2100CFF60B /* DrawIndexedPrimitive */,
@@ -376,14 +376,14 @@
 			path = MultiPassRendering;
 			sourceTree = "<group>";
 		};
-		1EDA5E5B270857DA0023CC59 /* Triple Buffering GPU */ = {
+		1EDA5E5B270857DA0023CC59 /* TripleBufferingGPU */ = {
 			isa = PBXGroup;
 			children = (
 				1EDA5E5C270857EB0023CC59 /* TripleBufferingGPUView.swift */,
 				1EDA5E5D270857EB0023CC59 /* TripleBufferingGPUMetalView.swift */,
 				1EDA5E5E270857EB0023CC59 /* StoredParticleShaderGPU.metal */,
 			);
-			path = "Triple Buffering GPU";
+			path = TripleBufferingGPU;
 			sourceTree = "<group>";
 		};
 		1EE5073A2696823500CD34DF /* ShaderExamples */ = {
@@ -413,14 +413,14 @@
 			path = SimpleShape;
 			sourceTree = "<group>";
 		};
-		1EF6899F268DA19600571F3F /* Triple Buffering */ = {
+		1EF6899F268DA19600571F3F /* TripleBuffering */ = {
 			isa = PBXGroup;
 			children = (
 				1EF689A0268DA1A900571F3F /* TripleBufferingView.swift */,
 				1EF689A1268DA1AB00571F3F /* TripleBufferingMetalView.swift */,
 				1E32D80B268EF131006BAC95 /* StoredParticleShader.metal */,
 			);
-			path = "Triple Buffering";
+			path = TripleBuffering;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
