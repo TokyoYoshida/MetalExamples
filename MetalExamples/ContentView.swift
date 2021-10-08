@@ -55,8 +55,8 @@ struct ContentView: View {
                             Text("Triple Buffering(Compute on GPU)")
                                 .padding()
                         }
-                        NavigationLink(destination: IndirectBuffersView()) {
-                            Text("Indirect Buffers")
+                        NavigationLink(destination: IndirectCommandBuffersView()) {
+                            Text("Indirect Command Buffers")
                                 .padding()
                         }
                     }
