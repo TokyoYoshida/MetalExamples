@@ -82,6 +82,8 @@ struct IndirectCommandBuffersMetalView: UIViewRepresentable {
                 icbDescriptor.commandTypes = [.draw]
                 icbDescriptor.inheritBuffers = false
                 icbDescriptor.inheritPipelineState = false
+                icbDescriptor.maxVertexBufferBindCount = 25
+                icbDescriptor.maxFragmentBufferBindCount = 25
                 
                 guard let icb = metalDevice.makeIndirectCommandBuffer(descriptor: icbDescriptor, maxCommandCount: 1, options: []) else {
                     fatalError()
