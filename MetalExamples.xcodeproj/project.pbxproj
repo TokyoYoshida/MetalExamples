@@ -40,6 +40,7 @@
 		1E7DB50426ACC7A900CFF60B /* DrawIndexedPrimitiveView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E7DB50326ACC77100CFF60B /* DrawIndexedPrimitiveView.swift */; };
 		1E7DB50526ACC7AC00CFF60B /* DrawIndexedPrimitiveMetalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E7DB50226ACC77100CFF60B /* DrawIndexedPrimitiveMetalView.swift */; };
 		1E8CF5E826959EF100FE2F4B /* VideoEffectShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 1E4303A6269426FC00BFB25C /* VideoEffectShader.metal */; };
+		1EAB36E32722B38800086CCC /* ComputeShaderExecuter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EAB36E22722B38800086CCC /* ComputeShaderExecuter.swift */; };
 		1EAF6C5B266B67A100772496 /* GDPerformanceView.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1EAF6C5A266B67A100772496 /* GDPerformanceView.xcframework */; };
 		1EAF6C5C266B67A100772496 /* GDPerformanceView.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1EAF6C5A266B67A100772496 /* GDPerformanceView.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		1EAF6C63266B6CD200772496 /* SimpleShaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EAF6C62266B6C7C00772496 /* SimpleShaderView.swift */; };
@@ -131,6 +132,7 @@
 		1E61343D266CC052009A4FBC /* CommnShaders.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = CommnShaders.metal; sourceTree = "<group>"; };
 		1E7DB50226ACC77100CFF60B /* DrawIndexedPrimitiveMetalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawIndexedPrimitiveMetalView.swift; sourceTree = "<group>"; };
 		1E7DB50326ACC77100CFF60B /* DrawIndexedPrimitiveView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawIndexedPrimitiveView.swift; sourceTree = "<group>"; };
+		1EAB36E22722B38800086CCC /* ComputeShaderExecuter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComputeShaderExecuter.swift; sourceTree = "<group>"; };
 		1EAF6C5A266B67A100772496 /* GDPerformanceView.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = GDPerformanceView.xcframework; path = Carthage/Build/GDPerformanceView.xcframework; sourceTree = "<group>"; };
 		1EAF6C61266B6C7C00772496 /* SimpleShaderMetalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleShaderMetalView.swift; sourceTree = "<group>"; };
 		1EAF6C62266B6C7C00772496 /* SimpleShaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleShaderView.swift; sourceTree = "<group>"; };
@@ -381,6 +383,7 @@
 			children = (
 				1EDA5E5C270857EB0023CC59 /* TripleBufferingGPUView.swift */,
 				1EDA5E5D270857EB0023CC59 /* TripleBufferingGPUMetalView.swift */,
+				1EAB36E22722B38800086CCC /* ComputeShaderExecuter.swift */,
 				1EDA5E5E270857EB0023CC59 /* StoredParticleShaderGPU.metal */,
 			);
 			path = TripleBufferingGPU;
@@ -614,6 +617,7 @@
 				1E437C2C2694276D001D1CCF /* VideoEffectView.swift in Sources */,
 				1E1DD8862668E53D00F98410 /* SimpleView.swift in Sources */,
 				1E5A595E26B681460000500C /* Matrix.swift in Sources */,
+				1EAB36E32722B38800086CCC /* ComputeShaderExecuter.swift in Sources */,
 				1EAF6C63266B6CD200772496 /* SimpleShaderView.swift in Sources */,
 				1E370BCE26D764B00013D2FA /* CAMetalLayerView.swift in Sources */,
 				1EF689A2268DA21200571F3F /* TripleBufferingView.swift in Sources */,

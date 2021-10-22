@@ -36,7 +36,6 @@ struct TripleBufferingMetalViewGPU: UIViewRepresentable {
         var metalDevice: MTLDevice!
         var metalCommandQueue: MTLCommandQueue!
         var renderPipeline: MTLRenderPipelineState!
-        var computePipeline: MTLComputePipelineState!
         var particleBuffers:[MTLBuffer] = []
         var renderPassDescriptor: MTLRenderPassDescriptor = MTLRenderPassDescriptor()
         var uniforms: Uniforms!
@@ -49,6 +48,7 @@ struct TripleBufferingMetalViewGPU: UIViewRepresentable {
         }
         var threadgroupsPerGrid: MTLSize!
         var threadsPerThreadgroup: MTLSize!
+        lazy var computeShaderExecuter = ComputeShaderExecuter(device: self.metalDevice, computeShaderName: "particleComputeShader", numberOfParticles: Coordinator.numberOfParticles, maxBuffers: Coordinator.maxBuffers)
 
         init(_ parent: TripleBufferingMetalViewGPU) {
             func buildRenderPipeline() {
@@ -58,21 +58,6 @@ struct TripleBufferingMetalViewGPU: UIViewRepresentable {
                 descriptor.fragmentFunction = library.makeFunction(name: "storedParticleFragmentShader")
                 descriptor.colorAttachments[0].pixelFormat = .bgra8Unorm_srgb
                 renderPipeline = try! self.metalDevice.makeRenderPipelineState(descriptor: descriptor)
-            }
-            func buildComputePipeline() {
-                guard let library = self.metalDevice.makeDefaultLibrary() else {fatalError()}
-                let function = library.makeFunction(name: "particleComputeShader")!
-                computePipeline = try! self.metalDevice.makeComputePipelineState(function: function)
-            }
-            func calcThreadGroup() {
-                let maxTotalThreadsPerThreadgroup =  computePipeline.maxTotalThreadsPerThreadgroup
-                let threadExecutionWidth = computePipeline.threadExecutionWidth
-                let groupsWidth  = maxTotalThreadsPerThreadgroup / threadExecutionWidth * threadExecutionWidth
-
-                threadgroupsPerGrid = MTLSize(width: groupsWidth, height: 1, depth: 1)
-                
-                let threadsWidth = ((Coordinator.numberOfParticles + groupsWidth - 1) / groupsWidth)
-                threadsPerThreadgroup = MTLSize(width: threadsWidth, height: 1, depth: 1)
             }
             func initUniform() {
                 uniforms = Uniforms(time: Float(0.0), aspectRatio: Float(0.0), touch: SIMD2<Float>(), resolution: SIMD4<Float>())
@@ -105,8 +90,6 @@ struct TripleBufferingMetalViewGPU: UIViewRepresentable {
             self.metalCommandQueue = metalDevice.makeCommandQueue()!
             super.init()
             buildRenderPipeline()
-            buildComputePipeline()
-            calcThreadGroup()
             initUniform()
             initParticles()
         }
@@ -127,36 +110,13 @@ struct TripleBufferingMetalViewGPU: UIViewRepresentable {
         func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
         }
         func draw(in view: MTKView) {
-            func calcParticlePostion() {
-                computeSemaphore.wait()
-
-                let commandBuffer = metalCommandQueue.makeCommandBuffer()!
-
-                let encoder = commandBuffer.makeComputeCommandEncoder()!
-                
-                encoder.setComputePipelineState(computePipeline)
-
-                encoder.setBuffer(particleBuffers[beforeBufferIndex], offset: 0, index: 0)
-                encoder.setBuffer(particleBuffers[currentBufferIndex], offset: 0, index: 1)
-                encoder.setBytes(&Coordinator.numberOfParticles, length: MemoryLayout<Int>.stride, index: 2)
-                
-                encoder.dispatchThreadgroups(threadgroupsPerGrid,
-                                                 threadsPerThreadgroup: threadsPerThreadgroup)
-                
-                encoder.endEncoding()
-
-                commandBuffer.addCompletedHandler {[weak self] _ in
-                    self?.computeSemaphore.signal()
-                }
-                commandBuffer.commit()
-            }
             guard let drawable = view.currentDrawable else {return}
             
             renderSemaphore.wait()
             let commandBuffer = metalCommandQueue.makeCommandBuffer()!
             
             currentBufferIndex = (currentBufferIndex + 1) % Coordinator.maxBuffers
-            calcParticlePostion()
+            computeShaderExecuter.calcParticlePostion(metalCommandQueue: metalCommandQueue, particleBuffers: particleBuffers, beforeBufferIndex: beforeBufferIndex, currentBufferIndex: currentBufferIndex)
             
             renderPassDescriptor.colorAttachments[0].texture = drawable.texture
             renderPassDescriptor.colorAttachments[0].loadAction = .clear
