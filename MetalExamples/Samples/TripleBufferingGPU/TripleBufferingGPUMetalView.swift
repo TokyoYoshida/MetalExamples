@@ -49,6 +49,7 @@ struct TripleBufferingMetalViewGPU: UIViewRepresentable {
         }
         var threadgroupsPerGrid: MTLSize!
         var threadsPerThreadgroup: MTLSize!
+        lazy var computeShaderExecuter = ComputeShaderExecuter(device: self.metalDevice, computeShaderName: "particleComputeShader", numberOfParticles: Coordinator.numberOfParticles, maxBuffers: Coordinator.maxBuffers)
 
         init(_ parent: TripleBufferingMetalViewGPU) {
             func buildRenderPipeline() {
@@ -156,7 +157,8 @@ struct TripleBufferingMetalViewGPU: UIViewRepresentable {
             let commandBuffer = metalCommandQueue.makeCommandBuffer()!
             
             currentBufferIndex = (currentBufferIndex + 1) % Coordinator.maxBuffers
-            calcParticlePostion()
+            computeShaderExecuter.calcParticlePostion(metalCommandQueue: metalCommandQueue, particleBuffers: particleBuffers, beforeBufferIndex: beforeBufferIndex, currentBufferIndex: currentBufferIndex)
+//            calcParticlePostion()
             
             renderPassDescriptor.colorAttachments[0].texture = drawable.texture
             renderPassDescriptor.colorAttachments[0].loadAction = .clear
